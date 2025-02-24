@@ -326,6 +326,15 @@
       "discount": 50,
       "description": "stylish product 3",
       "image": "https://res.cloudinary.com/dxxkqw3bf/image/upload/v1740395138/product2_t0wgtk.jpg"
+    },
+    {
+      "id": "0800",
+      "name": "jacket",
+      "price": 5000,
+      "old_price": 7000,
+      "discount": 10,
+      "description": "stylish jacket ",
+      "image": "https://res.cloudinary.com/dxxkqw3bf/image/upload/v1740403407/download_ffrm9v.webp"
     }
   ]
 }
