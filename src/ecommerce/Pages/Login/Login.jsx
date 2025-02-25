@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { NavLink } from 'react-router-dom';
 import { LoginSchema } from '../../utils/yupValidationSchema';
 import { FaCheckCircle } from 'react-icons/fa';
@@ -18,6 +18,7 @@ function Login() {
             console.log('Form Submitted:', values);
             const user = await signIn(values.email, values.password);
             if (user) {
+                console.log(user)
                 setIsSuccess(true);
             } else {
                 setIsSuccess(false);
@@ -26,7 +27,7 @@ function Login() {
             console.log("Error Signing in");
             setIsSuccess(false);
         } finally {
-            setSubmitting !== undefined && setSubmitting(false);
+            setSubmitting(false);
         }
     };
     return (
@@ -36,26 +37,9 @@ function Login() {
                 <Formik initialValues={initialValues} validationSchema={LoginSchema} onSubmit={handleSubmit}>
                     {({ isSubmitting, handleSubmit }) => (
                         <Form className="space-y-4">
-                            <MyCustomField type="email" label="email"/>
-                            <MyCustomField type="password" label="password"/>
-                            
-                            {/* Submit Button */}
-                            <button
-                                type="submit"
-                                onClick={handleSubmit}
-                                disabled={isSubmitting || isSuccess}
-                                className={`w-full text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 ${isSuccess ? "bg-green-500 hover:bg-green-600" : "bg-primary hover:bg-secondary"}`}
-                            >
-                                {isSuccess ? (
-                                    <>
-                                        <FaCheckCircle className="text-white" /> Successfully Signed In
-                                    </>
-                                ) : isSubmitting ? (
-                                    "Signing in ..."
-                                ) : (
-                                    "Login"
-                                )}
-                            </button>
+                            <MyCustomField type="email" name="email" placeholder='email' />
+                            <MyCustomField type="password" name="password" placeholder='password' />
+                            <SubmitButton isSubmitting={isSubmitting} isSuccess={isSuccess} handleSubmit={handleSubmit} />
                         </Form>
                     )}
                 </Formik>
@@ -70,3 +54,19 @@ function Login() {
 }
 
 export default Login;
+
+const SubmitButton = ({ isSubmitting, isSuccess, handleSubmit }) => (
+    <button
+        type="submit"
+        onClick={handleSubmit}
+        disabled={isSubmitting || isSuccess}
+        className={`w-full text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 ${isSuccess ? "bg-green-500 hover:bg-green-600" : "bg-primary hover:bg-secondary"}`}>
+        {isSuccess ? (
+            <><FaCheckCircle className="text-white" /> Successfully Signed In</>
+        ) : isSubmitting ? (
+            "Signing in..."
+        ) : (
+            "Login"
+        )}
+    </button>
+);

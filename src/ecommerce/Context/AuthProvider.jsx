@@ -40,9 +40,10 @@ export const AuthProvider = ({ children }) => {
     const signOut = async () => {
         if(user){
             await supabase.auth.signOut();
+            alert("You successfully signed out.")
             setUser(null);
         }
-        alert("You already not signed in!")
+        if(!user)alert("You already not signed in!")
     };
     const signUp = async (email, password, username) => {
         try {

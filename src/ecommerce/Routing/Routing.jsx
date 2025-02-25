@@ -2,7 +2,6 @@ import React from 'react'
 import Layout from '../Layout/Layout';
 import Explore from '../Pages/Explore/Explore';
 import About from '../Pages/About/About';
-import Contacts from '../Pages/Contacts/Contacts';
 import NotFound from '../Pages/NotFound/NotFound';
 import Products from '../Pages/Products/Products';
 import { createBrowserRouter } from 'react-router-dom';
@@ -13,6 +12,7 @@ import Register from '../Pages/Register/Register';
 import Account from '../Pages/Account/Account';
 import ProtectedRoute from './ProtectedRoute';
 import AddProduct from '../Pages/AddProduct/AddProduct';
+import Wishlist from '../Pages/Wishlist/Wishlist';
 
 const routing = createBrowserRouter([
     {
@@ -23,7 +23,7 @@ const routing = createBrowserRouter([
             { path: "products", element: <Products /> },
             { path: "cart", element: <Cart /> },
             { path: "about", element: <About /> },
-            { path: "contacts", element: <Contacts /> },
+            { path: "wishlist", element: <Wishlist /> },
             { path: "products/:id", element: <Product /> },
             { path: "auth", element: <Login /> },
             { path: "register", element: <Register /> },

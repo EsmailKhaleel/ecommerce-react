@@ -17,8 +17,9 @@ function DarkMode() {
     }
     
     return (
-        <div className='flex items-center'>
-            <button onClick={handleToggle}>
+        <div className='flex items-center gap-1'>
+            <button onClick={handleToggle} className='flex items-center gap-1'>
+                <p className='cursor-pointer'>Dark Mode</p>
                 <CgDarkMode className='dark:text-white text-2xl  cursor-pointer text-black' />
             </button>
         </div>

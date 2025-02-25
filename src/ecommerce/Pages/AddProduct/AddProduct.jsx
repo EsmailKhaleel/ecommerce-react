@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Formik, Form, ErrorMessage } from "formik";
+import { Formik, Form, ErrorMessage, Field } from "formik";
 import MyCustomField from "../../Components/MyCustomField";
 import { AddProductSchema } from "../../utils/yupValidationSchema";
 import axiosInstance from "../../utils/axiosInstance";
@@ -14,6 +14,7 @@ const AddProduct = () => {
         old_price: "",
         discount: "",
         description: "",
+        category: "",
         image: null,
     };
 
@@ -67,12 +68,28 @@ const AddProduct = () => {
             >
                 {({ setFieldValue, isSubmitting }) => (
                     <Form className="space-y-4">
-                        <MyCustomField type="text" label="name" />
-                        <MyCustomField type="number" label="price" />
-                        <MyCustomField type="number" label="old_price" />
-                        <MyCustomField type="number" label="discount" />
-                        <MyCustomField type="text" label="description" />
-
+                        <MyCustomField type="text" name="name" placeholder="product name" />
+                        <MyCustomField type="number" name="price" placeholder="product price" />
+                        <MyCustomField type="number" name="old_price" placeholder="product old price" />
+                        <MyCustomField type="number" name="discount" placeholder="product discount" />
+                        <MyCustomField type="text" name="description" placeholder="product description" />
+                        {/* Category Dropdown */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Select Category
+                            </label>
+                            <Field
+                                as="select"
+                                name="category"
+                                className="w-full px-4 py-2 rounded-lg bg-stone-100 outline-none transition-all"
+                            >
+                                <option value="">Select a category</option>
+                                <option value="digital">Digital</option>
+                                <option value="clothes">Clothes</option>
+                                <option value="other">Other</option>
+                            </Field>
+                            <ErrorMessage name="category" component="div" className="text-red-500 text-sm mt-1" />
+                        </div>
                         {/* Image Upload Field */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">

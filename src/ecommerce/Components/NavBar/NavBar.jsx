@@ -15,29 +15,14 @@ export const menu = [
     link: "/products",
   },
   {
-    id: 2,
-    name: "Top Rated",
-    link: "/services",
-  },
-  {
-    id: 3,
-    name: "Kids Wear",
-    link: "/kidswear",
-  },
-  {
-    id: 4,
-    name: "Mens Wear",
-    link: "/menswear",
-  },
-  {
-    id: 5,
-    name: "Electronics",
-    link: "/electronics",
-  },
-  {
     id: 7,
     name: "Add Product",
     link: "/addProduct",
+  },
+  {
+    id: 2,
+    name: "My Wishlist",
+    link: "/wishlist",
   },
 ];
 export const dropDownLinks = [
