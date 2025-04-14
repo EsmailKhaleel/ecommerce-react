@@ -1,7 +1,7 @@
 import React from 'react'
-import Img1 from '../../assets/sale.png'
-import Img2 from '../../assets/shopping.png'
-import Img3 from '../../assets/women.png'
+import Img1 from '../assets/sale.png'
+import Img2 from '../assets/shopping.png'
+import Img3 from '../assets/women.png'
 const ImageList = [
     {
         id:1,

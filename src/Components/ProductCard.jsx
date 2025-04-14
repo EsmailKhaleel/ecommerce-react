@@ -21,11 +21,11 @@ function ProductCard({ product }) {
     }
 
     return (
-        <div className="bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 hover:shadow-lg overflow-hidden transition-transform transform hover:scale-105 flex flex-col h-[450px] sm:h-[480px] md:h-[500px] p-4 relative">
+        <div className="bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 hover:shadow-lg overflow-hidden transition-transform transform hover:translate-y-[-5px] flex flex-col h-[450px] sm:h-[480px] md:h-[500px] p-4 relative ">
             <img
                 src={product.image}
                 alt={product.name}
-                className="w-full h-40 sm:h-48 md:h-56 object-contain p-4 dark:bg-gray-800 rounded-md"
+                className="w-full h-40 sm:h-48 md:h-56 object-contain p-4 dark:bg-gray-800 rounded-md transition-transform transform hover:scale-105"
             />
             <div className="flex flex-col flex-grow p-4">
                 <h3 className="text-lg font-semibold text-black dark:text-white truncate">{product.name}</h3>
@@ -33,17 +33,16 @@ function ProductCard({ product }) {
                 <div className="mt-auto">
                     <p className="mt-2 text-green-700 dark:text-gray-400 font-bold">{product.price} EG</p>
                     {/* Buttons */}
-                    <div className="flex flex-wrap gap-3 mt-4">
+                    <div className="flex gap-3 mt-4 justify-between xl:flex-row flex-col-reverse">
                         <button
                             onClick={() => showProduct(product.id)}
-                            className="text-primary dark:text-secondary hover:text-secondary dark:hover:text-primary font-semibold"
+                            className="text-[14px] text-primary dark:text-secondary dark:hover:text-white font-semibold px-4 sm:px-5 py-2 rounded-md w-full sm:w-auto border border-primary dark:border-secondary hover:bg-primary dark:hover:bg-secondary hover:text-white transition duration-200"
                         >
                             View Product
                         </button>
-
                         <button
                             onClick={() => handleAddToCart(product)}
-                            className="flex items-center justify-center bg-violet-900 text-white hover:bg-blue-800 px-4 sm:px-5 py-2 rounded-md w-full sm:w-auto"
+                            className="text-[14px] flex items-center justify-center bg-violet-900 text-white hover:bg-blue-800 px-4 sm:px-5 py-2 rounded-md w-full sm:w-auto border border-violet-900 hover:border-blue-800 transition duration-200"
                         >
                             <BiShoppingBag className="mr-2" />
                             Add to cart
