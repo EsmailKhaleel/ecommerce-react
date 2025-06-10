@@ -7,6 +7,7 @@ import { BiShoppingBag } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, decreaseQuantity, toggleFav } from "../StateManagement/Slices/CartSlice";
 import Spinner from "./Spinner";
+import placeholderImage from '../assets/placeholder.jpg';
 
 function ProductDetails() {
     const [isDetailsShown, setIsDetailsShown] = useState(false);
@@ -43,6 +44,10 @@ function ProductDetails() {
                         <img
                             src={selectedImage || product.image}
                             alt={product.name}
+                            onError={(e) => {
+                                e.target.onerror = null; // Prevent infinite loop
+                                e.target.src = placeholderImage; // Replace with your default image URL
+                            }}
                             className="w-full h-80 object-contain"
                         />
                     </div>
@@ -54,6 +59,10 @@ function ProductDetails() {
                                 key={index}
                                 src={image}
                                 alt={`Thumbnail ${index}`}
+                                onError={(e) => {
+                                    e.target.onerror = null; // Prevent infinite loop
+                                    e.target.src = placeholderImage; // Replace with your default image URL
+                                }}
                                 className={`w-20 h-20 object-contain border rounded-md cursor-pointer transition-all ${
                                     selectedImage === image
                                         ? "border-violet-500"

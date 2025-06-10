@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../../Components/ProductCard";
 import { BiSearch, BiFilter, BiError } from "react-icons/bi";

@@ -1,8 +1,8 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addToCart, toggleFav } from '../StateManagement/Slices/CartSlice';
 import { useDispatch } from 'react-redux';
 import { BiHeart, BiShoppingBag, BiSolidHeart } from 'react-icons/bi';
+import placeholderImage from '../assets/placeholder.jpg';
 
 function ProductCard({ product }) {
     const navigator = useNavigate();
@@ -25,6 +25,10 @@ function ProductCard({ product }) {
             <img
                 src={product.image}
                 alt={product.name}
+                onError={(e) => {
+                    e.target.onerror = null; // Prevent infinite loop
+                    e.target.src = placeholderImage; // Replace with your default image URL
+                }}
                 className="w-full h-40 sm:h-48 md:h-56 object-contain p-4 dark:bg-gray-800 rounded-md transition-transform transform hover:scale-105"
             />
             <div className="flex flex-col flex-grow p-4">
