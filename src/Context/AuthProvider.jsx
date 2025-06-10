@@ -1,70 +1,147 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged,
+    signInWithPopup
+} from 'firebase/auth';
+import { auth, googleProvider } from '../config/firebase';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const SUPABASE_URL = "https://dkcdvrtssgtufoofhqor.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRrY2R2cnRzc2d0dWZvb2ZocW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk5OTE2NjAsImV4cCI6MjA1NTU2NzY2MH0.TmnGQ0P-2wdNnCqKTZtgeVDkOxbbDEk7vzZUh9wbkpE";
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    console.log('user in AuthProvider:', user);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            setUser(session?.user || null);
-            console.log(session)
-        };
-        fetchUser();
-        const {
-            data: authListener
-        } = supabase.auth.onAuthStateChange((event, session) => {
-            setUser(session?.user || null);
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
         });
-        return () => {
-            authListener.subscription.unsubscribe();
-        };
+        return () => unsubscribe();
     }, []);
 
-
     const signIn = async (email, password) => {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-            console.error("Login Error:", error.message);
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            toast.success('Successfully signed in!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+            return userCredential.user;
+        } catch (error) {
+            let errorMessage = 'Failed to sign in';
+            switch (error.code) {
+                case 'auth/invalid-credential':
+                    errorMessage = 'Invalid email or password';
+                    break;
+                case 'auth/user-not-found':
+                    errorMessage = 'User not found';
+                    break;
+                case 'auth/wrong-password':
+                    errorMessage = 'Incorrect password';
+                    break;
+                default:
+                    errorMessage = error.message;
+            }
+            toast.error(errorMessage, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
             return null;
         }
-        setUser(data.user);
-        return data.user;
     };
 
-    const signOut = async () => {
-        if(user){
-            await supabase.auth.signOut();
-            alert("You successfully signed out.")
-            setUser(null);
+    const signInWithGoogle = async () => {
+        try {
+            const userCredential = await signInWithPopup(auth, googleProvider);
+            toast.success('Successfully signed in with Google!', {
+                position: "top-right",
+                autoClose: 3000,
+            });
+            return userCredential.user;
+        } catch (error) {
+            toast.error('Failed to sign in with Google', {
+                position: "top-right",
+                autoClose: 3000,
+            });
+            return null;
         }
-        if(!user)alert("You already not signed in!")
     };
+
+    const handleSignOut = async () => {
+        try {
+            await signOut(auth);
+            toast.success('Successfully signed out!', {
+                position: "top-right",
+                autoClose: 3000,
+            });
+        } catch (error) {
+            toast.error('Failed to sign out', {
+                position: "top-right",
+                autoClose: 3000,
+            });
+        }
+    };
+
     const signUp = async (email, password, username) => {
         try {
-            const { data, error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: { data: { username } },
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            toast.success('Successfully registered!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
             });
-            if (error) {
-                console.log("Error Registration:", error.message);
-                return null;
-            }
-            console.log("User Registered:", data);
-            return data;
+            return userCredential.user;
         } catch (error) {
-            console.log("Signup error:", error.message);
+            let errorMessage = 'Failed to register';
+            switch (error.code) {
+                case 'auth/email-already-in-use':
+                    errorMessage = 'Email is already registered';
+                    break;
+                case 'auth/weak-password':
+                    errorMessage = 'Password should be at least 6 characters';
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = 'Invalid email address';
+                    break;
+                default:
+                    errorMessage = error.message;
+            }
+            toast.error(errorMessage, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "colored"
+            });
             return null;
         }
-    }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, signIn, signOut, signUp }}>
+        <AuthContext.Provider value={{ 
+            user, 
+            signIn, 
+            signInWithGoogle, 
+            signOut: handleSignOut, 
+            signUp 
+        }}>
             {children}
         </AuthContext.Provider>
     );

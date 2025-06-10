@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { addToCart, toggleFav } from '../StateManagement/Slices/CartSlice';
 import { useDispatch } from 'react-redux';
 import { BiHeart, BiShoppingBag, BiSolidHeart } from 'react-icons/bi';
+import { MdLocalOffer } from 'react-icons/md';
+import PropTypes from 'prop-types';
 import placeholderImage from '../assets/placeholder.jpg';
 
 function ProductCard({ product }) {
@@ -21,52 +23,110 @@ function ProductCard({ product }) {
     }
 
     return (
-        <div className="bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg border border-gray-300 dark:border-gray-700 hover:shadow-lg overflow-hidden transition-transform transform hover:translate-y-[-5px] flex flex-col h-[450px] sm:h-[480px] md:h-[500px] p-4 relative ">
-            <img
-                src={product.image}
-                alt={product.name}
-                onError={(e) => {
-                    e.target.onerror = null; // Prevent infinite loop
-                    e.target.src = placeholderImage; // Replace with your default image URL
-                }}
-                className="w-full h-40 sm:h-48 md:h-56 object-contain p-4 dark:bg-gray-800 rounded-md transition-transform transform hover:scale-105"
-            />
-            <div className="flex flex-col flex-grow p-4">
-                <h3 className="text-lg font-semibold text-black dark:text-white truncate">{product.name}</h3>
-                <p className="mt-2 text-gray-600 dark:text-gray-400 text-sm sm:text-base line-clamp-2">{product.description}</p>
-                <div className="mt-auto">
-                    <p className="mt-2 text-green-700 dark:text-gray-400 font-bold">{product.price} EG</p>
-                    {/* Buttons */}
-                    <div className="flex gap-3 mt-4 justify-between xl:flex-row flex-col-reverse">
-                        <button
-                            onClick={() => showProduct(product.id)}
-                            className="text-[14px] text-primary dark:text-secondary dark:hover:text-white font-semibold px-4 sm:px-5 py-2 rounded-md w-full sm:w-auto border border-primary dark:border-secondary hover:bg-primary dark:hover:bg-secondary hover:text-white transition duration-200"
-                        >
-                            View Product
-                        </button>
-                        <button
-                            onClick={() => handleAddToCart(product)}
-                            className="text-[14px] flex items-center justify-center bg-violet-900 text-white hover:bg-blue-800 px-4 sm:px-5 py-2 rounded-md w-full sm:w-auto border border-violet-900 hover:border-blue-800 transition duration-200"
-                        >
-                            <BiShoppingBag className="mr-2" />
-                            Add to cart
-                        </button>
+        <div className="group bg-white dark:bg-gray-900 text-black dark:text-white rounded-2xl border border-gray-200 dark:border-gray-700 hover:shadow-xl overflow-hidden transition-all duration-300 flex flex-col h-[500px] relative">
+            {/* Discount Badge */}
+            {product.discount && (
+                <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold z-10 flex items-center gap-1">
+                    <MdLocalOffer className="text-lg" />
+                    {product.discount}% OFF
+                </div>
+            )}
+            
+            {/* Category Tag */}
+            <div className="absolute top-4 right-14 bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-200 px-3 py-1 rounded-full text-xs capitalize z-10">
+                {product.category}
+            </div>
+
+            {/* Favorite Button */}
+            <button
+                onClick={() => handleToggleFavorite(product.id)}
+                className="absolute top-4 right-4 z-10 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md hover:scale-110 transition-transform"
+            >
+                {product.isFav ? (
+                    <BiSolidHeart className="text-red-500 text-xl" />
+                ) : (
+                    <BiHeart className="text-gray-400 dark:text-gray-300 text-xl" />
+                )}
+            </button>
+
+            {/* Image Container */}
+            <div className="relative overflow-hidden p-4 bg-gray-50 dark:bg-gray-800/50 h-64 group-hover:bg-gray-100 dark:group-hover:bg-gray-800 transition-colors">
+                <img
+                    src={product.image}
+                    alt={product.name}
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = placeholderImage;
+                    }}
+                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+                />
+            </div>
+
+            {/* Content Container */}
+            <div className="flex flex-col flex-grow p-5">
+                {/* Product Details */}
+                <div className="flex-grow">
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-white truncate mb-2">
+                        {product.name}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4">
+                        {product.description}
+                    </p>
+                </div>
+
+                {/* Price Section */}
+                <div className="mb-4">
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-2xl font-bold text-violet-900 dark:text-violet-400">
+                            {product.price.toLocaleString()} EGP
+                        </span>
+                        {product.old_price && (
+                            <span className="text-sm text-gray-500 line-through">
+                                {product.old_price.toLocaleString()} EGP
+                            </span>
+                        )}
                     </div>
                 </div>
-                {/* Favorite Icon */}
-                <button
-                    onClick={() => handleToggleFavorite(product.id)}
-                    className="absolute top-3 right-3 text-gray-400 dark:text-gray-300 hover:text-red-500 transition"
-                >
-                    {product.isFav ? (
-                        <BiSolidHeart className="text-red-500 text-2xl" />
-                    ) : (
-                        <BiHeart className="text-2xl" />
-                    )}
-                </button>
+
+                {/* Action Buttons */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button
+                        onClick={() => showProduct(product.id)}
+                        className="w-full text-violet-900 dark:text-violet-400 font-semibold px-3 py-2 rounded-xl 
+                                 border-2 border-violet-900 dark:border-violet-400 hover:bg-violet-900 
+                                 hover:text-white dark:hover:bg-violet-400 dark:hover:text-gray-900 
+                                 transition-colors duration-300 text-sm whitespace-nowrap"
+                    >
+                        View Details
+                    </button>
+                    <button
+                        onClick={() => handleAddToCart(product)}
+                        className="w-full bg-violet-900 text-white px-3 py-2 rounded-xl font-semibold
+                                 hover:bg-violet-800 transition-colors duration-300 flex items-center 
+                                 justify-center gap-1.5 text-sm whitespace-nowrap"
+                    >
+                        <BiShoppingBag className="text-lg flex-shrink-0" />
+                        Add to Cart
+                    </button>
+                </div>
             </div>
         </div>
-    )
+    );
 }
+
+ProductCard.propTypes = {
+    product: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired,
+        price: PropTypes.number.isRequired,
+        old_price: PropTypes.number,
+        discount: PropTypes.number,
+        category: PropTypes.string.isRequired,
+        image: PropTypes.string.isRequired,
+        images: PropTypes.arrayOf(PropTypes.string),
+        isFav: PropTypes.bool
+    }).isRequired
+};
 
 export default ProductCard;

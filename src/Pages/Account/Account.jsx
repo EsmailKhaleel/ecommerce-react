@@ -1,4 +1,3 @@
-import React from "react";
 import { useAuth } from "../../Context/AuthProvider";
 import { FaUserCircle, FaEnvelope, FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
 import Spinner from "../../Components/Spinner";
@@ -22,24 +21,42 @@ function Account() {
                 {/* Profile Header */}
                 <div className="flex items-center space-x-4">
                     <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-3xl font-semibold">
-                        {user?.username?.charAt(0).toUpperCase() || <FaUserCircle />}
+                        {user.photoURL ? (
+                            <img src={user.photoURL} alt="profile" className="w-full h-full rounded-full object-cover" />
+                        ) : (
+                            <FaUserCircle />
+                        )}
                     </div>
                     <div>
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{user?.user_metadata.username || "User"}</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">User ID: {user?.id}</p>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                            {user.displayName || user.email.split('@')[0]}
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">User ID: {user.uid}</p>
                     </div>
                 </div>
 
                 {/* User Info */}
                 <div className="mt-6 space-y-4">
-                    <UserInfo label="Email" value={user?.email} icon={<FaEnvelope />} />
-                    <UserInfo label="Account Created" value={formatDate(user?.created_at)} icon={<FaCalendarAlt />} />
-                    <UserInfo label="Last Sign In" value={formatDate(user?.last_sign_in_at)} icon={<FaCalendarAlt />} />
+                    <UserInfo 
+                        label="Email" 
+                        value={user.email} 
+                        icon={<FaEnvelope />} 
+                    />
+                    <UserInfo 
+                        label="Account Created" 
+                        value={formatDate(user.metadata.creationTime)} 
+                        icon={<FaCalendarAlt />} 
+                    />
+                    <UserInfo 
+                        label="Last Sign In" 
+                        value={formatDate(user.metadata.lastSignInTime)} 
+                        icon={<FaCalendarAlt />} 
+                    />
                     <UserInfo 
                         label="Email Verified" 
-                        value={user?.user_metadata?.email_verified ? "Verified" : "Not Verified"} 
+                        value={user.emailVerified ? "Verified" : "Not Verified"} 
                         icon={<FaCheckCircle />} 
-                        isVerified={user?.user_metadata?.email_verified}
+                        isVerified={user.emailVerified}
                     />
                 </div>
             </div>
