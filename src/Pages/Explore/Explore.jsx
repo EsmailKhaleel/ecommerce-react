@@ -6,6 +6,7 @@ import { fetchProducts } from "../../StateManagement/Slices/CartSlice";
 import { v4 as uuidv4 } from 'uuid';
 import Spinner from '../../Components/Spinner';
 import debounce from 'lodash/debounce';
+import Hero from "../../Components/Hero/Hero";
 
 function Explore() {
     const dispatch = useDispatch();
@@ -66,6 +67,7 @@ function Explore() {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <Hero />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header & Search */}
                 <div className="mb-8">
