@@ -18,8 +18,10 @@ export const fetchProducts = createAsyncThunk(
 
 export const cartSlice = createSlice({
   name: 'cart',
-  initialState,
-  reducers: {
+  initialState,  reducers: {
+    clearCart: (state) => {
+      state.cartProducts = [];
+    },
     addToCart: (state, action) => {
       const existingProduct = state.cartProducts.find(product => product.id === action.payload.id);
       if (existingProduct) {
@@ -79,6 +81,6 @@ export const cartSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { addToCart, removeFromCart, decreaseQuantity, toggleFav } = cartSlice.actions
+export const { addToCart, removeFromCart, decreaseQuantity, toggleFav, clearCart } = cartSlice.actions
 
 export default cartSlice.reducer

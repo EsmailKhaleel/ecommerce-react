@@ -8,11 +8,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 const AppProviders = ({ children }) => {
     const queryClient = new QueryClient();
+    
     return (
         <QueryClientProvider client={queryClient}>
             <Provider store={store}>
                 <LanguageProvider>
-                    <AuthProvider>                        {children}
+                    <AuthProvider>
                         <ToastContainer
                             position="top-right"
                             autoClose={3000}
@@ -25,6 +26,7 @@ const AppProviders = ({ children }) => {
                             pauseOnHover
                             theme="colored"
                         />
+                        {children}
                     </AuthProvider>
                 </LanguageProvider>
             </Provider>

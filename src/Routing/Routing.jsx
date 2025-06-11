@@ -1,4 +1,3 @@
-import React from 'react'
 import Layout from '../Layout/Layout';
 import Explore from '../Pages/Explore/Explore';
 import About from '../Pages/About/About';
@@ -13,6 +12,8 @@ import Account from '../Pages/Account/Account';
 import ProtectedRoute from './ProtectedRoute';
 import AddProduct from '../Pages/AddProduct/AddProduct';
 import Wishlist from '../Pages/Wishlist/Wishlist';
+import Checkout from '../Pages/Checkout/Checkout';
+import Success from '../Pages/Checkout/Success';
 
 const routing = createBrowserRouter([
     {
@@ -27,7 +28,8 @@ const routing = createBrowserRouter([
             { path: "products/:id", element: <Product /> },
             { path: "auth", element: <Login /> },
             { path: "register", element: <Register /> },
-            { path: "addProduct", element: <AddProduct /> },
+            { path: "addProduct", element: <AddProduct /> },            { path: "checkout", element: <Checkout /> },
+            { path: "checkout/success", element: <Success /> },
             {
                 path: "account",
                 element: <ProtectedRoute>
