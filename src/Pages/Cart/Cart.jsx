@@ -3,32 +3,26 @@ import EmptyCart from '../../assets/emptyCart.png';
 import CartItem from '../../Components/CartItem';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { clearCart } from '../../StateManagement/Slices/CartSlice';
 
 function Cart() {
     const cart = useSelector((state) => state.cart.cartProducts);
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        // Check if this is a redirect back from Checkout
-        const success = searchParams.get('success');
-        const canceled = searchParams.get('canceled');
-
-        if (success) {
+    const [isProcessing, setIsProcessing] = useState(false);    const navigate = useNavigate();
+    const dispatch = useDispatch();useEffect(() => {
+        // Check URL for Stripe redirect status
+        if (window.location.href.includes('/success')) {
             toast.success('Payment successful! Your order has been placed.');
             dispatch(clearCart());
-            navigate('/checkout/success', { replace: true });
+            navigate('/', { replace: true });
         }
 
-        if (canceled) {
+        if (window.location.href.includes('/cart?canceled=true')) {
             toast.info('Order canceled -- continue shopping and checkout when you\'re ready.');
+            navigate('/cart', { replace: true });
         }
-    }, [searchParams, dispatch, navigate]);
+    }, [dispatch, navigate]);
 
     const handleCheckout = async () => {
         if (isProcessing) return;
