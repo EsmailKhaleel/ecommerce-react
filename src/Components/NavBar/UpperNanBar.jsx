@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { FaCartShopping } from 'react-icons/fa6'
 import Logo from '../../assets/logo.png'
 import DarkMode from './DarkMode'
@@ -26,22 +26,13 @@ function UpperNanBar() {
                             <a className="hidden lg:block font-bold text-xl sm:text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Esmail Khaleel</a>
                         </div>
                         <div className="hidden sm:flex gap-6 items-center">
-                            {user && (
-                                <button
-                                    onClick={signOut}
-                                    className="group flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors"
-                                >
-                                    <FaSignOutAlt className="text-xl" />
-                                    <span className="text-sm font-medium">Logout</span>
-                                </button>
-                            )}
                             <NavLink to="/account" className="group flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors">
                                 <MdAccountCircle className="text-2xl" />
-                                <span className="text-sm font-medium">Account</span>
-                            </NavLink>
+                                <span className="text-sm font-medium">My Account</span>
+                            </NavLink>                            
                             <NavLink to="/cart">
-                                <button className="relative group flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-white py-2 px-4 rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
-                                    <span className="text-sm font-medium">Cart</span>
+                                <button className="relative group flex items-center gap-0 hover:gap-2 bg-gradient-to-r from-primary to-secondary text-white py-2 px-2 rounded-lg transition-all duration-300 hover:shadow-lg hover:px-4">
+                                    <span className="w-0 text-sm font-medium group-hover:w-auto overflow-hidden transition-all duration-300 whitespace-nowrap">Cart</span>
                                     <FaCartShopping className="text-xl" />
                                     {cart?.length > 0 && (
                                         <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
@@ -60,7 +51,7 @@ function UpperNanBar() {
                             {!user && (
                                 <NavLink to="/auth" className="hidden sm:block">
                                     <button className="text-sm font-medium px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-all duration-300 hover:shadow-lg">
-                                        Login
+                                        Create Account
                                     </button>
                                 </NavLink>
                             )}
@@ -74,72 +65,126 @@ function UpperNanBar() {
                         </button>
                     </div>
                 </div>
-            </div>
-
+            </div>            
             {/* Mobile Drawer Menu */}
             <div
-                className={`fixed top-0 left-0 w-72 h-full bg-white dark:bg-gray-900 shadow-xl z-[1000] transform transition-all duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"
-                    }`}
+                className={`fixed top-0 left-0 sm:w-80 h-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg z-[1000] transform transition-all duration-500 ease-out ${
+                    menuOpen ? "translate-x-0" : "-translate-x-full"
+                }`}
             >
-                <div className="p-6">
-                    {/* Close Button */}
-                    <button
-                        onClick={() => setMenuOpen(false)}
-                        className="absolute top-4 right-4 text-2xl text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
-                    >
-                        <FaTimes />
-                    </button>
+                <div className="relative h-full p-6">
+                    {/* Header with Logo */}
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-3">
+                            <img src={Logo} alt="logo" className="w-10 h-10 object-contain" />
+                            <span className="font-bold text-xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                                Menu
+                            </span>
+                        </div>
+                        <button
+                            onClick={() => setMenuOpen(false)}
+                            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-primary transition-all duration-300"
+                        >
+                            <FaTimes className="text-xl" />
+                        </button>
+                    </div>
 
-                    {/* Navigation Links */}
-                    <nav className="mt-12 flex flex-col gap-4">
-                        {user && (
+                    {/* User Section */}
+                    {user ? (
+                        <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-secondary/10 dark:from-primary/5 dark:to-secondary/5">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white">
+                                    {user.photoURL ? (
+                                        <img src={user.photoURL} alt="profile" className="w-full h-full rounded-full object-cover" />
+                                    ) : (
+                                        <MdAccountCircle className="text-2xl" />
+                                    )}
+                                </div>
+                                <div>
+                                    <h3 className="font-medium text-gray-900 dark:text-white">
+                                        {user.displayName || user.email.split('@')[0]}
+                                    </h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+                                </div>
+                            </div>
                             <button
                                 onClick={signOut}
-                                className="flex items-center gap-3 text-lg font-medium py-3 px-4 rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
+                                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500 hover:text-white transition-all duration-300"
                             >
-                                <FaSignOutAlt className="text-xl" /> Logout
+                                <FaSignOutAlt className="text-lg" />
+                                <span>Sign Out</span>
                             </button>
-                        )}
+                        </div>
+                    ) : (
+                        <NavLink
+                            to="/auth"
+                            className="mb-8 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-primary to-secondary text-white hover:shadow-lg hover:shadow-primary/25 transition-all duration-300"
+                            onClick={() => setMenuOpen(false)}
+                        >
+                            <MdAccountCircle className="text-xl" />
+                            <span>Sign In / Create Account</span>
+                        </NavLink>
+                    )}
+
+                    {/* Navigation Links */}
+                    <nav className="space-y-2">
                         <NavLink
                             to="/account"
-                            className="flex items-center gap-3 text-lg font-medium py-3 px-4 rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
+                            className={({ isActive }) =>
+                                `flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 ${
+                                    isActive
+                                        ? 'bg-primary text-white'
+                                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                                }`
+                            }
+                            onClick={() => setMenuOpen(false)}
                         >
-                            <MdAccountCircle className="text-xl" /> My Account
+                            <MdAccountCircle className="text-xl" />
+                            <span>My Account</span>
                         </NavLink>
                         <NavLink
                             to="/cart"
-                            className="flex items-center gap-3 text-lg font-medium py-3 px-4 rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
+                            className={({ isActive }) =>
+                                `flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 ${
+                                    isActive
+                                        ? 'bg-primary text-white'
+                                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                                }`
+                            }
+                            onClick={() => setMenuOpen(false)}
                         >
-                            <FaCartShopping className="text-xl" /> Cart ({cart?.length || 0})
+                            <div className="relative">
+                                <FaCartShopping className="text-xl" />
+                                {cart?.length > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                                        {cart.length}
+                                    </span>
+                                )}
+                            </div>
+                            <span>Cart</span>
                         </NavLink>
-                        {!user && (
-                            <NavLink
-                                to="/auth"
-                                className="flex items-center gap-3 text-lg font-medium py-3 px-4 rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
+                    </nav>
+
+                    {/* Settings Section */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 border-t dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+                        <div className="flex items-center justify-between gap-4">
+                            <button
+                                onClick={handleChangeLanguage}
+                                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-all duration-300"
                             >
-                                Login
-                            </NavLink>
-                        )}
-                        <button
-                            onClick={handleChangeLanguage}
-                            className="flex items-center gap-3 text-lg font-medium py-3 px-4 rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
-                        >
-                            {language === 'ltr' ? 'English' : 'Arabic'}
-                        </button>
-                        <div className="w-full">
+                                {language === 'ltr' ? 'English' : 'العربية'}
+                            </button>
                             <DarkMode />
                         </div>
-                    </nav>
+                    </div>
                 </div>
-            </div>
-
-            {/* Overlay */}
-            {menuOpen && (
-                <div
-                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300"
-                    onClick={() => setMenuOpen(false)}
-                />
-            )}
+            </div>            {/* Overlay */}
+            <div
+                className={`fixed inset-0 bg-black/30 backdrop-blur-md z-40 transition-all duration-500 ${
+                    menuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
+                onClick={() => setMenuOpen(false)}
+            />
         </>
     );
 }

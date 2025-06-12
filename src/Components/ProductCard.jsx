@@ -5,6 +5,8 @@ import { BiHeart, BiShoppingBag, BiSolidHeart } from 'react-icons/bi';
 import { MdLocalOffer } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import placeholderImage from '../assets/placeholder.jpg';
+import { toast } from 'react-toastify';
+
 
 function ProductCard({ product }) {
     const navigator = useNavigate();
@@ -16,10 +18,16 @@ function ProductCard({ product }) {
 
     function handleToggleFavorite(productId) {
         dispatch(toggleFav(productId));
+        if (product.isFav) {
+            toast.info(`${product.name} has been removed from your favorites!`);
+        } else {
+            toast.success(`${product.name} has been added to your favorites!`);
+        }
     }
 
     function handleAddToCart(product) {
         dispatch(addToCart(product));
+        toast.success(`${product.name} has been added to your cart!`);
     }
 
     return (

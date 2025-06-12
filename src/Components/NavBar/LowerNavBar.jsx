@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { menu } from './NavBar';
 import { FaBars } from 'react-icons/fa6';
 import { NavLink } from 'react-router-dom';
 import { FaTimes } from "react-icons/fa";
+import Logo from '../../assets/logo.png'
+
 function LowerNavBar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -10,11 +12,16 @@ function LowerNavBar() {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    const mainNavItemsStyle = (isActive) => (
-        isActive 
-            ? 'bg-secondary/80 rounded-2xl text-white py-[5px] px-[15px] hover:bg-secondary' 
-            : 'inline-block px-4 hover:text-primary duration-200'
-    );
+    const mainNavItemsStyle = (isActive, isMobile = false) => {
+        if (isActive) {
+            return isMobile
+                ? 'bg-secondary text-white rounded-lg'
+                : 'bg-secondary/80 rounded-2xl text-white py-[5px] px-[15px] hover:bg-secondary';
+        }
+        return isMobile
+            ? 'text-gray-700 dark:text-gray-200'
+            : 'inline-block px-4 hover:text-primary duration-200';
+    };
 
     return (
         <>
@@ -33,24 +40,38 @@ function LowerNavBar() {
             {/* Mobile Navigation */}
             <div className="sm:hidden flex justify-between items-center p-4 shadow-md dark:bg-gray-900" >
                 <button onClick={toggleMobileMenu} className="text-2xl cursor-pointer">
-                    {isMobileMenuOpen ? <FaTimes/> : <FaBars />}
+                    {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
                 </button>
             </div>
 
             {/* Mobile Menu Drawer */}
             <div className={`fixed top-0 left-0 w-[280px] h-full bg-white shadow-xl z-[1000] transform transition-transform duration-300 ease-in-out p-6 flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} bg-white dark:bg-gray-900`}>
-                {/* Close Button */}
-                <button onClick={toggleMobileMenu} className="absolute top-4 right-4 text-2xl text-gray-600 dark:text-gray-300 hover:text-red-500 transition cursor-pointer">
-                    <FaTimes />
-                </button>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <img src={Logo} alt="logo" className="w-10 h-10 object-contain" />
+                        <span className="font-bold text-xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                            Menu
+                        </span>
+                    </div>
+                    <button
+                        onClick={toggleMobileMenu}
+                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-primary transition-all duration-300"
+                    >
+                        <FaTimes className="text-xl" />
+                    </button>
+                </div>
 
                 {/* Menu Items */}
                 <ul className="mt-12 space-y-6">
                     {menu.map(data => (
-                        <li key={data.id}>
-                            <NavLink to={data.link} className="block text-lg font-medium py-2 px-4 hover:bg-primary hover:text-white rounded-lg transition" onClick={toggleMobileMenu}>
-                                {data.name}
-                            </NavLink>
+                        <li key={data.id}>                            
+                        <NavLink
+                            to={data.link}
+                            className={({ isActive }) => `block text-lg font-medium py-2 px-4 rounded-lg transition-all duration-200 ${mainNavItemsStyle(isActive, true)} hover:bg-primary hover:text-white`}
+                            onClick={toggleMobileMenu}
+                        >
+                            {data.name}
+                        </NavLink>
                         </li>
                     ))}
                 </ul>
