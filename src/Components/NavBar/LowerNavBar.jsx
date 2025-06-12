@@ -1,10 +1,27 @@
 import { useState } from 'react';
-import { menu } from './NavBar';
 import { FaBars } from 'react-icons/fa6';
 import { NavLink } from 'react-router-dom';
 import { FaTimes } from "react-icons/fa";
 import Logo from '../../assets/logo.png'
 
+const menu = [
+    {
+        id: 1,
+        name: "Explore",
+        link: "/",
+    }, {
+        id: 2,
+        name: "Products",
+        link: "/products",
+    }, {
+        id: 3,
+        name: "Add Product",
+        link: "/addProduct",
+    }, {
+        id: 4,
+        name: "My Wishlist",
+        link: "/wishlist",
+    }];
 function LowerNavBar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -38,7 +55,7 @@ function LowerNavBar() {
                 </ul>
             </div>
             {/* Mobile Navigation */}
-            <div className="sm:hidden flex justify-between items-center p-4 shadow-md dark:bg-gray-900" >
+            <div className="sm:hidden flex justify-between items-center p-2 md:p-2 shadow-md dark:bg-gray-900" >
                 <button onClick={toggleMobileMenu} className="text-2xl cursor-pointer">
                     {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
                 </button>
@@ -64,14 +81,14 @@ function LowerNavBar() {
                 {/* Menu Items */}
                 <ul className="mt-12 space-y-6">
                     {menu.map(data => (
-                        <li key={data.id}>                            
-                        <NavLink
-                            to={data.link}
-                            className={({ isActive }) => `block text-lg font-medium py-2 px-4 rounded-lg transition-all duration-200 ${mainNavItemsStyle(isActive, true)} hover:bg-primary hover:text-white`}
-                            onClick={toggleMobileMenu}
-                        >
-                            {data.name}
-                        </NavLink>
+                        <li key={data.id}>
+                            <NavLink
+                                to={data.link}
+                                className={({ isActive }) => `block text-lg font-medium py-2 px-4 rounded-lg transition-all duration-200 ${mainNavItemsStyle(isActive, true)} hover:bg-primary hover:text-white`}
+                                onClick={toggleMobileMenu}
+                            >
+                                {data.name}
+                            </NavLink>
                         </li>
                     ))}
                 </ul>

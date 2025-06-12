@@ -19,11 +19,11 @@ function UpperNanBar() {
         <>
             {/* Desktop Navigation */}
             <div className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
+                <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center h-12 md:h-16">
                         <div className="flex items-center gap-3">
                             <img src={Logo} alt="logo" className="w-12 h-12 object-contain transition-transform hover:scale-105" />
-                            <a className="hidden lg:block font-bold text-xl sm:text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Esmail Khaleel</a>
+                            <a className="font-bold text-xl sm:text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Esmail Khaleel</a>
                         </div>
                         <div className="hidden sm:flex gap-6 items-center">
                             <NavLink to="/account" className="group flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors">

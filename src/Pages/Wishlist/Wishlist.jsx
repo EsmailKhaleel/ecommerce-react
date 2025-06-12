@@ -29,20 +29,21 @@ function Wishlist({ inAccount = false }) {
       className="container mx-auto px-4 py-8"
     >
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            My Wishlist
-            <span className="ml-2 text-lg text-gray-500 dark:text-gray-400">
-              ({favoriteProducts.length}{" "}
-              {favoriteProducts.length === 1 ? "item" : "items"})
-            </span>
-          </h1>
-          <Link
-            to="/products"
-            className="text-primary hover:text-primary/80 transition-colors duration-200"
-          >
-            Continue Shopping
-          </Link>
+        <div className="mb-6 sm:mb-8 space-y-2">
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+              My Wishlist
+            </h1>
+            <Link
+              to="/products"
+              className="inline-flex items-center text-sm sm:text-base text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
+            >
+              Continue Shopping
+            </Link>
+          </div>
+          <span className="text-base sm:text-lg text-gray-500 dark:text-gray-400">
+            ({favoriteProducts.length} {favoriteProducts.length === 1 ? "item" : "items"})
+          </span>
         </div>
 
         <AnimatePresence mode="wait">
@@ -72,8 +73,8 @@ function Wishlist({ inAccount = false }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className={`${inAccount
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3":
-                "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" }`}
+                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" :
+                "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"}`}
             >
               {favoriteProducts.map((product, index) => (
                 <motion.div

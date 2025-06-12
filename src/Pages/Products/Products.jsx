@@ -34,7 +34,7 @@ function Products() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [sortOrder, setSortOrder] = useState("asc");
-    const [showFilters, setShowFilters] = useState(true);
+    const [showFilters, setShowFilters] = useState(false);
     const [minPrice, setMinPrice] = useState(null);
     const [maxPrice, setMaxPrice] = useState(null);
     const [selectedPriceRange, setSelectedPriceRange] = useState(null);

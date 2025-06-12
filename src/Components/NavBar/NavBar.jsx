@@ -11,27 +11,3 @@ function NavBar() {
 }
 
 export default NavBar;
-
-export const menu = [
-  // {
-  //   id: 1,
-  //   name: "Home",
-  //   link: "/",
-  // }, 
-  {
-    id: 2,
-    name: "Explore",
-    link: "/",
-  }, {
-    id: 3,
-    name: "Products",
-    link: "/products",
-  }, {
-    id: 4,
-    name: "Add Product",
-    link: "/addProduct",
-  }, {
-    id: 5,
-    name: "My Wishlist",
-    link: "/wishlist",
-  }];

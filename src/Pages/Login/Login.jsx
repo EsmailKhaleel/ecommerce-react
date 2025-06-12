@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import { NavLink } from 'react-router-dom';
 import { LoginSchema } from '../../utils/yupValidationSchema';
@@ -74,7 +74,7 @@ function Login() {
 
                 {/* Signup Redirect */}
                 <div className="mt-6 text-center text-sm text-gray-600">
-                    Don't have an account?
+                    Don&apos;t have an account?
                     <NavLink to="/register" className="text-primary hover:text-secondary font-medium"> Sign up</NavLink>
                 </div>
             </div>

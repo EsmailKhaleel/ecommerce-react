@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import MyCustomField from "../../Components/MyCustomField";
 import { AddProductSchema } from "../../utils/yupValidationSchema";
@@ -24,8 +24,14 @@ const AddProduct = () => {
 
     const handleSubmit = async (values, { setSubmitting, resetForm }) => {
         try {
+            console.log("product object:", { ...values, image, additionalImages });
             const response = await axiosInstance.post("/products", {
-                ...values,
+                name: values.name,
+                price: values.price,
+                old_price: values.old_price,
+                discount: values.discount,
+                description: values.description,
+                category: values.category,
                 image: image,
                 images: additionalImages,
             });
@@ -69,7 +75,7 @@ const AddProduct = () => {
         const files = Array.from(event.currentTarget.files);
         const currentAdditionalImages = values.additionalImages || [];
         setFieldValue("additionalImages", [...currentAdditionalImages, ...files]);
-        
+
         // Create previews for all selected files
         const newPreviews = [];
         for (const file of files) {
@@ -82,7 +88,7 @@ const AddProduct = () => {
             };
             reader.readAsDataURL(file);
         }
-        
+
         // Upload each file to Cloudinary
         for (const file of files) {
             const formData = new FormData();
@@ -102,10 +108,10 @@ const AddProduct = () => {
         // Remove from state
         const newAdditionalImages = additionalImages.filter((_, index) => index !== indexToRemove);
         const newPreviews = additionalImagePreviews.filter((_, index) => index !== indexToRemove);
-        
+
         setAdditionalImages(newAdditionalImages);
         setAdditionalImagePreviews(newPreviews);
-        
+
         // Remove from Formik values
         const updatedAdditionalImages = values.additionalImages.filter((_, index) => index !== indexToRemove);
         setFieldValue("additionalImages", updatedAdditionalImages);
@@ -143,7 +149,7 @@ const AddProduct = () => {
                             </Field>
                             <ErrorMessage name="category" component="div" className="text-red-500 text-sm mt-1" />
                         </div>
-                        
+
                         {/* Main Image Upload Field */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -191,9 +197,9 @@ const AddProduct = () => {
                                 <div className="grid grid-cols-3 gap-2">
                                     {additionalImagePreviews.map((preview, index) => (
                                         <div key={index} className="relative">
-                                            <img 
-                                                src={preview} 
-                                                alt={`Additional Preview ${index + 1}`} 
+                                            <img
+                                                src={preview}
+                                                alt={`Additional Preview ${index + 1}`}
                                                 className="w-full h-24 object-cover rounded-md"
                                             />
                                             <button
@@ -212,8 +218,8 @@ const AddProduct = () => {
                         {/* Submit Button */}
                         <button
                             type="submit"
-                            className="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition-all"
-                            disabled={isSubmitting}
+                            className="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition-all disabled:bg-primary/50 disabled:cursor-not-allowed"
+                            disabled={true}
                         >
                             {isSubmitting ? "Submitting..." : "Add Product"}
                         </button>

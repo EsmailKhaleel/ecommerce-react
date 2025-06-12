@@ -42,15 +42,15 @@ function Explore() {
     };
 
     const banner9Transform = {
-        scale: useTransform(scrollYProgress, [0.6, 1], [0.95, 1.05]),
-        rotate: useTransform(scrollYProgress, [0.6, 1], [-2, 2]),
-        opacity: useTransform(scrollYProgress, [0.6, 0.8, 1], [0.7, 1, 0.9])
+        scale: useTransform(scrollYProgress, [0.5, 1], [0.9, 1.1]),
+        rotate: useTransform(scrollYProgress, [0.5, 1], [-5, 5]),
+        opacity: useTransform(scrollYProgress, [0.5, 0.8, 1], [0.7, 1, 0.9])
     };
 
     const banner10Transform = {
-        scale: useTransform(scrollYProgress, [0.7, 1], [0.9, 1.1]),
-        rotate: useTransform(scrollYProgress, [0.7, 1], [2, -2]),
-        opacity: useTransform(scrollYProgress, [0.7, 0.85, 1], [0.7, 1, 0.9])
+        scale: useTransform(scrollYProgress, [0.5, 1], [0.9, 1.1]),
+        rotate: useTransform(scrollYProgress, [0.5, 1], [5, -5]),
+        opacity: useTransform(scrollYProgress, [0.5, 0.8, 1], [0.7, 1, 0.9])
     };
 
     // Categories Query
@@ -306,7 +306,7 @@ function Explore() {
 
                             {/* Second Banner Section */}
                             <motion.section
-                                className="relative h-[500px] rounded-3xl overflow-hidden bg-gray-100 dark:bg-gray-800"
+                                className="relative h-[300px] md:h-[500px] rounded-3xl overflow-hidden bg-gray-100 dark:bg-gray-800"
                                 initial={{ opacity: 0 }}
                                 whileInView={{ opacity: 1 }}
                                 viewport={{ once: true, amount: 0.3 }}
@@ -314,24 +314,24 @@ function Explore() {
                             >
                                 <div className="grid grid-cols-2 h-full">
                                     <motion.div
-                                        className="flex items-center justify-center p-16"
+                                        className="flex items-center justify-center p-4 md:p-16"
                                         initial={{ opacity: 0, x: 100 }}
                                         whileInView={{ opacity: 1, x: 0 }}
                                         transition={{ delay: 0.1 }}
                                     >
                                         <div>
-                                            <h2 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">
+                                            <h2 className="text-2xl md:text-4xl font-bold mb-6 text-gray-900 dark:text-white">
                                                 Premium Quality
                                             </h2>
                                             <motion.div
                                                 initial={{ opacity: 0, x: 80 }}
                                                 whileInView={{ opacity: 1, x: 0 }}
                                                 transition={{ delay: 0.3 }}
-                                                className="text-lg mb-8 text-gray-600 dark:text-gray-300">
+                                                className="text-md md:text-2xl mb-4 md:mb-8 text-gray-600 dark:text-gray-300">
                                                 Experience luxury and comfort with our premium selection
                                             </motion.div>
                                             <motion.button
-                                                className="px-8 py-3 bg-primary text-white rounded-full relative overflow-hidden group shadow-lg hover:bg-primary/90"
+                                                className="text-sm md:text-lg md:px-8 md:py-3 px-3 py-2 bg-primary text-white rounded-md relative overflow-hidden group shadow-lg hover:bg-primary/90"
                                                 whileHover={{ scale: 1.05 }}
                                                 initial={{ opacity: 0, x: 80 }}
                                                 whileInView={{ opacity: 1, x: 0 }}
@@ -366,19 +366,21 @@ function Explore() {
                                         whileInView={{ opacity: 1, x: 0 }}
                                         transition={{ delay: 0.1 }}
                                     >
-                                        <img src={banner8} alt="Premium Collection" className="w-full h-full object-cover" />
+                                        <img src={banner8} alt="Premium Collection" 
+                                        className="md:w-full w-[400px] md:h-full h-[300px] object-cover" />
                                     </motion.div>
                                 </div>
                             </motion.section>
 
                             {/* Third Banner Section */}
                             <motion.section
-                                className="grid grid-cols-2 gap-8 h-[400px]"
+                                className="grid grid-cols-2 gap-2 md:gap-8 h-[250px] md:h-[400px]"
                                 initial={{ opacity: 0 }}
                                 whileInView={{ opacity: 1 }}
                                 viewport={{ once: true, amount: 0.3 }}
                                 transition={{ duration: 1 }}
-                            >                                <motion.div
+                            >                                
+                            <motion.div
                                 className="relative rounded-3xl overflow-hidden"
                                 style={banner9Transform}
                             >

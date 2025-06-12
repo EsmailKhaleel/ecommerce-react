@@ -4,7 +4,9 @@ import {
     signInWithEmailAndPassword, 
     signOut, 
     onAuthStateChanged,
-    signInWithPopup
+    signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult
 } from 'firebase/auth';
 import { auth, googleProvider } from '../config/firebase';
 import { toast } from 'react-toastify';
@@ -60,17 +62,25 @@ export const AuthProvider = ({ children }) => {
             });
             return null;
         }
-    };
-
-    const signInWithGoogle = async () => {
+    };    const signInWithGoogle = async () => {
         try {
-            const userCredential = await signInWithPopup(auth, googleProvider);
-            toast.success('Successfully signed in with Google!', {
-                position: "top-right",
-                autoClose: 3000,
-            });
-            return userCredential.user;
+            // Check if the device is mobile
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                // Use redirect method for mobile devices
+                await signInWithRedirect(auth, googleProvider);
+            } else {
+                // Use popup for desktop devices
+                const userCredential = await signInWithPopup(auth, googleProvider);
+                toast.success('Successfully signed in with Google!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+                return userCredential.user;
+            }
         } catch (error) {
+            console.error('Google Sign In Error:', error);
             toast.error('Failed to sign in with Google', {
                 position: "top-right",
                 autoClose: 3000,
@@ -78,6 +88,29 @@ export const AuthProvider = ({ children }) => {
             return null;
         }
     };
+
+    // Handle redirect result when the page loads
+    useEffect(() => {
+        const handleRedirectResult = async () => {
+            try {
+                const result = await getRedirectResult(auth);
+                if (result?.user) {
+                    toast.success('Successfully signed in with Google!', {
+                        position: "top-right",
+                        autoClose: 3000,
+                    });
+                }
+            } catch (error) {
+                console.error('Redirect Result Error:', error);
+                toast.error('Failed to complete Google sign in', {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+            }
+        };
+
+        handleRedirectResult();
+    }, []);
 
     const handleSignOut = async () => {
         try {
