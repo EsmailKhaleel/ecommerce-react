@@ -11,6 +11,7 @@ import placeholderImage from '../assets/placeholder.jpg';
 import Reviews from './Reviews';
 import { toast } from "react-toastify";
 import { useAuth } from "../Context/useAuth";
+import { Rating } from "./Rating";
 
 function ProductDetails() {
     const [isDetailsShown, setIsDetailsShown] = useState(false);
@@ -31,7 +32,6 @@ function ProductDetails() {
 
     const cartItems = useSelector((state) => state.cart.items);
     const cartProduct = cartItems.find((item) => item.product._id === id);
-    const isFavorite = user?.favorites?.includes(id);
 
     if (isLoading) return (
         <div className="container mx-auto px-4 py-10 max-w-[1200px]">
@@ -53,43 +53,24 @@ function ProductDetails() {
     const handleAddToCart = async () => {
         if (!user) {
             toast.error('Please login to add items to cart');
-            navigate('/login');
+            navigate('/auth');
             return;
         }
 
         try {
-            await dispatch(addToCartAsync({ 
-                productId: id, 
-                quantity: (cartProduct?.quantity || 0) + 1 
+            await dispatch(addToCartAsync({
+                productId: id,
+                quantity: (cartProduct?.quantity || 0) + 1
             })).unwrap();
         } catch (error) {
             toast.error(error.message || 'Failed to add to cart');
         }
     };
 
-    const handleDecreaseQuantity = async () => {
-        if (!user) {
-            toast.error('Please login to manage your cart');
-            navigate('/login');
-            return;
-        }
-
-        if (cartProduct?.quantity > 1) {
-            try {
-                await dispatch(addToCartAsync({ 
-                    productId: id, 
-                    quantity: cartProduct.quantity - 1 
-                })).unwrap();
-            } catch (error) {
-                toast.error(error.message || 'Failed to update cart');
-            }
-        }
-    };
-
     const handleToggleWishlist = () => {
         if (!user) {
             toast.error('Please login to manage your wishlist');
-            navigate('/login');
+            navigate('/auth');
             return;
         }
 
@@ -188,7 +169,7 @@ function ProductDetails() {
                         className="space-y-4"
                     >
                         <div className="flex items-center justify-between">
-                            <p className="text-4xl font-bold text-violet-900 dark:text-violet-400">
+                            <p className="text-4xl font-bold text-primary dark:text-primary-light">
                                 ${product.price.toFixed(2)}
                                 {product.old_price > product.price && (
                                     <span className="ml-3 text-lg text-gray-400 line-through">
@@ -202,7 +183,41 @@ function ProductDetails() {
                         </div>
                     </motion.div>
 
-                    {/* Product Description */}
+                    {/* Average Rating Display */}
+                    <div className="flex items-center gap-4">
+                        <Rating rating={product.averageRating} />
+                        <span className="text-gray-600 dark:text-gray-400">
+                            {product.numReviews} reviews
+                        </span>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <motion.div
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="flex flex-col sm:flex-row gap-4 mt-6"
+                    >
+                        <motion.button
+                            whileTap={{ scale: 0.98 }}
+                            className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                            onClick={handleAddToCart}
+                        >
+                            <BiShoppingBag className="text-xl" />
+                            Add to Cart
+                        </motion.button>
+
+                        <motion.button
+                            whileTap={{ scale: 0.98 }}
+                            className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                            onClick={handleToggleWishlist}
+                        >
+                            <BiHeart className="text-xl" />
+                            Add to Wishlist
+                        </motion.button>
+                    </motion.div>
+
+                                        {/* Product Description */}
                     <motion.div
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
@@ -237,62 +252,6 @@ function ProductDetails() {
                                 </motion.div>
                             )}
                         </AnimatePresence>
-                    </motion.div>
-
-                    {/* Quantity Selector */}
-                    <motion.div
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="space-y-2"
-                    >
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Quantity</p>
-                        <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden w-fit">
-                            <button
-                                className="px-4 py-2 disabled:cursor-not-allowed dark:text-white bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
-                                disabled={!cartProduct || cartProduct.quantity <= 1}
-                                onClick={handleDecreaseQuantity}
-                            >
-                                −
-                            </button>
-                            <div className="px-6 py-2 text-center font-medium">
-                                {cartProduct ? cartProduct.quantity : 0}
-                            </div>
-                            <button
-                                className="px-4 py-2 disabled:cursor-not-allowed dark:text-white bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
-                                onClick={() => handleAddToCart()}
-                            >
-                                +
-                            </button>
-                        </div>
-                    </motion.div>
-
-                    {/* Action Buttons */}
-                    <motion.div
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.5 }}
-                        className="flex flex-col sm:flex-row gap-4 mt-6"
-                    >
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="flex-1 flex items-center justify-center gap-2 bg-violet-900 hover:bg-violet-800 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-                            onClick={handleAddToCart}
-                        >
-                            <BiShoppingBag className="text-xl" />
-                            Add to Cart
-                        </motion.button>
-
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="flex-1 flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-500 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-                            onClick={handleToggleWishlist}
-                        >
-                            <BiHeart className="text-xl" />
-                            Add to Wishlist
-                        </motion.button>
                     </motion.div>
 
                 </motion.div>

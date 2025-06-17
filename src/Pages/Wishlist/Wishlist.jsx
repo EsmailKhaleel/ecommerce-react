@@ -116,10 +116,10 @@ function Wishlist() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid gap-6 grid-cols-2">
             {wishlist.map((product) => (
               <ProductCard
-                key={product._id}
+                key={product.id}
                 product={product}
                 onWishlistClick={() => handleToggleWishlist(product.id)}
                 isInWishlist={true}

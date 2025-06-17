@@ -14,14 +14,14 @@ import AddProduct from '../Pages/AddProduct/AddProduct';
 import Wishlist from '../Pages/Wishlist/Wishlist';
 import Checkout from '../Pages/Checkout/Checkout';
 import Success from '../Pages/Checkout/Success';
-// import LandingPage from '../Pages/LandingPage/LandingPage';
+import LandingPage from '../Pages/LandingPage/LandingPage';
 
 const routing = createBrowserRouter([
     {
         path: "", element: <Layout />,
         errorElement: <NotFound />,
         children: [
-            // { index: true, element: <LandingPage /> },
+            { path: "landing", element: <LandingPage /> },
             { index: true, element: <Explore /> },
             { path: "products", element: <Products /> },
             { path: "cart", element: <Cart /> },

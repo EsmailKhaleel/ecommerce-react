@@ -15,15 +15,9 @@ export const Background = () => {
                 >
                 </div>
 
-                {/* Side clipping waves */}
-                <div
-                    className="absolute inset-0 bg-secondary/30 dark:bg-secondary/5"
-                    style={{ clipPath: 'polygon(65% 0, 100% 0, 100% 100%, 85% 100%)' }}
-                >
-                </div>
                 {/* Center gradient wave */}
                 <div
-                    className="absolute inset-0 w-full h-full bg-gradient-to-b from-secondary/20 to-transparent dark:from-secondary/5"
+                    className="absolute inset-0 w-full h-full bg-gradient-to-b from-background/5 to-transparent dark:from-secondary/5"
                     style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }}
                 >
                 </div>

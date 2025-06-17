@@ -52,7 +52,7 @@ function Hero() {
             variants={heroVariants}
             initial="hidden"
             animate="show"
-            className="relative w-full max-w-[100vw] min-h-[400px] sm:min-h-[650px] bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 overflow-hidden"
+            className="relative w-full max-w-[100vw] min-h-[300px] sm:min-h-[450px] bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 overflow-hidden"
         >
             {/* Background decorative elements */}
             <motion.div 

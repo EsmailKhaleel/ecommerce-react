@@ -3,8 +3,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BiStar, BiSolidStar } from 'react-icons/bi';
 import axiosInstance from '../utils/axiosInstance';
+import { useAuth } from '../Context/useAuth';
+import { toast } from 'react-toastify';
 
 function Reviews({ productId }) {
+    const { user } = useAuth();
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState('');
     const [userName, setUserName] = useState('');
@@ -15,18 +18,6 @@ function Reviews({ productId }) {
         queryKey: ['reviews', productId],
         queryFn: async () => {
             const { data } = await axiosInstance.get(`/reviews?productId=${productId}`);
-            return data;
-        },
-        staleTime: 30000,
-        cacheTime: 5 * 60 * 1000,
-        refetchOnWindowFocus: false,
-    });
-
-    // Fetch average rating with optimized query config
-    const { data: ratingData } = useQuery({
-        queryKey: ['productRating', productId],
-        queryFn: async () => {
-            const { data } = await axiosInstance.get(`/reviews/product/${productId}/rating`);
             return data;
         },
         staleTime: 30000,
@@ -51,8 +42,12 @@ function Reviews({ productId }) {
 
     const handleSubmitReview = (e) => {
         e.preventDefault();
+        if (!user) {
+            toast.error('You must be logged in to submit a review');
+            return;
+        }
         if (!userName.trim()) {
-            alert('Please enter your name');
+            toast.error('Please enter your name');
             return;
         }
         addReviewMutation.mutate({
@@ -77,23 +72,6 @@ function Reviews({ productId }) {
 
     return (
         <div className="space-y-8">
-            {/* Average Rating Display */}
-            <div className="flex items-center gap-4">
-                <div className="flex items-center">
-                    {[...Array(5)].map((_, index) => (
-                        <span key={index} className="text-2xl">
-                            {index < Math.round(ratingData?.averageRating || 0) ? (
-                                <BiSolidStar className="text-amber-400" />
-                            ) : (
-                                <BiStar className="text-amber-400" />
-                            )}
-                        </span>
-                    ))}
-                </div>
-                <span className="text-gray-600 dark:text-gray-400">
-                    {ratingData?.averageRating.toFixed(1)} ({ratingData?.totalReviews} reviews)
-                </span>
-            </div>
 
             {/* Review Form */}
             <form onSubmit={handleSubmitReview} className="space-y-4">
@@ -110,9 +88,9 @@ function Reviews({ productId }) {
                                 className="text-2xl focus:outline-none"
                             >
                                 {star <= rating ? (
-                                    <BiSolidStar className="text-amber-400" />
+                                    <BiSolidStar className="text-primary" />
                                 ) : (
-                                    <BiStar className="text-amber-400" />
+                                    <BiStar className="text-primary" />
                                 )}
                             </button>
                         ))}
@@ -146,11 +124,10 @@ function Reviews({ productId }) {
                 </div>
 
                 <motion.button
-                    whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
                     disabled={addReviewMutation.isLoading}
-                    className="w-full bg-violet-900 hover:bg-violet-800 text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
+                    className="text-accent border border-accent hover:bg-accent hover:text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
                 >
                     {addReviewMutation.isLoading ? 'Submitting...' : 'Submit Review'}
                 </motion.button>

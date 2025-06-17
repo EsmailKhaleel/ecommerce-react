@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BiError, BiSearch, BiFilter, BiX, BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { useDispatch, useSelector } from 'react-redux';
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { fetchProducts } from '../../StateManagement/Slices/ProductsSlice';
 import ProductCard from '../../Components/ProductCard';
 import ProductCardSkeleton from '../../Components/ProductCardSkeleton';
@@ -18,6 +19,8 @@ const fetchCategories = async () => {
 function Products() {
     const dispatch = useDispatch();
     const { products, status, error, page, totalPages } = useSelector((state) => state.products);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const location = useLocation();
 
     const { data: categories = ["All"] } = useQuery({
         queryKey: ['categories'],
@@ -32,8 +35,12 @@ function Products() {
 
     // State management
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("All");
-    const [sortOrder, setSortOrder] = useState("asc");
+    const [selectedCategory, setSelectedCategory] = useState(() => {
+        // Initialize category from URL query parameter
+        const categoryFromUrl = searchParams.get('category');
+        return categoryFromUrl && categories.includes(categoryFromUrl) ? categoryFromUrl : "All";
+    });
+    const [sortOrder, setSortOrder] = useState("desc");
     const [showFilters, setShowFilters] = useState(false);
     const [minPrice, setMinPrice] = useState(null);
     const [maxPrice, setMaxPrice] = useState(null);
@@ -44,6 +51,24 @@ function Products() {
         price: true,
         sort: true
     });
+
+    // Update URL when category changes
+    useEffect(() => {
+        if (selectedCategory === "All") {
+            searchParams.delete('category');
+        } else {
+            searchParams.set('category', selectedCategory);
+        }
+        setSearchParams(searchParams);
+    }, [selectedCategory, searchParams, setSearchParams]);
+
+    // Update category when URL changes    
+    useEffect(() => {
+        const categoryFromUrl = searchParams.get('category');
+        if (categoryFromUrl && categories.includes(categoryFromUrl)) {
+            setSelectedCategory(categoryFromUrl);
+        }
+    }, [location.search, categories, searchParams]);
 
     const fetchProductsWithFilters = useCallback((page = 1) => {
         dispatch(fetchProducts({
@@ -107,16 +132,16 @@ function Products() {
     };
 
     const priceRanges = [
-        { label: "Under EGP 25", min: 0, max: 25 },
-        { label: "EGP 25 to EGP 50", min: 25, max: 50 },
-        { label: "EGP 50 to EGP 100", min: 50, max: 100 },
-        { label: "EGP 100 to EGP 200", min: 100, max: 200 },
-        { label: "EGP 200 to EGP 500", min: 200, max: 500 },
-        { label: "EGP 500 to EGP 1000", min: 500, max: 1000 },
-        { label: "EGP 1000 to EGP 5000", min: 1000, max: 5000 },
-        { label: "EGP 5000 to EGP 10000", min: 5000, max: 10000 },
-        { label: "EGP 10000 to EGP 50000", min: 10000, max: 50000 },
-        { label: "EGP 50000 & Above", min: 50000, max: null }
+        { label: "Under $ 25", min: 0, max: 25 },
+        { label: "$ 25 to $ 50", min: 25, max: 50 },
+        { label: "$ 50 to $ 100", min: 50, max: 100 },
+        { label: "$ 100 to $ 200", min: 100, max: 200 },
+        { label: "$ 200 to $ 500", min: 200, max: 500 },
+        { label: "$ 500 to $ 1000", min: 500, max: 1000 },
+        { label: "$ 1000 to $ 5000", min: 1000, max: 5000 },
+        { label: "$ 5000 to $ 10000", min: 5000, max: 10000 },
+        { label: "$ 10000 to $ 50000", min: 10000, max: 50000 },
+        { label: "$ 50000 & Above", min: 50000, max: null }
     ];
 
     if (error || status === "failed")
@@ -414,7 +439,7 @@ function Products() {
                             </motion.div>
                         ) : (
                             <>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 md:gap-2">
                                     {products.map((product, index) => (
                                         <motion.div
                                             key={product.id || uuidv4()}

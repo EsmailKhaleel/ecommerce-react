@@ -219,7 +219,7 @@ const AddProduct = () => {
                         <button
                             type="submit"
                             className="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition-all disabled:bg-primary/50 disabled:cursor-not-allowed"
-                            disabled={true}
+                            disabled={isSubmitting}
                         >
                             {isSubmitting ? "Submitting..." : "Add Product"}
                         </button>

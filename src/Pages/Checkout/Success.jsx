@@ -63,7 +63,7 @@ function Success() {
 
     return (
         <div className="container mx-auto px-4 py-16 text-center">
-            <div className="max-w-md mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+            <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
                 <div className="mb-6">
                     <svg 
                         className="w-16 h-16 text-green-500 mx-auto mb-4" 
@@ -85,29 +85,75 @@ function Success() {
                 <div className="text-gray-600 dark:text-gray-300 space-y-4">
                     {order && (
                         <div className="text-left border-t border-b py-4 my-4">
-                            <p className="font-semibold mb-2">Order Details:</p>
-                            <p>Order Status: {order.status}</p>
-                            <p>Total Amount: ${order.totalAmount.toFixed(2)}</p>
-                            <div className="mt-4">
-                                <p className="font-semibold mb-2">Items:</p>
-                                {order.products.map((item, index) => (
-                                    <div key={index} className="flex items-center gap-2 mb-2">
-                                        <img 
-                                            src={item.image} 
-                                            alt={item.name} 
-                                            className="w-12 h-12 object-cover rounded"
-                                        />
-                                        <div>
-                                            <p className="font-medium">{item.name}</p>
-                                            <p className="text-sm">Qty: {item.quantity} × ${item.price}</p>
+                            <div className="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <p className="font-semibold">Order ID:</p>
+                                    <p className="text-sm">{order._id}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold">Date:</p>
+                                    <p className="text-sm">{format(new Date(order.createdAt), 'PPp')}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold">Status:</p>
+                                    <p className="capitalize">
+                                        <span className={`inline-block px-2 py-1 text-xs rounded ${
+                                            order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                                            order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                            'bg-gray-100 text-gray-800'
+                                        }`}>
+                                            {order.status}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold">Payment Status:</p>
+                                    <p className="capitalize">
+                                        <span className={`inline-block px-2 py-1 text-xs rounded ${
+                                            order.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' :
+                                            'bg-yellow-100 text-yellow-800'
+                                        }`}>
+                                            {order.paymentStatus}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="mt-6">
+                                <h3 className="font-semibold text-lg mb-3">Order Items:</h3>
+                                <div className="space-y-4">
+                                    {order.products.map((item) => (
+                                        <div key={item._id} className="flex items-center gap-4 border-b pb-4">
+                                            <img 
+                                                src={item.image} 
+                                                alt={item.name} 
+                                                className="w-16 h-16 object-cover rounded"
+                                            />
+                                            <div className="flex-1">
+                                                <p className="font-medium">{item.name}</p>
+                                                <div className="flex justify-between items-center mt-1">
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                        Qty: {item.quantity} × ${item.price}
+                                                    </p>
+                                                    <p className="font-semibold">
+                                                        ${(item.quantity * item.price).toFixed(2)}
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="mt-6 text-right">
+                                <p className="text-lg font-semibold">
+                                    Total Amount: ${order.totalAmount.toFixed(2)}
+                                </p>
                             </div>
                         </div>
                     )}
                     <p className="mb-8">
-                        Thank you for your purchase! You will receive a confirmation email shortly.
+                        Thank you for your purchase! A confirmation email has been sent to {order?.customerEmail}.
                     </p>
                     <p className="text-sm">
                         You will be redirected to the home page in a few seconds...
@@ -125,3 +171,8 @@ function Success() {
 }
 
 export default Success;
+
+const format = (date) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Intl.DateTimeFormat('en-US', options).format(new Date(date));
+}

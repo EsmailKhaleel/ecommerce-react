@@ -18,7 +18,7 @@ function UpperNanBar() {
     return (
         <>
             {/* Desktop Navigation */}
-            <div className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+            <div className="sticky top-0 z-50 backdrop-blur-md bg-background-light dark:bg-gray-900/80">
                 <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-12 md:h-16">
                         <div className="flex items-center gap-3">
@@ -26,7 +26,8 @@ function UpperNanBar() {
                             <a className="font-bold text-xl sm:text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Esmail Khaleel</a>
                         </div>
                         <div className="hidden sm:flex gap-6 items-center">
-                            <NavLink to="/account" className="group flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors">
+                            <NavLink to="/account" 
+                            className="group flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors before:content-[''] before:absolute before:w-0 before:bottom-[-5px] before:h-[2px] before:bg-primary before:transition-all before:duration-300 hover:before:w-full relative">
                                 <MdAccountCircle className="text-2xl" />
                                 <span className="text-sm font-medium">My Account</span>
                             </NavLink>                            
@@ -44,7 +45,7 @@ function UpperNanBar() {
                             <DarkMode />
                             <button
                                 onClick={handleChangeLanguage}
-                                className="text-sm font-medium px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-primary hover:text-white transition-all duration-300"
+                                className="text-sm font-medium px-4 py-2 rounded-lg bg-white border border-primary dark:bg-gray-800 text-primary dark:text-gray-200 hover:bg-primary hover:text-white transition-all duration-300"
                             >
                                 {language === 'ltr' ? 'En' : 'Ar'}
                             </button>
