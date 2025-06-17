@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Context/AuthProvider";
 import Spinner from "../Components/Spinner";
 import { useEffect } from "react";
+import { useAuth } from "../Context/useAuth";
 
 const ProtectedRoute = ({ children }) => {
     const { user } = useAuth();

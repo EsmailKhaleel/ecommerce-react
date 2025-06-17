@@ -1,183 +1,147 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword, 
-    signOut, 
-    onAuthStateChanged,
-    signInWithPopup,
-    signInWithRedirect,
-    getRedirectResult
-} from 'firebase/auth';
+import { useEffect, useState, useCallback } from "react";
+import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../config/firebase';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const AuthContext = createContext();
+import { loginUser, registerUser, getCurrentUser, toggleWishlist } from '../utils/api';
+import axios from '../utils/axiosInstance';
+import { AuthContext } from './AuthContext';
+import { useDispatch } from 'react-redux';
+import { setCart } from '../StateManagement/Slices/CartSlice';
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    console.log('user in AuthProvider:', user);
+    const [token, setToken] = useState(localStorage.getItem('token'));
+    const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
 
+    const loadUser = useCallback(async () => {
+        try {
+            if (!token) {
+                setLoading(false);
+                return;
+            }
+            const response = await getCurrentUser();
+            setUser(response.data.user);
+            // Update cart in Redux store
+            if (response.data.user.cart) {
+                dispatch(setCart(response.data.user.cart));
+            }
+        } catch (error) {
+            console.error('Error loading user:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [token, dispatch]);
+
+    // Initialize axios token and load user
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
-        });
-        return () => unsubscribe();
-    }, []);
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            loadUser();
+        } else {
+            setLoading(false);
+        }
+    }, [token, loadUser]);
 
     const signIn = async (email, password) => {
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            toast.success('Successfully signed in!', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-            });
-            return userCredential.user;
-        } catch (error) {
-            let errorMessage = 'Failed to sign in';
-            switch (error.code) {
-                case 'auth/invalid-credential':
-                    errorMessage = 'Invalid email or password';
-                    break;
-                case 'auth/user-not-found':
-                    errorMessage = 'User not found';
-                    break;
-                case 'auth/wrong-password':
-                    errorMessage = 'Incorrect password';
-                    break;
-                default:
-                    errorMessage = error.message;
+            const response = await loginUser(email, password);
+            const { token: newToken, user: userData } = response.data;
+            localStorage.setItem('token', newToken);
+            setToken(newToken);
+            setUser(userData);
+            // Update cart in Redux store
+            if (userData.cart) {
+                dispatch(setCart(userData.cart));
             }
-            toast.error(errorMessage, {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-            });
+            axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+            toast.success('Successfully signed in!');
+            return userData;
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to sign in');
             return null;
         }
-    };    const signInWithGoogle = async () => {
-        try {
-            // Check if the device is mobile
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    };
 
-            if (isMobile) {
-                // Use redirect method for mobile devices
-                await signInWithRedirect(auth, googleProvider);
-            } else {
-                // Use popup for desktop devices
-                const userCredential = await signInWithPopup(auth, googleProvider);
-                toast.success('Successfully signed in with Google!', {
-                    position: "top-right",
-                    autoClose: 3000,
-                });
-                return userCredential.user;
+    const signUp = async (name, email, password) => {
+        try {
+            const response = await registerUser(name, email, password);
+            const { token, user } = response.data;
+            localStorage.setItem('token', token);
+            setToken(token);
+            setUser(user);
+            // Update cart in Redux store
+            if (user.cart) {
+                dispatch(setCart(user.cart));
             }
+            toast.success('Successfully registered!');
+            return user;
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to register');
+            return null;
+        }
+    };
+
+    const signInWithGoogle = async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            // After successful Google sign in, send the user info to your backend
+            const response = await loginUser(result.user.email, null, {
+                name: result.user.displayName,
+                googleId: result.user.uid
+            });
+            const { token, user } = response.data;
+            localStorage.setItem('token', token);
+            setToken(token);
+            setUser(user);
+            // Update cart in Redux store
+            if (user.cart) {
+                dispatch(setCart(user.cart));
+            }
+            toast.success('Successfully signed in with Google!');
+            return user;
         } catch (error) {
             console.error('Google Sign In Error:', error);
-            toast.error('Failed to sign in with Google', {
-                position: "top-right",
-                autoClose: 3000,
-            });
+            toast.error('Failed to sign in with Google');
             return null;
         }
     };
 
-    // Handle redirect result when the page loads
-    useEffect(() => {
-        const handleRedirectResult = async () => {
-            try {
-                const result = await getRedirectResult(auth);
-                if (result?.user) {
-                    toast.success('Successfully signed in with Google!', {
-                        position: "top-right",
-                        autoClose: 3000,
-                    });
-                }
-            } catch (error) {
-                console.error('Redirect Result Error:', error);
-                toast.error('Failed to complete Google sign in', {
-                    position: "top-right",
-                    autoClose: 3000,
-                });
-            }
-        };
+    const signOut = useCallback(() => {
+        localStorage.removeItem('token');
+        setToken(null);
+        setUser(null);
+        dispatch(setCart([])); // Clear cart in Redux store
+        delete axios.defaults.headers.common['Authorization'];
+        toast.success('Successfully logged out!');
+    }, [dispatch]);
 
-        handleRedirectResult();
-    }, []);
-
-    const handleSignOut = async () => {
+    // Wishlist functions
+    const toggleProductInWishlist = async (productId) => {
         try {
-            await signOut(auth);
-            toast.success('Successfully signed out!', {
-                position: "top-right",
-                autoClose: 3000,
-            });
+            const response = await toggleWishlist(productId);
+            setUser(prev => ({
+                ...prev,
+                wishlist: response.data.wishlist
+            }));
+            toast.success('Wishlist updated!');
         } catch (error) {
-            toast.error('Failed to sign out', {
-                position: "top-right",
-                autoClose: 3000,
-            });
-        }
-    };
-
-    const signUp = async (email, password, username) => {
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            toast.success('Successfully registered!', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-            });
-            return userCredential.user;
-        } catch (error) {
-            let errorMessage = 'Failed to register';
-            switch (error.code) {
-                case 'auth/email-already-in-use':
-                    errorMessage = 'Email is already registered';
-                    break;
-                case 'auth/weak-password':
-                    errorMessage = 'Password should be at least 6 characters';
-                    break;
-                case 'auth/invalid-email':
-                    errorMessage = 'Invalid email address';
-                    break;
-                default:
-                    errorMessage = error.message;
-            }
-            toast.error(errorMessage, {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: "colored"
-            });
-            return null;
+            toast.error(error.response?.data?.message || 'Failed to update wishlist');
         }
     };
 
     return (
-        <AuthContext.Provider value={{ 
-            user, 
-            signIn, 
-            signInWithGoogle, 
-            signOut: handleSignOut, 
-            signUp 
+        <AuthContext.Provider value={{
+            user,
+            loading,
+            signIn,
+            signUp,
+            signInWithGoogle,
+            signOut,
+            toggleProductInWishlist
         }}>
             {children}
         </AuthContext.Provider>
     );
 };
-
-export const useAuth = () => useContext(AuthContext);

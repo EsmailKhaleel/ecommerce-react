@@ -7,11 +7,11 @@ import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import { MdAccountCircle } from "react-icons/md";
 import { FaBars, FaSignOutAlt, FaTimes } from "react-icons/fa";
-import { useAuth } from '../../Context/AuthProvider'
+import { useAuth } from '../../Context/useAuth'
 
 function UpperNanBar() {
     const { language, handleChangeLanguage } = useContext(LanguageContext);
-    const cart = useSelector((state) => state.cart.cartProducts);
+    const cart = useSelector((state) => state.cart.items);
     const { signOut, user } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
 

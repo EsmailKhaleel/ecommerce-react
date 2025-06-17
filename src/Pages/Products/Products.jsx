@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BiError, BiSearch, BiFilter, BiX, BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { useDispatch, useSelector } from 'react-redux';
 import { useQuery } from "@tanstack/react-query";
-import { fetchProducts } from '../../StateManagement/Slices/CartSlice';
+import { fetchProducts } from '../../StateManagement/Slices/ProductsSlice';
 import ProductCard from '../../Components/ProductCard';
 import ProductCardSkeleton from '../../Components/ProductCardSkeleton';
 import Pagination from '../../Components/Pagination/Pagination';
@@ -17,7 +17,7 @@ const fetchCategories = async () => {
 
 function Products() {
     const dispatch = useDispatch();
-    const { products, status, error, page, totalPages } = useSelector((state) => state.cart);
+    const { products, status, error, page, totalPages } = useSelector((state) => state.products);
 
     const { data: categories = ["All"] } = useQuery({
         queryKey: ['categories'],

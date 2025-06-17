@@ -3,8 +3,8 @@ import { Formik, Form } from "formik";
 import { NavLink } from "react-router-dom";
 import { RegisterSchema } from "../../utils/yupValidationSchema";
 import { FaCheckCircle, FaGoogle } from "react-icons/fa";
-import { useAuth } from "../../Context/AuthProvider";
 import MyCustomField from "../../Components/MyCustomField";
+import { useAuth } from "../../Context/useAuth";
 
 function Register() {
     const { signUp, signInWithGoogle } = useAuth();
@@ -18,7 +18,7 @@ function Register() {
 
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
-            const user = await signUp(values.email, values.password, values.username);
+            const user = await signUp(values.username, values.email, values.password);
             if (user) {
                 setIsSuccess(true);
             } else {

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useAuth } from "../../Context/AuthProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Wishlist from "../Wishlist/Wishlist";
@@ -12,6 +11,7 @@ import {
     FaSignOutAlt,
 } from "react-icons/fa";
 import Spinner from "../../Components/Spinner";
+import { useAuth } from "../../Context/useAuth";
 
 function Account() {
     const { user, signOut } = useAuth();

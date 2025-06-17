@@ -4,21 +4,25 @@ import { NavLink } from 'react-router-dom';
 import { LoginSchema } from '../../utils/yupValidationSchema';
 import { FaCheckCircle, FaGoogle } from 'react-icons/fa';
 import MyCustomField from '../../Components/MyCustomField';
-import { useAuth } from '../../Context/AuthProvider';
+import { useAuth } from '../../Context/useAuth';
+
 
 function Login() {
     const { signIn, signInWithGoogle } = useAuth();
+
     const initialValues = {
         email: '',
         password: ''
     };
     const [isSuccess, setIsSuccess] = useState(false);
 
+
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
             const user = await signIn(values.email, values.password);
             if (user) {
                 setIsSuccess(true);
+                
             } else {
                 setIsSuccess(false);
             }

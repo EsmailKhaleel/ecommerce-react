@@ -1,33 +1,63 @@
 import { useNavigate } from 'react-router-dom';
-import { addToCart, toggleFav } from '../StateManagement/Slices/CartSlice';
-import { useDispatch } from 'react-redux';
+import { addToCartAsync } from '../StateManagement/Slices/CartSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { BiHeart, BiShoppingBag, BiSolidHeart } from 'react-icons/bi';
 import { MdLocalOffer } from 'react-icons/md';
-import PropTypes from 'prop-types';
 import placeholderImage from '../assets/placeholder.jpg';
 import { toast } from 'react-toastify';
+import { useAuth } from '../Context/useAuth';
+import { toggleWishlistItemAsync } from '../StateManagement/Slices/WishlistSlice';
+import Spinner from './Spinner';
 
-
-function ProductCard({ product }) {
+function ProductCard({ product, onWishlistClick }) {
     const navigator = useNavigate();
     const dispatch = useDispatch();
+    const { user } = useAuth();
+    const wishlistItems = useSelector(state => state.wishlist.items);
+    const loadingItems = useSelector(state => state.wishlist.loadingItems);
+    const isWishlistLoading = loadingItems[product.id];
     
     function showProduct(id) {
         navigator(`/products/${id}`);
     }
 
-    function handleToggleFavorite(productId) {
-        dispatch(toggleFav(productId));
-        if (product.isFav) {
-            toast.info(`${product.name} has been removed from your favorites!`);
-        } else {
-            toast.success(`${product.name} has been added to your favorites!`);
+    const handleWishlistClick = async (e) => {
+        e.stopPropagation();
+        
+        if (!user) {
+            toast.error('Please login to manage your wishlist');
+            return;
         }
-    }
 
-    function handleAddToCart(product) {
-        dispatch(addToCart(product));
-        toast.success(`${product.name} has been added to your cart!`);
+        if (isWishlistLoading) return;
+
+        if (onWishlistClick) {
+            onWishlistClick();
+        } else {
+            try {
+                await dispatch(toggleWishlistItemAsync(product.id)).unwrap();
+            } catch (error) {
+                console.error('Error toggling wishlist:', error);
+            }
+        }
+    };
+
+    async function handleAddToCart(product) {
+        if (!user) {
+            toast.error('Please login to add items to cart');
+            navigator('/auth');
+            return;
+        }
+
+        try {
+            await dispatch(addToCartAsync({ 
+                productId: product.id, 
+                quantity: 1 
+            })).unwrap();
+            toast.success(`${product.name} has been added to your cart!`);
+        } catch (error) {
+            toast.error(error.message || 'Failed to add to cart');
+        }
     }
 
     return (
@@ -40,19 +70,23 @@ function ProductCard({ product }) {
                 </div>
             )}
             
-            {/* Category Tag */}
-            <div className="absolute top-4 right-14 bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-200 px-3 py-1 rounded-full text-xs capitalize z-10">
-                {product.category}
-            </div>
-
             {/* Favorite Button */}
             <button
-                onClick={() => handleToggleFavorite(product.id)}
+                onClick={handleWishlistClick}
                 className="absolute top-4 right-4 z-10 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md hover:scale-110 transition-transform"
             >
-                {product.isFav ? (
+                {wishlistItems.some(item => item.id === product.id) ? (
+                    isWishlistLoading ? 
+                    <div className='w-6 h-6 flex items-center justify-center'>
+                        <Spinner />
+                    </div>
+                    : 
                     <BiSolidHeart className="text-red-500 text-xl" />
                 ) : (
+                    isWishlistLoading ?
+                    <div className='w-6 h-6 flex items-center justify-center'>
+                        <Spinner />
+                    </div> :
                     <BiHeart className="text-gray-400 dark:text-gray-300 text-xl" />
                 )}
             </button>
@@ -122,19 +156,5 @@ function ProductCard({ product }) {
     );
 }
 
-ProductCard.propTypes = {
-    product: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
-        price: PropTypes.number.isRequired,
-        old_price: PropTypes.number,
-        discount: PropTypes.number,
-        category: PropTypes.string.isRequired,
-        image: PropTypes.string.isRequired,
-        images: PropTypes.arrayOf(PropTypes.string),
-        isFav: PropTypes.bool
-    }).isRequired
-};
 
 export default ProductCard;

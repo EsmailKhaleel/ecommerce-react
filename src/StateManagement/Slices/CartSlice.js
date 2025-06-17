@@ -1,123 +1,104 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { addToCart, removeFromCart } from '../../utils/api';
+import { toast } from 'react-toastify';
 import axiosInstance from '../../utils/axiosInstance';
 
-const initialState = {
-  products: [],
-  total: 0,
-  page: 1,
-  limit: 10,
-  totalPages: 0,
-  cartProducts: [],
-  status: 'idle',
-  error: null,
-}
-
-export const fetchProducts = createAsyncThunk(
-  'fetchProducts',
-  async ({ page, limit, category, q, _sort, _order, minPrice, maxPrice }) => {
-    const params = { page, limit };
-    if (category && category !== "All") {
-      params.category = category;
+// Async thunks
+export const addToCartAsync = createAsyncThunk(
+    'cart/addToCart',
+    async ({ productId, quantity }, { rejectWithValue }) => {
+        try {
+            const response = await addToCart(productId, quantity);
+            return response.data.cart;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to add to cart');
+        }
     }
-    if (q) {
-      params.q = q;
-    }
-    if (_sort) {
-      params._sort = _sort;
-      params._order = _order;
-    }
-    if (minPrice !== undefined) {
-      params.minPrice = minPrice;
-    }
-    if (maxPrice !== undefined) {
-      params.maxPrice = maxPrice;
-    }
-    // Simulate network delay
-    // await new Promise(resolve => setTimeout(resolve, 10000));
-    const response = await axiosInstance.get('/products', { params });
-    return response.data;
-  }
 );
 
-export const cartSlice = createSlice({
-  name: 'cart',
-  initialState, reducers: {
-    clearCart: (state) => {
-      state.cartProducts = [];
-    },
-    addToCart: (state, action) => {
-      const existingProduct = state.cartProducts.find(product => product.id === action.payload.id);
-      if (existingProduct) {
-        existingProduct.amount += 1;
-      } else {
-        state.cartProducts.push({
-          ...action.payload,
-          amount: 1,
-        });
-      }
-    },
-    removeFromCart: (state, action) => {
-      state.cartProducts = state.cartProducts.filter(product => product.id !== action.payload);
-    },
-    decreaseQuantity: (state, action) => {
-      const product = state.cartProducts.find(product => product.id === action.payload);
-      if (product) {
-        if (product.amount > 1) {
-          product.amount -= 1;
-        } else {
-          state.cartProducts = state.cartProducts.filter(product => product.id !== action.payload);
+export const removeFromCartAsync = createAsyncThunk(
+    'cart/removeFromCart',
+    async (productId, { rejectWithValue }) => {
+        try {
+            const response = await removeFromCart(productId);
+            return response.data.cart;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to remove from cart');
         }
-      }
-    },
-    toggleFav: (state, action) => {
-      const productId = action.payload;
-
-      const productInList = state.products.find(product => product.id === productId);
-      if (productInList) {
-        productInList.isFav = !productInList.isFav;
-      }
-      const productInCart = state.cartProducts.find(product => product.id === productId);
-      if (productInCart) {
-        productInCart.isFav = !productInCart.isFav;
-      }
     }
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchProducts.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.products = action.payload.products.map(product => ({
-          ...product,
-          isFav: false,
-          amount: 0
-        }));
+);
 
-        // Handle pagination data if available
-        if (action.payload.total !== undefined) {
-          // Paginated response
-          state.total = action.payload.total;
-          state.page = action.payload.page;
-          state.limit = action.payload.limit;
-          state.totalPages = action.payload.totalPages;
-        } else {
-          // Non-paginated response - set default pagination values
-          state.total = action.payload.products.length;
-          state.page = 1;
-          state.limit = action.payload.products.length;
-          state.totalPages = 1;
+export const getCartAsync = createAsyncThunk(
+    'cart/getCart',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get('/auth/cart');
+            return response.data.cart;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to fetch cart');
         }
-        console.log("Updated Products:", state.products);
-      })
-      .addCase(fetchProducts.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message;
-      });
-  },
-})
+    }
+);
 
-export const { addToCart, removeFromCart, decreaseQuantity, toggleFav, clearCart } = cartSlice.actions
+const cartSlice = createSlice({
+    name: 'cart',
+    initialState: {
+        items: [],
+        status: {
+            addToCart: 'idle',
+            removeFromCart: 'idle',
+            getCart: 'idle'
+        },
+        error: null
+    },
+    reducers: {
+        setCart: (state, action) => {
+            state.items = action.payload;
+        },
+        clearCart: (state) => {
+            state.items = [];
+        }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(addToCartAsync.pending, (state) => {
+                state.status.addToCart = 'loading';
+            })
+            .addCase(addToCartAsync.fulfilled, (state) => {
+                state.status.addToCart = 'succeeded';
+                toast.success('Cart updated successfully');
+            })
+            .addCase(addToCartAsync.rejected, (state, action) => {
+                state.status.addToCart = 'failed';
+                state.error = action.payload;
+                toast.error(action.payload || 'Failed to update cart');
+            })
+            .addCase(removeFromCartAsync.pending, (state) => {
+                state.status.removeFromCart = 'loading';
+            })
+            .addCase(removeFromCartAsync.fulfilled, (state) => {
+                state.status.removeFromCart = 'succeeded';
+                toast.success('Item removed from cart');
+            })
+            .addCase(removeFromCartAsync.rejected, (state, action) => {
+                state.status.removeFromCart = 'failed';
+                state.error = action.payload;
+                toast.error(action.payload || 'Failed to remove item');
+            })
+            .addCase(getCartAsync.pending, (state) => {
+                state.status.getCart = 'loading';
+            })
+            .addCase(getCartAsync.fulfilled, (state, action) => {
+                state.status.getCart = 'succeeded';
+                state.items = action.payload;
+            })
+            .addCase(getCartAsync.rejected, (state, action) => {
+                state.status.getCart = 'failed';
+                state.error = action.payload;
+                toast.error(action.payload || 'Failed to fetch cart');
+            });
+    }
+});
 
-export default cartSlice.reducer
+export const { setCart, clearCart } = cartSlice.actions;
+export default cartSlice.reducer;

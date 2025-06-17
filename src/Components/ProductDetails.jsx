@@ -1,39 +1,37 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { BiHeart, BiSolidHeart, BiShoppingBag, BiError } from 'react-icons/bi';
+import { BiHeart, BiShoppingBag, BiError } from 'react-icons/bi';
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, decreaseQuantity, toggleFav } from "../StateManagement/Slices/CartSlice";
+import { addToCartAsync } from "../StateManagement/Slices/CartSlice";
 import axiosInstance from "../utils/axiosInstance";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 import placeholderImage from '../assets/placeholder.jpg';
 import Reviews from './Reviews';
 import { toast } from "react-toastify";
-
+import { useAuth } from "../Context/useAuth";
 
 function ProductDetails() {
     const [isDetailsShown, setIsDetailsShown] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const { id } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { user } = useAuth();
 
     // Query product details
     const { data: product, error, isLoading } = useQuery({
         queryKey: ["product", id],
         queryFn: async () => {
             const { data } = await axiosInstance.get(`/products/${id}`);
-            // await new Promise(resolve => setTimeout(resolve, 5000));
             return data;
         },
     });
 
-    const cartProduct = useSelector((state) =>
-        state.cart.cartProducts.find((item) => item.id === product?.id)
-    );
-    const isFavorite = useSelector(state =>
-        state.cart.products.find(item => item.id === product?.id)?.isFav
-    );
+    const cartItems = useSelector((state) => state.cart.items);
+    const cartProduct = cartItems.find((item) => item.product._id === id);
+    const isFavorite = user?.favorites?.includes(id);
 
     if (isLoading) return (
         <div className="container mx-auto px-4 py-10 max-w-[1200px]">
@@ -51,6 +49,53 @@ function ProductDetails() {
             <p className="text-red-500">Error loading product</p>
         </motion.div>
     );
+
+    const handleAddToCart = async () => {
+        if (!user) {
+            toast.error('Please login to add items to cart');
+            navigate('/login');
+            return;
+        }
+
+        try {
+            await dispatch(addToCartAsync({ 
+                productId: id, 
+                quantity: (cartProduct?.quantity || 0) + 1 
+            })).unwrap();
+        } catch (error) {
+            toast.error(error.message || 'Failed to add to cart');
+        }
+    };
+
+    const handleDecreaseQuantity = async () => {
+        if (!user) {
+            toast.error('Please login to manage your cart');
+            navigate('/login');
+            return;
+        }
+
+        if (cartProduct?.quantity > 1) {
+            try {
+                await dispatch(addToCartAsync({ 
+                    productId: id, 
+                    quantity: cartProduct.quantity - 1 
+                })).unwrap();
+            } catch (error) {
+                toast.error(error.message || 'Failed to update cart');
+            }
+        }
+    };
+
+    const handleToggleWishlist = () => {
+        if (!user) {
+            toast.error('Please login to manage your wishlist');
+            navigate('/login');
+            return;
+        }
+
+        // Will implement wishlist functionality separately
+        toast.info('Wishlist functionality will be implemented soon');
+    };
 
     return (
         <motion.section
@@ -205,17 +250,17 @@ function ProductDetails() {
                         <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden w-fit">
                             <button
                                 className="px-4 py-2 disabled:cursor-not-allowed dark:text-white bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
-                                disabled={!cartProduct || cartProduct.amount <= 1}
-                                onClick={() => dispatch(decreaseQuantity(product.id))}
+                                disabled={!cartProduct || cartProduct.quantity <= 1}
+                                onClick={handleDecreaseQuantity}
                             >
                                 −
                             </button>
                             <div className="px-6 py-2 text-center font-medium">
-                                {cartProduct ? cartProduct.amount : 0}
+                                {cartProduct ? cartProduct.quantity : 0}
                             </div>
                             <button
                                 className="px-4 py-2 disabled:cursor-not-allowed dark:text-white bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
-                                onClick={() => dispatch(addToCart(product))}
+                                onClick={() => handleAddToCart()}
                             >
                                 +
                             </button>
@@ -233,12 +278,7 @@ function ProductDetails() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             className="flex-1 flex items-center justify-center gap-2 bg-violet-900 hover:bg-violet-800 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-                            onClick={() => {
-                                dispatch(addToCart(product));
-                                if (!cartProduct) {
-                                    toast.success('Product added to cart!');
-                                }
-                            }}
+                            onClick={handleAddToCart}
                         >
                             <BiShoppingBag className="text-xl" />
                             Add to Cart
@@ -248,21 +288,10 @@ function ProductDetails() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             className="flex-1 flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-500 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-                            onClick={() => {
-                                dispatch(toggleFav(product.id));
-                                if (isFavorite) {
-                                    toast.info('Removed from Wishlist!');
-                                } else {
-                                    toast.success('Added to Wishlist!');
-                                }
-                            }}
+                            onClick={handleToggleWishlist}
                         >
-                            {isFavorite ? (
-                                <BiSolidHeart className="text-xl" />
-                            ) : (
-                                <BiHeart className="text-xl" />
-                            )}
-                            {isFavorite ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                            <BiHeart className="text-xl" />
+                            Add to Wishlist
                         </motion.button>
                     </motion.div>
 
