@@ -151,7 +151,7 @@ export function BrowseByCategory() {
                 {/* Title Section */}
                 <div className="flex items-center gap-2 mb-8">
                     <div className="w-2 h-8 bg-primary rounded"></div>
-                    <h2 className="text-2xl font-bold">Categories</h2>
+                    <h2 className="text-2xl font-bold dark:text-white">Categories</h2>
                 </div>
 
                 {/* Categories Grid */}

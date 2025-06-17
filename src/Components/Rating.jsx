@@ -4,7 +4,7 @@ export const Rating = ({ rating }) => {
     return (
         <div className="flex items-center">
             {[...Array(5)].map((_, index) => (
-                <span key={index} className="text-xl">
+                <span key={index} className="text-md">
                     {index < Math.round(rating) ? (
                         <BiSolidStar className="text-primary" />
                     ) : (

@@ -65,7 +65,7 @@ function ProductCard({ product, onWishlistClick }) {
     return (
         <div className="group bg-white dark:bg-gray-900 text-black dark:text-white rounded-2xl border border-gray-200 dark:border-gray-700 hover:shadow-xl overflow-hidden transition-all duration-300 flex flex-col relative">
             {/* Discount Badge */}
-            {product.discount && (
+            {product.discount > 0 && (
                 <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold z-10 flex items-center gap-1">
                     <MdLocalOffer className="text-lg" />
                     Save {product.discount}%
@@ -117,17 +117,19 @@ function ProductCard({ product, onWishlistClick }) {
             {/* Content Container */}
             <div className="flex flex-col flex-grow md:p-3 p-2">
                 {/* Product Details */}
+                <div className='flex-grow'>
                 <h3 className="text-lg font-bold text-gray-800 dark:text-white truncate">
                     {product.name}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-1 text-nowrap text-ellipsis">
                     {product.description}
                 </p>
+                </div>
 
                 {/* Price Section */}
                 <div className="mb-2 flex justify-between items-center">
                     <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-bold text-accent dark:text-accent">
+                        <span className="text-md font-bold text-accent dark:text-accent">
                             $ {product.price.toLocaleString()}
                         </span>
                     </div>
