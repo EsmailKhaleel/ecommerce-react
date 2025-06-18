@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Formik, Form } from "formik";
 import { NavLink } from "react-router-dom";
 import { RegisterSchema } from "../../utils/yupValidationSchema";
-import { FaCheckCircle, FaGoogle } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 import MyCustomField from "../../Components/MyCustomField";
 import { useAuth } from "../../Context/useAuth";
 
 function Register() {
-    const { signUp, signInWithGoogle } = useAuth();
+    const { signUp } = useAuth();
     const initialValues = {
         username: "",
         email: "",
@@ -29,17 +29,6 @@ function Register() {
             setIsSuccess(false);
         } finally {
             setSubmitting(false);
-        }
-    };
-
-    const handleGoogleSignIn = async () => {
-        try {
-            const user = await signInWithGoogle();
-            if (user) {
-                setIsSuccess(true);
-            }
-        } catch (error) {
-            console.error("Error signing in with Google:", error);
         }
     };
 
@@ -66,15 +55,6 @@ function Register() {
                         </Form>
                     )}
                 </Formik>
-
-                {/* Google Sign In Button */}
-                <button
-                    onClick={handleGoogleSignIn}
-                    className="w-full mt-4 bg-white text-gray-700 border border-gray-300 font-medium py-2.5 rounded-lg transition-colors hover:bg-gray-50 flex items-center justify-center gap-2"
-                >
-                    <FaGoogle className="text-red-500" />
-                    Sign in with Google
-                </button>
 
                 {/* Login Redirect */}
                 <div className="mt-6 text-center text-sm text-gray-600">
