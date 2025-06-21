@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import ProductCard from "../../Components/ProductCard";
+import ProductCardSkeleton from "../../Components/ProductCardSkeleton";
 import { BiHeart, BiTrash } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -73,11 +74,11 @@ function Wishlist() {
     >
       <div className="max-w-7xl mx-auto">
         <div className="mb-6 sm:mb-8 space-y-2">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
               My Wishlist {wishlist.length > 0 && `(${wishlist.length})`}
             </h1>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {wishlist.length > 0 && (
                 <button
                   onClick={() => setShowConfirmClear(true)}
@@ -99,8 +100,10 @@ function Wishlist() {
         </div>
 
         {status.getWishlist === 'loading' ? (
-          <div className="flex justify-center items-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[...Array(8)].map((_, index) => (
+              <ProductCardSkeleton key={index} />
+            ))}
           </div>
         ) : wishlist.length === 0 ? (
           <div className="text-center py-12">
@@ -116,7 +119,7 @@ function Wishlist() {
             </Link>
           </div>
         ) : (
-          <div className="grid gap-6 grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {wishlist.map((product) => (
               <ProductCard
                 key={product.id}

@@ -10,6 +10,7 @@ import ProductCardSkeleton from '../../Components/ProductCardSkeleton';
 import Pagination from '../../Components/Pagination/Pagination';
 import axiosInstance from '../../utils/axiosInstance';
 import { v4 as uuidv4 } from 'uuid';
+import  {Rating}  from '../../Components/Rating';
 
 const fetchCategories = async () => {
     const response = await axiosInstance.get('/products/categories');
@@ -49,8 +50,11 @@ function Products() {
     const [expandedSections, setExpandedSections] = useState({
         categories: true,
         price: true,
-        sort: true
+        sort: true,
+        rating: true
     });
+    
+    const [selectedRating, setSelectedRating] = useState(null);
 
     // Update URL when category changes
     useEffect(() => {
@@ -79,7 +83,8 @@ function Products() {
             _sort: "price",
             _order: sortOrder,
             minPrice: selectedPriceRange?.min,
-            maxPrice: selectedPriceRange?.max
+            maxPrice: selectedPriceRange?.max,
+            rating: selectedRating
         }));
     }, [dispatch, selectedCategory, searchTerm, sortOrder, selectedPriceRange]);
 
@@ -116,13 +121,15 @@ function Products() {
         setSearchTerm("");
         setSortOrder("asc");
         setSelectedPriceRange(null);
+        setSelectedRating(null);
         fetchProductsWithFilters(1);
     }, [fetchProductsWithFilters]);
 
     const hasActiveFilters = selectedCategory !== "All" || 
         searchTerm || 
         sortOrder !== "asc" || 
-        selectedPriceRange !== null;
+        selectedPriceRange !== null ||
+        selectedRating !== null;
 
     const toggleSection = (section) => {
         setExpandedSections(prev => ({
@@ -275,6 +282,45 @@ function Products() {
                                                                 }`}
                                                             >
                                                                 {category}
+                                                            </button>
+                                                        ))}
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+
+                                        {/* Rating Filter Section */}
+                                        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+                                            <button
+                                                onClick={() => toggleSection('rating')}
+                                                className="w-full flex items-center justify-between text-base font-semibold text-gray-900 dark:text-white mb-2 py-1"
+                                            >
+                                                Rating
+                                                {expandedSections.rating ? <BiChevronUp size={20} /> : <BiChevronDown size={20} />}
+                                            </button>
+                                            <AnimatePresence>
+                                                {expandedSections.rating && (
+                                                    <motion.div
+                                                        initial={{ height: 0, opacity: 0 }}
+                                                        animate={{ height: "auto", opacity: 1 }}
+                                                        exit={{ height: 0, opacity: 0 }}
+                                                        transition={{ duration: 0.2 }}
+                                                        className="space-y-2 overflow-hidden"
+                                                    >
+                                                        {[5, 4, 3, 2, 1].map((rating) => (
+                                                            <button
+                                                                key={rating}
+                                                                onClick={() => {
+                                                                    setSelectedRating(selectedRating === rating ? null : rating);
+                                                                    fetchProductsWithFilters(1);
+                                                                    if (window.innerWidth < 1024) {
+                                                                        setShowFilters(false);
+                                                                    }
+                                                                }}
+                                                                className={`w-full flex items-center gap-2 p-2 rounded-md transition-colors duration-200 ${selectedRating === rating ? 'bg-primary text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                                                            >
+                                                                <Rating rating={rating} />
+                                                                <span className="text-sm">{rating} & Up</span>
                                                             </button>
                                                         ))}
                                                     </motion.div>
