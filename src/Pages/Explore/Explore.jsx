@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../utils/axiosInstance";
 import Hero from "../../Components/Hero/Hero";
 import Spinner from "../../Components/Spinner";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Background } from "../../Components/Background";
 import HorizontalCategorySection from "./HorizontalCategorySection";
 import { BrowseByCategory } from "./HorizontalCategorySection";
@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import { fadeIn, staggerContainer, textVariant } from "../../utils/motion";
 import FeaturesSection from "./FeaturesSection";
 import Error from "./Error";
+import { BiArrowToTop } from "react-icons/bi";
+import { AnimatePresence } from "framer-motion";
 
 // Fetch categories
 const fetchCategories = async () => {
@@ -31,6 +33,23 @@ const fetchProductsByCategory = async (category) => {
 function Explore() {
     const navigate = useNavigate();
     const { scrollYProgress } = useScroll();
+    const [showScrollTop, setShowScrollTop] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setShowScrollTop(window.scrollY > 400);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    };
     const heroY = useTransform(scrollYProgress, [0, 0.5], [0, -150]);
 
     // Enhanced scroll-based transforms for sections
@@ -123,6 +142,21 @@ function Explore() {
 
     return (
         <>
+            <AnimatePresence>
+                {showScrollTop && (
+                    <motion.button
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.5 }}
+                        onClick={scrollToTop}
+                        className="fixed bottom-8 right-8 z-50 p-3 rounded-full bg-primary shadow-lg hover:bg-primary/90 transition-colors duration-300 text-white flex items-center justify-center group"
+                        whileHover={{ y: -4 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <BiArrowToTop className="text-2xl group-hover:animate-bounce" />
+                    </motion.button>
+                )}
+            </AnimatePresence>
             <motion.div
                 style={{ y: heroY }}
                 initial={{ opacity: 0 }}
@@ -326,7 +360,7 @@ function Explore() {
                                         </div>
                                     </motion.div>
                                     <motion.div
-                                        className="relative overflow-hidden p-10"
+                                        className="relative overflow-hidden md:p-10 p-2 mb-2"
                                         initial={{ opacity: 0, x: -150 }}
                                         whileInView={{ opacity: 1, x: 0 }}
                                         transition={{ delay: 0.1 }}

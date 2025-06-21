@@ -86,7 +86,7 @@ function Products() {
             maxPrice: selectedPriceRange?.max,
             rating: selectedRating
         }));
-    }, [dispatch, selectedCategory, searchTerm, sortOrder, selectedPriceRange]);
+    }, [dispatch, selectedCategory, searchTerm, sortOrder, selectedPriceRange, selectedRating]);
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
@@ -95,6 +95,11 @@ function Products() {
 
     const handlePageChange = ({ selected }) => {
         fetchProductsWithFilters(selected + 1);
+        // Scroll to top of the page when pagination changes
+        window.scrollTo({
+            top: 0,
+            behavior: 'instant'
+        });
     };
 
     // Fetch products when filters change

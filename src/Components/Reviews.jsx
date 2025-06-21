@@ -141,7 +141,7 @@ function Reviews({ productId }) {
                 <AnimatePresence>
                     {reviewsData?.reviews.map((review) => (
                         <motion.div
-                            key={review.id}
+                            key={review._id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}

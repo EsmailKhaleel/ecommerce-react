@@ -2,11 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { BiHeart, BiShoppingBag, BiError } from 'react-icons/bi';
+import { BiHeart, BiSolidHeart, BiShoppingBag, BiError } from 'react-icons/bi';
 import { useDispatch, useSelector } from "react-redux";
 import { addToCartAsync } from "../StateManagement/Slices/CartSlice";
+import { toggleWishlistItemAsync } from "../StateManagement/Slices/WishlistSlice";
 import axiosInstance from "../utils/axiosInstance";
 import ProductCardSkeleton from "./ProductCardSkeleton";
+import Spinner from "./Spinner";
 import placeholderImage from '../assets/placeholder.jpg';
 import Reviews from './Reviews';
 import { toast } from "react-toastify";
@@ -16,10 +18,15 @@ import { Rating } from "./Rating";
 function ProductDetails() {
     const [isDetailsShown, setIsDetailsShown] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
     const { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user } = useAuth();
+    
+    const wishlistItems = useSelector(state => state.wishlist.items);
+    const loadingItems = useSelector(state => state.wishlist.loadingItems);
+    const isWishlistLoading = loadingItems[id];
 
     // Query product details
     const { data: product, error, isLoading } = useQuery({
@@ -58,24 +65,36 @@ function ProductDetails() {
         }
 
         try {
+            setIsAddingToCart(true);
             await dispatch(addToCartAsync({
                 productId: id,
                 quantity: (cartProduct?.quantity || 0) + 1
             })).unwrap();
+            toast.success('Product added to cart successfully!');
         } catch (error) {
             toast.error(error.message || 'Failed to add to cart');
+        } finally {
+            setIsAddingToCart(false);
         }
     };
 
-    const handleToggleWishlist = () => {
+    const handleToggleWishlist = async () => {
         if (!user) {
             toast.error('Please login to manage your wishlist');
             navigate('/auth');
             return;
         }
 
-        // Will implement wishlist functionality separately
-        toast.info('Wishlist functionality will be implemented soon');
+        if (isWishlistLoading) return;
+
+        try {
+            await dispatch(toggleWishlistItemAsync(id)).unwrap();
+            toast.success(wishlistItems.some(item => item.id === id) 
+                ? 'Product removed from wishlist!'
+                : 'Product added to wishlist!');
+        } catch (error) {
+            toast.error(error.message || 'Failed to update wishlist');
+        }
     };
 
     return (
@@ -200,20 +219,38 @@ function ProductDetails() {
                     >
                         <motion.button
                             whileTap={{ scale: 0.98 }}
-                            className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                            className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={handleAddToCart}
+                            disabled={isAddingToCart}
                         >
-                            <BiShoppingBag className="text-xl" />
-                            Add to Cart
+                            {isAddingToCart ? (
+                                <Spinner className="w-6 h-6" />
+                            ) : (
+                                <>
+                                    <BiShoppingBag className="text-xl" />
+                                    Add to Cart
+                                </>
+                            )}
                         </motion.button>
 
                         <motion.button
                             whileTap={{ scale: 0.98 }}
-                            className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                            className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={handleToggleWishlist}
+                            disabled={isWishlistLoading}
                         >
-                            <BiHeart className="text-xl" />
-                            Add to Wishlist
+                            {isWishlistLoading ? (
+                                <Spinner className="w-6 h-6" />
+                            ) : (
+                                <>
+                                    {wishlistItems.some(item => item.id === id) ? (
+                                        <BiSolidHeart className="text-xl" />
+                                    ) : (
+                                        <BiHeart className="text-xl" />
+                                    )}
+                                    {wishlistItems.some(item => item.id === id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                                </>
+                            )}
                         </motion.button>
                     </motion.div>
 

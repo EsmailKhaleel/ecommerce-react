@@ -1,14 +1,20 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 function LightProductCard({ product }) {
     const navigate = useNavigate();
+    const [isTapped, setIsTapped] = useState(false);
 
     return (
         <motion.div
             className="bg-white relative w-[220px] h-[220px] rounded-sm overflow-hidden cursor-pointer"
             whileHover="hover"
+            animate={isTapped ? "hover" : "initial"}
             initial="initial"
+            onTouchStart={() => setIsTapped(true)}
+            onTouchEnd={() => setIsTapped(false)}
+            onTouchCancel={() => setIsTapped(false)}
         >
             {/* Image */}
             <motion.img

@@ -115,7 +115,7 @@ function Cart() {
     const total = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
     return (
-        <div className="container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-10 dark:text-stone-100">
+        <div className="container mx-auto px-2 py-8 flex flex-col lg:flex-row gap-10 dark:text-stone-100">
             {/* Shopping Cart Section */}
             <div className="w-full lg:w-2/3">
                 <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">Shopping Cart</h2>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FaBars } from 'react-icons/fa6';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FaTimes } from "react-icons/fa";
 import Logo from '../../assets/logo.png'
 
@@ -24,6 +24,15 @@ const menu = [
     }];
 function LowerNavBar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleNavigation = (path) => {
+        navigate(path);
+        window.scrollTo({
+            top: 0,
+            behavior: 'instant'
+        });
+    };
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -47,7 +56,14 @@ function LowerNavBar() {
                 <ul className="sm:flex hidden items-center gap-4">
                     {menu.map(data => (
                         <li key={data.id} className="flex items-center">
-                            <NavLink to={data.link} className={({ isActive }) => mainNavItemsStyle(isActive)}>
+                            <NavLink 
+                                to={data.link} 
+                                className={({ isActive }) => mainNavItemsStyle(isActive)}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleNavigation(data.link);
+                                }}
+                            >
                                 {data.name}
                             </NavLink>
                         </li>
@@ -85,7 +101,11 @@ function LowerNavBar() {
                             <NavLink
                                 to={data.link}
                                 className={({ isActive }) => `block text-lg font-medium py-2 px-4 rounded-lg transition-all duration-200 ${mainNavItemsStyle(isActive, true)} hover:bg-primary hover:text-white`}
-                                onClick={toggleMobileMenu}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleNavigation(data.link);
+                                    toggleMobileMenu();
+                                }}
                             >
                                 {data.name}
                             </NavLink>

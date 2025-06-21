@@ -4,7 +4,7 @@ import Logo from '../../assets/logo.png'
 import DarkMode from './DarkMode'
 import { LanguageContext } from '../../Context/LanguageProvider'
 import { useSelector } from 'react-redux'
-import { NavLink } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { MdAccountCircle } from "react-icons/md";
 import { FaBars, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { useAuth } from '../../Context/useAuth'
@@ -14,6 +14,13 @@ function UpperNanBar() {
     const cart = useSelector((state) => state.cart.items);
     const { signOut, user } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleNavigation = (path) => {
+        navigate(path);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setMenuOpen(false);
+    };
 
     return (
         <>
@@ -26,22 +33,23 @@ function UpperNanBar() {
                             <a className="font-bold text-xl sm:text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Esmail Khaleel</a>
                         </div>
                         <div className="hidden sm:flex gap-6 items-center">
-                            <NavLink to="/account" 
+                            <button
+                            onClick={() => handleNavigation('/account')}
                             className="group flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors before:content-[''] before:absolute before:w-0 before:bottom-[-5px] before:h-[2px] before:bg-primary before:transition-all before:duration-300 hover:before:w-full relative">
                                 <MdAccountCircle className="text-2xl" />
                                 <span className="text-sm font-medium">My Account</span>
-                            </NavLink>                            
-                            <NavLink to="/cart">
-                                <button className="relative group flex items-center gap-0 hover:gap-2 bg-gradient-to-r from-primary to-secondary text-white py-2 px-2 rounded-lg transition-all duration-300 hover:shadow-lg hover:px-4">
-                                    <span className="w-0 text-sm font-medium group-hover:w-auto overflow-hidden transition-all duration-300 whitespace-nowrap">Cart</span>
-                                    <FaCartShopping className="text-xl" />
-                                    {cart?.length > 0 && (
-                                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
-                                            {cart.length}
-                                        </span>
-                                    )}
-                                </button>
-                            </NavLink>
+                            </button>                            
+                            <button
+                                onClick={() => handleNavigation('/cart')}
+                                className="relative group flex items-center gap-0 hover:gap-2 bg-gradient-to-r from-primary to-secondary text-white py-2 px-2 rounded-lg transition-all duration-300 hover:shadow-lg hover:px-4">
+                                <span className="w-0 text-sm font-medium group-hover:w-auto overflow-hidden transition-all duration-300 whitespace-nowrap">Cart</span>
+                                <FaCartShopping className="text-xl" />
+                                {cart?.length > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
+                                        {cart.length}
+                                    </span>
+                                )}
+                            </button>
                             <DarkMode />
                             <button
                                 onClick={handleChangeLanguage}
@@ -50,11 +58,11 @@ function UpperNanBar() {
                                 {language === 'ltr' ? 'En' : 'Ar'}
                             </button>
                             {!user && (
-                                <NavLink to="/auth" className="hidden sm:block">
-                                    <button className="text-sm font-medium px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-all duration-300 hover:shadow-lg">
-                                        Create Account
-                                    </button>
-                                </NavLink>
+                                <button
+                                    onClick={() => handleNavigation('/auth')}
+                                    className="hidden sm:block text-sm font-medium px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-all duration-300 hover:shadow-lg">
+                                    Create Account
+                                </button>
                             )}
                         </div>
                         {/* Mobile Menu Button */}
@@ -117,42 +125,27 @@ function UpperNanBar() {
                             </button>
                         </div>
                     ) : (
-                        <NavLink
-                            to="/auth"
-                            className="mb-8 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-primary to-secondary text-white hover:shadow-lg hover:shadow-primary/25 transition-all duration-300"
-                            onClick={() => setMenuOpen(false)}
+                        <button
+                            onClick={() => handleNavigation('/auth')}
+                            className="mb-8 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-primary to-secondary text-white hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 w-full"
                         >
                             <MdAccountCircle className="text-xl" />
                             <span>Sign In / Create Account</span>
-                        </NavLink>
+                        </button>
                     )}
 
                     {/* Navigation Links */}
                     <nav className="space-y-2">
-                        <NavLink
-                            to="/account"
-                            className={({ isActive }) =>
-                                `flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 ${
-                                    isActive
-                                        ? 'bg-primary text-white'
-                                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                                }`
-                            }
-                            onClick={() => setMenuOpen(false)}
+                        <button
+                            onClick={() => handleNavigation('/account')}
+                            className="flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-full text-left"
                         >
                             <MdAccountCircle className="text-xl" />
                             <span>My Account</span>
-                        </NavLink>
-                        <NavLink
-                            to="/cart"
-                            className={({ isActive }) =>
-                                `flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 ${
-                                    isActive
-                                        ? 'bg-primary text-white'
-                                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                                }`
-                            }
-                            onClick={() => setMenuOpen(false)}
+                        </button>
+                        <button
+                            onClick={() => handleNavigation('/cart')}
+                            className="flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-full text-left"
                         >
                             <div className="relative">
                                 <FaCartShopping className="text-xl" />
@@ -163,7 +156,7 @@ function UpperNanBar() {
                                 )}
                             </div>
                             <span>Cart</span>
-                        </NavLink>
+                        </button>
                     </nav>
 
                     {/* Settings Section */}
