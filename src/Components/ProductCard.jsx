@@ -16,8 +16,10 @@ function ProductCard({ product, onWishlistClick }) {
     const dispatch = useDispatch();
     const { user } = useAuth();
     const wishlistItems = useSelector(state => state.wishlist.items);
-    const loadingItems = useSelector(state => state.wishlist.loadingItems);
-    const isWishlistLoading = loadingItems[product.id];
+    const wishlistLoadingItems = useSelector(state => state.wishlist.loadingItems);
+    const cartLoadingItems = useSelector(state => state.cart.loadingItems);
+    const isWishlistLoading = wishlistLoadingItems[product.id];
+    const isCartLoading = cartLoadingItems[product.id];
 
     function showProduct(id) {
         navigator(`/products/${id}`);
@@ -51,12 +53,13 @@ function ProductCard({ product, onWishlistClick }) {
             return;
         }
 
+        if (isCartLoading) return;
+
         try {
             await dispatch(addToCartAsync({
                 productId: product.id,
                 quantity: 1
             })).unwrap();
-            toast.success(`${product.name} has been added to your cart!`);
         } catch (error) {
             toast.error(error.message || 'Failed to add to cart');
         }
@@ -140,17 +143,23 @@ function ProductCard({ product, onWishlistClick }) {
 
                 <button
                     onClick={() => handleAddToCart(product)}
+                    disabled={isCartLoading}
                     className="w-[150px] text-primary border border-primary hover:text-white dark:hover:text-white px-1 md:px-3 py-2 rounded-xl font-semibold
                                  hover:bg-primary transition-colors duration-300 flex items-center 
-                                 justify-center gap-1.5 text-sm whitespace-nowrap"
+                                 justify-center gap-1.5 text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    <BiShoppingBag className="text-lg flex-shrink-0" />
-                    Add to Cart
+                    {isCartLoading ? (
+                        <Spinner className="w-4 h-4" />
+                    ) : (
+                        <>
+                            <BiShoppingBag className="text-lg flex-shrink-0" />
+                            Add to Cart
+                        </>
+                    )}
                 </button>
             </div>
         </div>
     );
 }
-
 
 export default ProductCard;

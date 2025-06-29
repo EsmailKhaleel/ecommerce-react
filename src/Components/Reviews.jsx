@@ -117,7 +117,7 @@ function Reviews({ productId }) {
                     <textarea
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
-                        className="w-full dark:text-gray-100 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent dark:bg-gray-800 focus:outline-none"
+                        className="max-h-[200px] min-h-[100px] w-full dark:text-gray-100 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent dark:bg-gray-800 focus:outline-none"
                         rows="4"
                         required
                     />
@@ -134,7 +134,7 @@ function Reviews({ productId }) {
             </form>
 
             {/* Reviews List */}
-            <div className="space-y-6">
+            {reviewsData.reviews.length > 0 && <div className="space-y-6">
                 <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
                     Customer Reviews
                 </h3>
@@ -173,6 +173,7 @@ function Reviews({ productId }) {
                     ))}
                 </AnimatePresence>
             </div>
+            }
         </div>
     );
 }

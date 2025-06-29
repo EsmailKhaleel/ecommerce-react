@@ -30,13 +30,24 @@ function UpperNanBar() {
                     <div className="flex justify-between items-center h-12 md:h-16">
                         <div className="flex items-center gap-3">
                             <img src={Logo} alt="logo" className="w-12 h-12 object-contain transition-transform hover:scale-105" />
-                            <a className="font-bold text-xl sm:text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Esmail Khaleel</a>
+                            <a className="font-bold text-xl sm:text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">ShopSphere</a>
                         </div>
                         <div className="hidden sm:flex gap-6 items-center">
                             <button
                             onClick={() => handleNavigation('/account')}
                             className="group flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors before:content-[''] before:absolute before:w-0 before:bottom-[-5px] before:h-[2px] before:bg-primary before:transition-all before:duration-300 hover:before:w-full relative">
-                                <MdAccountCircle className="text-2xl" />
+                                {user?.image ?
+                                    <div className="relative">
+                                        <img
+                                            src={user.image}
+                                            alt={`${user.name}'s profile`}
+                                            className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600 group-hover:border-primary dark:group-hover:border-primary transition-all duration-300 shadow-sm group-hover:shadow-md"
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                            }}
+                                        />
+                                    </div>
+                                : <MdAccountCircle className="text-2xl" />}
                                 <span className="text-sm font-medium">My Account</span>
                             </button>                            
                             <button
@@ -103,8 +114,8 @@ function UpperNanBar() {
                         <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-secondary/10 dark:from-primary/5 dark:to-secondary/5">
                             <div className="flex items-center gap-4 mb-4">
                                 <div className="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white">
-                                    {user.photoURL ? (
-                                        <img src={user.photoURL} alt="profile" className="w-full h-full rounded-full object-cover" />
+                                    {user.image ? (
+                                        <img src={user.image} alt="profile" className="w-full h-full rounded-full object-cover" />
                                     ) : (
                                         <MdAccountCircle className="text-2xl" />
                                     )}

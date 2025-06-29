@@ -8,7 +8,7 @@ function LightProductCard({ product }) {
 
     return (
         <motion.div
-            className="bg-white relative w-[220px] h-[220px] rounded-sm overflow-hidden cursor-pointer"
+            className="bg-white relative w-[220px] h-[220px] rounded-sm overflow-hidden"
             whileHover="hover"
             animate={isTapped ? "hover" : "initial"}
             initial="initial"

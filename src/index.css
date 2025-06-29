@@ -26,4 +26,5 @@
 
 :root {
   font-family: "Red Rose", "Arial Rounded MT Bold", "Segoe UI", "Helvetica Neue", sans-serif, "Arial", "sans-serif";
+  user-select: none;
 }

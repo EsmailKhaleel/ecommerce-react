@@ -52,35 +52,35 @@ function Hero() {
             variants={heroVariants}
             initial="hidden"
             animate="show"
-            className="relative w-full max-w-[100vw] min-h-[300px] sm:min-h-[450px] bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 overflow-hidden"
+            className="relative w-full max-w-[100vw] min-h-[200px] sm:min-h-[250px] bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 overflow-hidden"
         >
             {/* Background decorative elements */}
             <motion.div 
                 variants={fadeIn("right", "spring", 0.2, 1.5)}
-                className="h-[500px] w-[500px] bg-primary/30 dark:bg-primary/20 absolute rotate-45 -top-52 -right-52 rounded-3xl z-0 blur-2xl"
+                className="h-[300px] w-[300px] bg-primary/20 dark:bg-primary/10 absolute rotate-45 -top-32 -right-32 rounded-3xl z-0"
             />
             <motion.div 
                 variants={fadeIn("left", "spring", 0.4, 1.5)}
-                className="h-[300px] w-[300px] bg-secondary/20 dark:bg-secondary/10 absolute -rotate-12 -bottom-20 -left-20 rounded-full z-0 blur-xl"
+                className="h-[200px] w-[200px] bg-secondary/20 dark:bg-secondary/10 absolute -rotate-12 -bottom-12 -left-12 rounded-full z-0"
             />
 
             {/* Carousel content */}
-            <div className="relative z-10 container mx-auto flex flex-col md:flex-row items-center justify-center gap-12 py-12 px-4">
+            <div className="relative z-10 container mx-auto flex flex-col md:flex-row items-center justify-center gap-8 py-8 px-4">
                 {/* Text content */}
                 <motion.div 
                     variants={fadeIn("left", "spring", 0.6, 1.5)}
-                    className="flex-1 text-center md:text-left space-y-6"
+                    className="flex-1 text-center md:text-left space-y-4"
                 >
                     <motion.span 
                         variants={zoomIn(0.8, 1)}
-                        className="inline-block px-4 py-2 bg-primary/10 dark:bg-primary/20 text-primary dark:text-secondary rounded-full text-sm font-medium mb-2 animate-pulse"
+                        className="inline-block px-3 py-1 bg-primary/10 dark:bg-primary/20 text-primary dark:text-secondary rounded-full text-sm font-medium mb-2 animate-pulse"
                     >
                         Special Offer
                     </motion.span>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-800 dark:text-white leading-tight">
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-800 dark:text-white leading-tight">
                         {ImageList[currentSlide].title}
                     </h1>
-                    <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl">
+                    <p className="text-gray-600 dark:text-gray-300 text-base max-w-2xl">
                         {ImageList[currentSlide].description}
                     </p>
                 </motion.div>
@@ -95,7 +95,7 @@ function Hero() {
                         <img 
                             src={ImageList[currentSlide].img} 
                             alt={ImageList[currentSlide].title}
-                            className="w-full max-w-[500px] h-auto object-cover rounded-lg shadow-2xl"
+                            className="w-full max-w-[400px] h-auto object-cover rounded-lg shadow-2xl"
                         />
                     </div>
                 </motion.div>
@@ -104,7 +104,7 @@ function Hero() {
             {/* Enhanced dots navigation */}
             <motion.div 
                 variants={fadeIn("up", "spring", 1.2, 1.5)}
-                className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-3"
+                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-3"
             >
                 {ImageList.map((_, index) => (
                     <button

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Formik, Form } from 'formik';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { LoginSchema } from '../../utils/yupValidationSchema';
 import { FaCheckCircle, FaInfoCircle } from 'react-icons/fa';
 import MyCustomField from '../../Components/MyCustomField';
@@ -9,6 +9,7 @@ import { useAuth } from '../../Context/useAuth';
 
 function Login() {
     const { signIn } = useAuth();
+    const navigate = useNavigate();
 
     const initialValues = {
         email: '',
@@ -22,7 +23,11 @@ function Login() {
             const user = await signIn(values.email, values.password);
             if (user) {
                 setIsSuccess(true);
-                
+                navigate('/products');
+                window.scrollTo({
+                    top: 0,
+                    behavior:"instant"
+                });
             } else {
                 setIsSuccess(false);
             }

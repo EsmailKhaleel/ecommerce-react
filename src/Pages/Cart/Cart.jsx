@@ -126,7 +126,6 @@ function Cart() {
                             <tr>
                                 <th className="py-3 px-2 text-left">Product</th>
                                 <th className="py-3 px-2 text-center">Price</th>
-                                <th className="py-3 px-2 text-center">Quantity</th>
                                 <th className="py-3 px-2 text-center">Total</th>
                                 <th className="py-3 px-2 text-center"></th>
                             </tr>

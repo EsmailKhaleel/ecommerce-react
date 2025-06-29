@@ -6,12 +6,12 @@ import { useAuth } from "../Context/useAuth";
 const ProtectedRoute = ({ children }) => {
     const { user } = useAuth();
     const navigate = useNavigate();
-    if (user === undefined) return <Spinner></Spinner>;
     useEffect(() => {
-        if(!user){
+        if (!user) {
             navigate("/auth");
         }
-    }, [user]);
+    }, [user, navigate]);
+    if (user === undefined) return <Spinner></Spinner>;
     return children;
 };
 
