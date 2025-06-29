@@ -3,10 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Wishlist from "../Wishlist/Wishlist";
 import {
-    FaUserCircle,
-    FaEnvelope,
-    FaCalendarAlt,
-    FaCheckCircle,
     FaHeart,
     FaSignOutAlt,
     FaBox,
@@ -24,7 +20,7 @@ function Account() {
     const { user, signOut } = useAuth();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [activeTab, setActiveTab] = useState('profile');
+    const [activeTab, setActiveTab] = useState('orders');
     const [isUploading, setIsUploading] = useState(false);
     const { items: orders, status: ordersStatus } = useSelector(state => state.orders);
 
@@ -84,7 +80,6 @@ function Account() {
     };
 
     const tabs = [
-        { id: 'profile', label: 'Profile', icon: <FaUserCircle className={`${activeTab === 'profile' ? 'text-white' : 'text-primary'}`} /> },
         { id: 'orders', label: 'Orders', icon: <FaBox className={`${activeTab === 'orders' ? 'text-white' : 'text-primary'}`} /> },
         { id: 'wishlist', label: 'Wishlist', icon: <FaHeart className={`${activeTab === 'wishlist' ? 'text-white' : 'text-primary'}`} /> },
     ];
@@ -207,46 +202,7 @@ function Account() {
                         className="flex-1"
                     >
                         <AnimatePresence mode="wait">
-                            {activeTab === 'profile' && (
-                                <motion.div
-                                    key="profile"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8"
-                                >
-                                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Profile Information</h2>
-                                    <div className="space-y-6">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <UserInfo
-                                                label="Name"
-                                                value={user.name}
-                                                icon={<FaUserCircle />}
-                                            />
-                                            <UserInfo
-                                                label="Email"
-                                                value={user.email}
-                                                icon={<FaEnvelope />}
-                                            />
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <UserInfo
-                                                label="Account Created"
-                                                value={format(user.createdAt)}
-                                                icon={<FaCalendarAlt />}
-                                            />
-                                            <UserInfo
-                                                label="Role"
-                                                value={user.role}
-                                                icon={<FaCheckCircle />}
-                                                isVerified={true}
-                                            />
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            )}
-
+                
                             {activeTab === 'orders' && (
                                 <motion.div
                                     key="orders"
@@ -360,18 +316,6 @@ function Account() {
         </div>
     );
 }
-
-const UserInfo = ({ label, value, icon, isVerified }) => (
-    <div className="flex items-center space-x-4 bg-gray-50 dark:bg-gray-700 p-6 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-md transition-shadow duration-200">
-        <div className="text-primary dark:text-primary text-2xl">{icon}</div>
-        <div className="flex-1">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{label}</p>
-            <div className={`text-lg font-semibold ${isVerified ? "text-green-600 dark:text-green-400" : "text-gray-900 dark:text-white"}`}>
-                {value}
-            </div>
-        </div>
-    </div>
-);
 
 const format = (date) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };

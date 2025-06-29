@@ -1,9 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
-import { signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../config/firebase';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { loginUser, registerUser, getCurrentUser, toggleWishlist } from '../utils/api';
+import { loginUser, registerUser, getCurrentUser, toggleWishlist, getGoogleAuthUrl } from '../utils/api';
 import axios from '../utils/axiosInstance';
 import { AuthContext } from './AuthContext';
 import { useDispatch } from 'react-redux';
@@ -85,22 +83,18 @@ export const AuthProvider = ({ children }) => {
 
     const signInWithGoogle = async () => {
         try {
-            const result = await signInWithPopup(auth, googleProvider);
-            // After successful Google sign in, send the user info to your backend
-            const response = await loginUser(result.user.email, null, {
-                name: result.user.displayName,
-                googleId: result.user.uid
-            });
-            const { token, user } = response.data;
-            localStorage.setItem('token', token);
-            setToken(token);
-            setUser(user);
-            // Update cart in Redux store
-            if (user.cart) {
-                dispatch(setCart(user.cart));
+            // Step 1: Get Google OAuth URL from your server
+            const response = await getGoogleAuthUrl();
+            const data = response.data;
+            
+            if (data.status === true) {
+                // Step 2: Redirect user to Google OAuth
+                window.location.href = data.authUrl;
+            } else {
+                console.error('Failed to get Google OAuth URL:', data.message);
+                toast.error('Failed to initiate Google sign-in');
+                return null;
             }
-            toast.success('Successfully signed in with Google!');
-            return user;
         } catch (error) {
             console.error('Google Sign In Error:', error);
             toast.error('Failed to sign in with Google');
@@ -139,7 +133,9 @@ export const AuthProvider = ({ children }) => {
             signUp,
             signInWithGoogle,
             signOut,
-            toggleProductInWishlist
+            toggleProductInWishlist,
+            setUser,
+            setToken
         }}>
             {children}
         </AuthContext.Provider>

@@ -16,6 +16,17 @@ export const getCurrentUser = async () => {
   return response;
 };
 
+// Google OAuth API calls
+export const getGoogleAuthUrl = async () => {
+  const response = await axios.get('/auth/google/url');
+  return response;
+};
+
+export const handleGoogleCallback = async (code) => {
+  const response = await axios.post('/auth/google/callback', { code });
+  return response;
+};
+
 // Cart API calls
 export const addToCart = async (productId, quantity = 1) => {
   const response = await axios.post('/auth/cart', { productId, quantity });

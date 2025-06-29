@@ -2,12 +2,13 @@ import { useContext, useState } from 'react'
 import { FaCartShopping } from 'react-icons/fa6'
 import Logo from '../../assets/logo.png'
 import DarkMode from './DarkMode'
-import { LanguageContext } from '../../Context/LanguageProvider'
+import { LanguageContext } from '../../Context/LanguageContext'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { MdAccountCircle } from "react-icons/md";
 import { FaBars, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { useAuth } from '../../Context/useAuth'
+import placeholder from '../../assets/placeholder.jpg';
 
 function UpperNanBar() {
     const { language, handleChangeLanguage } = useContext(LanguageContext);
@@ -44,6 +45,7 @@ function UpperNanBar() {
                                             className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600 group-hover:border-primary dark:group-hover:border-primary transition-all duration-300 shadow-sm group-hover:shadow-md"
                                             onError={(e) => {
                                                 e.target.onerror = null;
+                                                e.currentTarget.src = placeholder;
                                             }}
                                         />
                                     </div>

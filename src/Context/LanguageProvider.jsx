@@ -1,9 +1,6 @@
-import React, { createContext, useState } from "react";
+import {  useState } from "react";
+import { LanguageContext } from "./LanguageContext";
 
-export const LanguageContext = createContext({
-    language: '',
-    handleChangeLanguage: () => { }
-});
 
 function LanguageProvider({ children }) {
 
