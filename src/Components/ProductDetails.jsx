@@ -9,7 +9,7 @@ import { toggleWishlistItemAsync } from "../StateManagement/Slices/WishlistSlice
 import axiosInstance from "../utils/axiosInstance";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 import Spinner from "./Spinner";
-import placeholderImage from '../assets/placeholder.jpg';
+import placeholderImage from '../assets/unavailable.png';
 import Reviews from './Reviews';
 import { toast } from "react-toastify";
 import { useAuth } from "../Context/useAuth";
@@ -202,18 +202,18 @@ function ProductDetails() {
                 </motion.nav>
 
                 {/* Main Product Section */}
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Image Gallery Section */}
                     <motion.div
                         initial={{ x: -50, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.5 }}
-                        className="order-1 lg:order-1"
+                        className="flex gap-2 flex-row-reverse"
                     >
                         {/* Main Product Image */}
                         <motion.div
                             layoutId={`product-image-${product.id}`}
-                            className="w-full aspect-square dark:bg-gray-800 rounded-lg overflow-hidden mb-4"
+                            className="w-full dark:bg-gray-800 rounded-lg overflow-hidden mb-4"
                         >
                             <motion.img
                                 key={selectedImage || product.image}
@@ -223,7 +223,7 @@ function ProductDetails() {
                                     e.target.onerror = null;
                                     e.target.src = placeholderImage;
                                 }}
-                                className="w-full h-full object-contain p-4"
+                                className="w-full h-full object-contain p-2"
                                 initial={{ scale: 0.8, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ duration: 0.3 }}
@@ -232,7 +232,7 @@ function ProductDetails() {
 
                         {/* Thumbnail Gallery */}
                         {product.images && product.images.length > 1 && (
-                            <div className="p-1 flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600">
+                            <div className="p-1 flex flex-col gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600">
                                 <AnimatePresence>
                                     {product.images?.map((image, index) => (
                                         <motion.div

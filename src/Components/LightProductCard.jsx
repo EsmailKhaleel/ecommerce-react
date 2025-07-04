@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import Unavailable from '../assets/unavailable.png';
 
 function LightProductCard({ product }) {
     const navigate = useNavigate();
@@ -18,11 +19,15 @@ function LightProductCard({ product }) {
         >
             {/* Image */}
             <motion.img
-                src={product.image}
+                src={product.image || Unavailable}
                 alt={product.name}
                 className="w-full h-full object-cover"
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
+                onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = Unavailable;
+                }}
             />
 
             {/* Product Info */}

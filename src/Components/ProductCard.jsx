@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BiHeart, BiShoppingBag, BiSolidHeart } from 'react-icons/bi';
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { MdLocalOffer } from 'react-icons/md';
-import placeholderImage from '../assets/placeholder.jpg';
+import placeholderImage from '../assets/unavailable.png';
 import { toast } from 'react-toastify';
 import { useAuth } from '../Context/useAuth';
 import { toggleWishlistItemAsync } from '../StateManagement/Slices/WishlistSlice';
