@@ -208,12 +208,12 @@ function ProductDetails() {
                         initial={{ x: -50, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.5 }}
-                        className="flex gap-2 flex-row-reverse"
+                        className="flex gap-5 flex-row-reverse justify-end"
                     >
                         {/* Main Product Image */}
                         <motion.div
                             layoutId={`product-image-${product.id}`}
-                            className="w-full dark:bg-gray-800 rounded-lg overflow-hidden mb-4"
+                            className="w-[450px] h-[450px] dark:bg-gray-800 rounded-lg overflow-hidden mb-4 flex items-center justify-center"
                         >
                             <motion.img
                                 key={selectedImage || product.image}
@@ -223,7 +223,7 @@ function ProductDetails() {
                                     e.target.onerror = null;
                                     e.target.src = placeholderImage;
                                 }}
-                                className="w-full h-full object-contain p-2"
+                                className="w-[450px] h-[450px] object-contain p-2"
                                 initial={{ scale: 0.8, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ duration: 0.3 }}
