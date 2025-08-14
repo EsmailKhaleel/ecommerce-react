@@ -5,8 +5,12 @@ import { AddProductSchema } from "../../utils/yupValidationSchema";
 import axiosInstance from "../../services/axiosInstance";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useAuth } from "../../Context/useAuth";
 
 const AddProduct = () => {
+    const { user } = useAuth();
+    console.log("user in AddProduct:", user);
+    const isAdmin = user && user?.role === "admin";
     const [imagePreview, setImagePreview] = useState(null);
     const [image, setImage] = useState("");
     const [additionalImages, setAdditionalImages] = useState([]);
@@ -221,11 +225,15 @@ const AddProduct = () => {
                         {/* Submit Button */}
                         <button
                             type="submit"
+                            name="submit"
                             className="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition-all disabled:bg-primary/50 disabled:cursor-not-allowed"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || !isAdmin}
                         >
                             {isSubmitting ? "Submitting..." : "Add Product"}
                         </button>
+                        {!isAdmin && <label htmlFor="submit" className="mt-2 text-center text-sm text-red-500">
+                            You must be an admin to add a product
+                            </label>}
                     </Form>
                 )}
             </Formik>

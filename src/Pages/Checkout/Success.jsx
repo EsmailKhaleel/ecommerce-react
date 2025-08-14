@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { clearCart } from '../../StateManagement/Slices/CartSlice';
 import axiosInstance from '../../services/axiosInstance';
 import { toast } from 'react-toastify';
+import { format } from '../../utils/helpers';
 
 function Success() {
     const navigate = useNavigate();
@@ -171,8 +172,3 @@ function Success() {
 }
 
 export default Success;
-
-const format = (date) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return new Intl.DateTimeFormat('en-US', options).format(new Date(date));
-}
