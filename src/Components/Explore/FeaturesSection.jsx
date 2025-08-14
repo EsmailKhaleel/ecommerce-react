@@ -1,37 +1,34 @@
 import { staggerContainer } from '../../utils/motion'
 import { MdLocalShipping, MdSecurity, MdVerified, MdSavings, MdStars } from 'react-icons/md';
 import { motion } from "framer-motion";
+import { useTranslation } from 'react-i18next';
 
-    const features = [
+    const featuresList = [
         {
             icon: MdLocalShipping,
-            title: "Free delivery",
-            description: "Enjoy free shipping on all orders above $50. Fast and reliable delivery right to your doorstep."
+            key: "freeDelivery"
         },
         {
             icon: MdSecurity,
-            title: "100% secure payment",
-            description: "Shop with confidence using our encrypted payment system. We support all major credit cards and digital wallets."
+            key: "securePayment"
         },
         {
             icon: MdVerified,
-            title: "Quality guarantee",
-            description: "Every product is carefully vetted for quality. Not satisfied? Return within 30 days for a full refund."
+            key: "qualityGuarantee"
         },
         {
             icon: MdSavings,
-            title: "Guaranteed savings",
-            description: "Get the best prices with our price match guarantee and regular promotional offers."
+            key: "guaranteedSavings"
         },
         {
             icon: MdStars,
-            title: "Daily offers",
-            description: "New deals every day with discounts up to 70% off on selected items."
+            key: "dailyOffers"
         }
     ];
 
 
 export default function FeaturesSection() {
+  const { t } = useTranslation();
 
   return (
     <motion.section
@@ -43,7 +40,7 @@ export default function FeaturesSection() {
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2">
-                        {features.map((feature, index) => (
+                        {featuresList.map((feature, index) => (
                             <motion.div
                                 key={index}
                                 className="flex items-start gap-4 p-2"
@@ -55,8 +52,12 @@ export default function FeaturesSection() {
                                     <feature.icon className="w-8 h-8 text-primary" />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">{feature.title}</h3>
-                                    <p className="text-neutral-600 dark:text-neutral-300">{feature.description}</p>
+                                    <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+                                        {t(`features.${feature.key}.title`)}
+                                    </h3>
+                                    <p className="text-neutral-600 dark:text-neutral-300">
+                                        {t(`features.${feature.key}.description`)}
+                                    </p>
                                 </div>
                             </motion.div>
                         ))}

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axiosInstance from '../../utils/axiosInstance';
+import axiosInstance from '../../services/axiosInstance';
 
 const initialState = {
   products: [],
@@ -13,7 +13,7 @@ const initialState = {
 
 export const fetchProducts = createAsyncThunk(
   'fetchProducts',
-  async ({ page, limit, category, q, _sort, _order, minPrice, maxPrice }) => {
+  async ({ page, limit, category, q, _sort, _order, minPrice, maxPrice, rating }) => {
     const params = { page, limit };
     if (category && category !== "All") {
       params.category = category;
@@ -30,6 +30,9 @@ export const fetchProducts = createAsyncThunk(
     }
     if (maxPrice !== undefined) {
       params.maxPrice = maxPrice;
+    }
+    if (rating !== null) {
+      params.rating = rating;
     }
     // Simulate network delay
     // await new Promise(resolve => setTimeout(resolve, 10000));

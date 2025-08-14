@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { Formik, Form } from "formik";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { RegisterSchema } from "../../utils/yupValidationSchema";
-import { FaCheckCircle } from "react-icons/fa";
 import MyCustomField from "../../Components/MyCustomField";
 import GoogleSignInButton from "../../Components/GoogleSignInButton";
 import { useAuth } from "../../Context/useAuth";
+import SubmitButton from "../../Components/SubmitButton";
 
 function Register() {
     const { signUp } = useAuth();
+    const navigate = useNavigate();
     const initialValues = {
         username: "",
         email: "",
@@ -17,11 +18,13 @@ function Register() {
     };
     const [isSuccess, setIsSuccess] = useState(false);
 
-    const handleSubmit = async (values, { setSubmitting }) => {
+    const handleSubmit = async (values, { setSubmitting, resetForm }) => {
         try {
             const user = await signUp(values.username, values.email, values.password);
             if (user) {
                 setIsSuccess(true);
+                resetForm();
+                navigate('/auth');
             } else {
                 setIsSuccess(false);
             }
@@ -37,20 +40,23 @@ function Register() {
         <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 dark:bg-gray-900">
             <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 dark:bg-gray-300">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Sign Up</h2>
-                <Formik 
-                    initialValues={initialValues} 
-                    validationSchema={RegisterSchema} 
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={RegisterSchema}
                     onSubmit={handleSubmit}
                 >
                     {({ isSubmitting, handleSubmit }) => (
                         <Form className="space-y-4">
-                            <MyCustomField type="text" name="username" placeholder="Username"/>
-                            <MyCustomField type="email" name="email" placeholder="Email"/>
-                            <MyCustomField type="password" name="password" placeholder="Password"/>
-                            <MyCustomField type="password" name="confirmPassword" placeholder="Confirm Password"/>
-                            <SubmitButton 
-                                isSubmitting={isSubmitting} 
-                                isSuccess={isSuccess} 
+                            <MyCustomField type="text" name="username" placeholder="Username" />
+                            <MyCustomField type="email" name="email" placeholder="Email" />
+                            <MyCustomField type="password" name="password" placeholder="Password" />
+                            <MyCustomField type="password" name="confirmPassword" placeholder="Confirm Password" />
+                            <SubmitButton
+                                label="Sign Up"
+                                loadingLabel="Signing Up..."
+                                successLabel="Signed Up Successfully"
+                                isSubmitting={isSubmitting}
+                                isSuccess={isSuccess}
                                 handleSubmit={handleSubmit}
                             />
                         </Form>
@@ -81,20 +87,3 @@ function Register() {
 }
 
 export default Register;
-
-const SubmitButton = ({ isSubmitting, isSuccess, handleSubmit }) => (
-    <button
-        type="submit"
-        onClick={handleSubmit}
-        disabled={isSubmitting || isSuccess}
-        className={`w-full text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 ${isSuccess ? "bg-green-500 hover:bg-green-600" : "bg-primary hover:bg-secondary"}`}
-    >
-        {isSuccess ? (
-            <><FaCheckCircle className="text-white" /> Registered</>
-        ) : isSubmitting ? (
-            "Signing up..."
-        ) : (
-            "Sign Up"
-        )}
-    </button>
-);

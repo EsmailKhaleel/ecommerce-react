@@ -2,15 +2,16 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BiStar, BiSolidStar } from 'react-icons/bi';
-import axiosInstance from '../utils/axiosInstance';
+import axiosInstance from '../services/axiosInstance';
 import { useAuth } from '../Context/useAuth';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
 function Reviews({ productId }) {
     const { user } = useAuth();
+    const { t } = useTranslation();
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState('');
-    const [userName, setUserName] = useState('');
     const queryClient = useQueryClient();
 
     // Fetch reviews with optimized query config
@@ -34,27 +35,26 @@ function Reviews({ productId }) {
         onSuccess: () => {
             queryClient.invalidateQueries(['reviews', productId]);
             queryClient.invalidateQueries(['productRating', productId]);
+            toast.success(t('reviews.submitted'));
             setComment('');
             setRating(5);
-            setUserName('');
         },
+        onError: () => {
+            toast.error(t('reviews.error'));
+        }
     });
 
     const handleSubmitReview = (e) => {
         e.preventDefault();
         if (!user) {
-            toast.error('You must be logged in to submit a review');
-            return;
-        }
-        if (!userName.trim()) {
-            toast.error('Please enter your name');
+            toast.error(t('reviews.loginRequired'));
             return;
         }
         addReviewMutation.mutate({
             productId,
             rating,
             comment,
-            userName,
+            userName: user.name || 'Anonymous',
         });
     };
 
@@ -71,13 +71,16 @@ function Reviews({ productId }) {
     }
 
     return (
-        <div className="space-y-8">
-
-            {/* Review Form */}
+        <motion.section
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="mt-6 space-y-8"
+        >
             <form onSubmit={handleSubmitReview} className="space-y-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Your Rating
+                        {t('reviews.yourRating')}
                     </label>
                     <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -96,23 +99,9 @@ function Reviews({ productId }) {
                         ))}
                     </div>
                 </div>
-
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Your Name
-                    </label>
-                    <input
-                        type="text"
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
-                        className="w-full dark:text-gray-100 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent dark:bg-gray-800 focus:outline-none"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Your Review
+                        {t('reviews.yourReview')}
                     </label>
                     <textarea
                         value={comment}
@@ -129,14 +118,14 @@ function Reviews({ productId }) {
                     disabled={addReviewMutation.isLoading}
                     className="text-accent border border-accent hover:bg-accent hover:text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
                 >
-                    {addReviewMutation.isLoading ? 'Submitting...' : 'Submit Review'}
+                    {addReviewMutation.isLoading ? t('reviews.submitting') : t('reviews.submitReview')}
                 </motion.button>
             </form>
 
             {/* Reviews List */}
             {reviewsData.reviews.length > 0 && <div className="space-y-6">
                 <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
-                    Customer Reviews
+                    {t('reviews.customerReviews')}
                 </h3>
                 <AnimatePresence>
                     {reviewsData?.reviews.map((review) => (
@@ -174,7 +163,7 @@ function Reviews({ productId }) {
                 </AnimatePresence>
             </div>
             }
-        </div>
+        </motion.section>
     );
 }
 

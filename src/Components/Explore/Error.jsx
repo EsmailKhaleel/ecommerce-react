@@ -1,8 +1,6 @@
 import { motion } from "framer-motion"
 import { BiError } from "react-icons/bi"
 
-
-
 export default function Error({ error  }) {
   return (
     <motion.div

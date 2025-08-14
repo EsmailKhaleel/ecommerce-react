@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import MyCustomField from "../../Components/MyCustomField";
 import { AddProductSchema } from "../../utils/yupValidationSchema";
-import axiosInstance from "../../utils/axiosInstance";
+import axiosInstance from "../../services/axiosInstance";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const AddProduct = () => {
     const [imagePreview, setImagePreview] = useState(null);
@@ -24,6 +25,25 @@ const AddProduct = () => {
 
     const handleSubmit = async (values, { setSubmitting, resetForm }) => {
         try {
+            // Upload main image
+            let imageUrl = "";
+            if (values.image) {
+                const formData = new FormData();
+                formData.append("file", values.image);
+                formData.append("upload_preset", "ml_default");
+                const res = await axios.post("https://api.cloudinary.com/v1_1/dxxkqw3bf/image/upload", formData);
+                imageUrl = res.data.secure_url;
+            }
+
+            // Upload additional images
+            const additionalImageUrls = [];
+            for (const file of values.additionalImages) {
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", "ml_default");
+                const res = await axios.post("https://api.cloudinary.com/v1_1/dxxkqw3bf/image/upload", formData);
+                additionalImageUrls.push(res.data.secure_url);
+            }
             console.log("product object:", { ...values, image, additionalImages });
             const response = await axiosInstance.post("/products", {
                 name: values.name,
@@ -32,10 +52,10 @@ const AddProduct = () => {
                 discount: values.discount,
                 description: values.description,
                 category: values.category,
-                image: image,
-                images: additionalImages,
+                image: imageUrl,
+                images: additionalImageUrls,
             });
-            alert("Product added successfully");
+            toast.success("Product added successfully");
             console.log("Product added successfully:", response.data);
             resetForm();
             setImagePreview(null);
@@ -44,7 +64,7 @@ const AddProduct = () => {
             setAdditionalImagePreviews([]);
         } catch (error) {
             console.log("Error submitting form:", error);
-            alert("Failed to submit product. Please try again.");
+            toast.error("Failed to submit product. Please try again.");
         }
         setSubmitting(false);
     };
@@ -59,22 +79,15 @@ const AddProduct = () => {
             };
             reader.readAsDataURL(file);
         }
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", "ml_default");
-        try {
-            const response = await axios.post("https://api.cloudinary.com/v1_1/dxxkqw3bf/image/upload", formData);
-            console.log("Upload image success : ", response.data);
-            setImage(response.data.secure_url);
-        } catch (error) {
-            console.log("Upload Error:", error);
-        }
     };
 
     const handleAdditionalImagesChange = async (event, setFieldValue, values) => {
         const files = Array.from(event.currentTarget.files);
         const currentAdditionalImages = values.additionalImages || [];
-        setFieldValue("additionalImages", [...currentAdditionalImages, ...files]);
+        setFieldValue("additionalImages", [
+            ...currentAdditionalImages,
+            ...files
+        ]);
 
         // Create previews for all selected files
         const newPreviews = [];
@@ -83,24 +96,13 @@ const AddProduct = () => {
             reader.onloadend = () => {
                 newPreviews.push(reader.result);
                 if (newPreviews.length === files.length) {
-                    setAdditionalImagePreviews([...additionalImagePreviews, ...newPreviews]);
+                    setAdditionalImagePreviews([
+                        ...additionalImagePreviews,
+                        ...newPreviews
+                    ]);
                 }
             };
             reader.readAsDataURL(file);
-        }
-
-        // Upload each file to Cloudinary
-        for (const file of files) {
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("upload_preset", "ml_default");
-            try {
-                const response = await axios.post("https://api.cloudinary.com/v1_1/dxxkqw3bf/image/upload", formData);
-                console.log("Additional image upload success:", response.data);
-                setAdditionalImages(prev => [...prev, response.data.secure_url]);
-            } catch (error) {
-                console.log("Additional image upload error:", error);
-            }
         }
     };
 
@@ -146,6 +148,7 @@ const AddProduct = () => {
                                 <option value="digital">Digital</option>
                                 <option value="clothes">Clothes</option>
                                 <option value="other">Other</option>
+                                <option value="beauty">Beauty</option>
                             </Field>
                             <ErrorMessage name="category" component="div" className="text-red-500 text-sm mt-1" />
                         </div>

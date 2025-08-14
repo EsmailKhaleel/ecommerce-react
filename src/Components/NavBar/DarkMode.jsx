@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { FiSun, FiMoon } from "react-icons/fi";
+import { LanguageContext } from '../../Context/LanguageContext';
 
 function DarkMode() {
+    const { language } = useContext(LanguageContext);
     const [theme, setTheme] = useState(() => {
         // Check if theme is stored in localStorage
         const savedTheme = localStorage.getItem('theme');
@@ -47,7 +49,9 @@ function DarkMode() {
             {/* Toggle Circle */}
             <span
                 className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-all duration-500 ${
-                    theme === 'dark' ? 'translate-x-9 rotate-180' : 'translate-x-1'
+                    theme === 'dark' 
+                        ? language === 'rtl' ? '-translate-x-9 rotate-180' : 'translate-x-9 rotate-180'
+                        : language === 'rtl' ? '-translate-x-1' : 'translate-x-1'
                 }`}
             >
                 {theme === 'dark' ? (

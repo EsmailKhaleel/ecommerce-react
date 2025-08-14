@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { loginUser, registerUser, getCurrentUser, toggleWishlist, getGoogleAuthUrl } from '../utils/api';
-import axios from '../utils/axiosInstance';
+import { loginUser, registerUser, getCurrentUser, toggleWishlist, getGoogleAuthUrl } from '../services/api';
 import { AuthContext } from './AuthContext';
 import { useDispatch } from 'react-redux';
 import { setCart } from '../StateManagement/Slices/CartSlice';
+import axiosInstance from "../services/axiosInstance";
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     // Initialize axios token and load user
     useEffect(() => {
         if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             loadUser();
         } else {
             setLoading(false);
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
             if (userData.cart) {
                 dispatch(setCart(userData.cart));
             }
-            axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
             toast.success('Successfully signed in!');
             return userData;
         } catch (error) {
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
         setToken(null);
         setUser(null);
         dispatch(setCart([])); // Clear cart in Redux store
-        delete axios.defaults.headers.common['Authorization'];
+        delete axiosInstance.defaults.headers.common['Authorization'];
         toast.success('Successfully logged out!');
     }, [dispatch]);
 

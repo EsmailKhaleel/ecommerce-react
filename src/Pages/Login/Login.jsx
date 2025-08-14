@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { LoginSchema } from '../../utils/yupValidationSchema';
-import { FaCheckCircle, FaInfoCircle } from 'react-icons/fa';
+import { FaInfoCircle } from 'react-icons/fa';
 import MyCustomField from '../../Components/MyCustomField';
 import GoogleSignInButton from '../../Components/GoogleSignInButton';
 import { useAuth } from '../../Context/useAuth';
 import { toast } from 'react-toastify';
+import SubmitButton from '../../Components/SubmitButton';
 
 function Login() {
     const { signIn } = useAuth();
@@ -35,10 +36,6 @@ function Login() {
             if (user) {
                 setIsSuccess(true);
                 navigate('/products');
-                window.scrollTo({
-                    top: 0,
-                    behavior:"instant"
-                });
             } else {
                 setIsSuccess(false);
             }
@@ -83,6 +80,9 @@ function Login() {
                             <MyCustomField type="email" name="email" placeholder='Email' />
                             <MyCustomField type="password" name="password" placeholder='Password' />
                             <SubmitButton 
+                                label="Sign In" 
+                                loadingLabel="Signing in..."
+                                successLabel="Successfully Signed In" 
                                 isSubmitting={isSubmitting} 
                                 isSuccess={isSuccess} 
                                 handleSubmit={handleSubmit} 
@@ -115,20 +115,3 @@ function Login() {
 }
 
 export default Login;
-
-const SubmitButton = ({ isSubmitting, isSuccess, handleSubmit }) => (
-    <button
-        type="submit"
-        onClick={handleSubmit}
-        disabled={isSubmitting || isSuccess}
-        className={`w-full text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 ${isSuccess ? "bg-green-500 hover:bg-green-600" : "bg-primary hover:bg-secondary"}`}
-    >
-        {isSuccess ? (
-            <><FaCheckCircle className="text-white" /> Successfully Signed In</>
-        ) : isSubmitting ? (
-            "Signing in..."
-        ) : (
-            "Login"
-        )}
-    </button>
-);

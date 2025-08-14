@@ -1,0 +1,32 @@
+/* RTL Support */
+[dir="rtl"] {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+}
+
+[dir="rtl"] .ltr-only {
+    direction: ltr;
+    text-align: left;
+}
+
+[dir="ltr"] .rtl-only {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Fix Toastify RTL */
+[dir="rtl"] .Toastify__toast {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Fix input fields in RTL */
+[dir="rtl"] input,
+[dir="rtl"] textarea {
+    text-align: right;
+}
+
+/* Keep some elements LTR even in RTL mode */
+[dir="rtl"] .keep-ltr {
+    direction: ltr;
+    text-align: left;
+}

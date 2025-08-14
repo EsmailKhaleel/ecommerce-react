@@ -1,0 +1,159 @@
+{
+  "navigation": {
+    "home": "Home",
+    "products": "Products",
+    "about": "About",
+    "cart": "Cart",
+    "wishlist": "Wishlist",
+    "account": "Account",
+    "explore": "Explore",
+    "addProduct": "Add Product"
+  },
+  "common": {
+    "search": "Search",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "addToCart": "Add to Cart",
+    "removeFromCart": "Remove from Cart",
+    "addToWishlist": "Add to Wishlist",
+    "removeFromWishlist": "Remove from Wishlist",
+    "addedToCart": "Added to cart successfully",
+    "failedToAddToCart": "Failed to add to cart",
+    "addedToWishlist": "Product added to wishlist!",
+    "removedFromWishlist": "Product removed from wishlist!",
+    "failedToUpdateWishlist": "Failed to update wishlist",
+    "profile": "Profile",
+    "menu": "Menu",
+    "close": "Close",
+    "back": "Back",
+    "apply": "Apply",
+    "clear": "Clear",
+    "all": "All",
+    "filters": "Filters",
+    "sortBy": "Sort By",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "error": "Error",
+    "noResults": "No Results Found",
+    "loading": "Loading...",
+    "linkCopied": "Link copied to clipboard!",
+    "errorLoadingProduct": "Error loading product",
+    "viewAll": "View All"
+  },
+  "brand": {
+    "name": "ShopSphere",
+    "slogan": "Your One-Stop Shopping Destination"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signUp": "Sign Up",
+    "welcome": "Welcome, {{name}}",
+    "loginRequired": "Please login to manage your wishlist",
+    "loginToAddToCart": "Please login to add items to cart"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "writeReview": "Write a Review",
+    "yourRating": "Your Rating",
+    "yourName": "Your Name",
+    "yourReview": "Your Review",
+    "submitReview": "Submit Review",
+    "submitting": "Submitting...",
+    "customerReviews": "Customer Reviews",
+    "submitted": "Review submitted successfully",
+    "error": "Failed to submit review",
+    "loginRequired": "You must be logged in to submit a review",
+    "nameRequired": "Please enter your name",
+    "commentRequired": "Please enter a comment",
+    "noReviews": "No reviews yet",
+    "verified": "Verified Purchase",
+    "helpful": "Was this helpful?",
+    "reportAbuse": "Report Abuse"
+  },
+  "features": {
+    "freeDelivery": {
+      "title": "Free delivery",
+      "description": "Enjoy free shipping on all orders above $50. Fast and reliable delivery right to your doorstep."
+    },
+    "securePayment": {
+      "title": "100% secure payment",
+      "description": "Shop with confidence using our encrypted payment system. We support all major credit cards and digital wallets."
+    },
+    "qualityGuarantee": {
+      "title": "Quality guarantee",
+      "description": "Every product is carefully vetted for quality. Not satisfied? Return within 30 days for a full refund."
+    },
+    "guaranteedSavings": {
+      "title": "Guaranteed savings",
+      "description": "Get the best prices with our price match guarantee and regular promotional offers."
+    },
+    "dailyOffers": {
+      "title": "Daily offers",
+      "description": "New deals every day with discounts up to 70% off on selected items."
+    }
+  },
+  "hero": {
+    "specialOffer": "Special Offer",
+    "slides": {
+      "groceries": {
+        "title": "30% Off Fresh Groceries - Farm to Table",
+        "description": "Stock up on fresh, organic produce, pantry essentials, and gourmet ingredients delivered straight to your door. Local sourcing, eco-friendly packaging, and premium quality at everyday low prices. Make every meal special with our curated selection."
+      },
+      "digital": {
+        "title": "50% Off Digital Essentials - Limited Time!",
+        "description": "Transform your digital lifestyle with our premium collection of software, apps, and digital tools. From productivity suites to creative software, gaming accessories to smart home devices - everything you need to stay ahead in the digital world at unbeatable prices."
+      },
+      "fashion": {
+        "title": "70% Off Fashion Forward - Style Revolution",
+        "description": "Discover the latest trends in men's and women's fashion. From casual streetwear to elegant formal wear, sustainable basics to statement pieces. Premium quality fabrics, contemporary designs, and sizes for everyone. Elevate your wardrobe without breaking the bank."
+      },
+      "furniture": {
+        "title": "40% Off Home & Furniture - Design Your Space",
+        "description": "Create your dream home with our extensive collection of modern furniture, home decor, and lifestyle accessories. From minimalist essentials to luxury statement pieces. Quality craftsmanship, contemporary designs, and fast delivery to transform any space."
+      }
+    }
+  },
+  "products": {
+    "featured": "Featured Products",
+    "newArrivals": "New Arrivals",
+    "bestSellers": "Best Sellers",
+    "price": "Price",
+    "category": "Category",
+    "description": "Description",
+    "reviews": "Reviews",
+    "priceRange": "Price Range",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "rating": "Rating",
+    "ratingAndUp": "{{rating}} Stars & Up",
+    "sortHighToLow": "Price: High to Low",
+    "sortLowToHigh": "Price: Low to High",
+    "searchPlaceholder": "Search products...",
+    "saveDiscount": "{{discount}}% off",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock",
+    "priceRanges": {
+      "under25": "Under $25",
+      "between25And50": "$25 to $50",
+      "between50And100": "$50 to $100",
+      "between100And200": "$100 to $200",
+      "between200And500": "$200 to $500",
+      "between500And1000": "$500 to $1,000",
+      "between1000And5000": "$1,000 to $5,000",
+      "between5000And10000": "$5,000 to $10,000",
+      "between10000And50000": "$10,000 to $50,000",
+      "above50000": "$50,000 & Above"
+    },
+    "categories": {
+      "all": "All Categories",
+      "beauty": "Beauty",
+      "clothes": "Clothes",
+      "digital": "Digital & Electronics",
+      "fragrances": "Fragrances",
+      "furniture": "Furniture",
+      "groceries": "Groceries"
+    }
+  }
+}

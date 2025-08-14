@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../Context/useAuth';
 import { useDispatch } from 'react-redux';
 import { setCart } from '../../StateManagement/Slices/CartSlice';
-import axios from '../../utils/axiosInstance';
+import axiosInstance from '../../services/axiosInstance';
 import Spinner from '../../Components/Spinner';
 import { toast } from 'react-toastify';
 
@@ -15,36 +15,27 @@ const AuthSuccess = () => {
 
     useEffect(() => {
         const handleAuthSuccess = async () => {
-            // Get token and user data from URL parameters using useSearchParams
+            // Get token and user data from URL parameters
             const token = searchParams.get('token');
             const userData = searchParams.get('user');
-            
+
             if (token && userData) {
                 try {
                     const user = JSON.parse(userData);
-                    
-                    // Store authentication data
+                    // Store authentication token
                     localStorage.setItem('token', token);
-                    
                     // Update AuthProvider context
                     setToken(token);
                     setUser(user);
-                    
                     // Update axios headers
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    
+                    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                     // Update cart in Redux store
                     if (user.cart) {
                         dispatch(setCart(user.cart));
                     }
-                    
                     // Clean up URL
                     window.history.replaceState({}, document.title, window.location.pathname);
-                    
-                    // Show success message
                     toast.success('Successfully signed in with Google!');
-                    
-                    // Redirect to products page
                     navigate('/products');
                 } catch (error) {
                     console.error('Error parsing user data:', error);

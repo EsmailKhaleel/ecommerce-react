@@ -3,8 +3,10 @@ import { Provider } from "react-redux";
 import { AuthProvider } from "./Context/AuthProvider";
 import LanguageProvider from "./Context/LanguageProvider";
 import { store } from "./StateManagement/store";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ToastWrapper from "./Components/ToastWrapper";
+
+
 
 const AppProviders = ({ children }) => {
     const queryClient = new QueryClient();
@@ -14,19 +16,9 @@ const AppProviders = ({ children }) => {
             <Provider store={store}>
                 <LanguageProvider>
                     <AuthProvider>
-                        <ToastContainer
-                            position="top-right"
-                            autoClose={3000}
-                            hideProgressBar={false}
-                            newestOnTop
-                            closeOnClick
-                            rtl={false}
-                            pauseOnFocusLoss
-                            draggable
-                            pauseOnHover
-                            theme="colored"
-                        />
-                        {children}
+                        <ToastWrapper>
+                            {children}
+                        </ToastWrapper>
                     </AuthProvider>
                 </LanguageProvider>
             </Provider>

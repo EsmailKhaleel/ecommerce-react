@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { clearCart } from '../../StateManagement/Slices/CartSlice';
-import axiosInstance from '../../utils/axiosInstance';
+import axiosInstance from '../../services/axiosInstance';
 import { toast } from 'react-toastify';
 
 function Success() {

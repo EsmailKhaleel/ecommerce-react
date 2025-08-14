@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axiosInstance from '../../utils/axiosInstance';
+import axiosInstance from '../../services/axiosInstance';
 
 // Async thunks
 export const getWishlistAsync = createAsyncThunk(

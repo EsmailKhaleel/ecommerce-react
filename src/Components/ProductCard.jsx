@@ -10,11 +10,13 @@ import { useAuth } from '../Context/useAuth';
 import { toggleWishlistItemAsync } from '../StateManagement/Slices/WishlistSlice';
 import Spinner from './Spinner';
 import { Rating } from './Rating';
+import { useTranslation } from 'react-i18next';
 
 function ProductCard({ product, onWishlistClick }) {
     const navigator = useNavigate();
     const dispatch = useDispatch();
     const { user } = useAuth();
+    const { t } = useTranslation();
     const wishlistItems = useSelector(state => state.wishlist.items);
     const wishlistLoadingItems = useSelector(state => state.wishlist.loadingItems);
     const cartLoadingItems = useSelector(state => state.cart.loadingItems);
@@ -29,7 +31,7 @@ function ProductCard({ product, onWishlistClick }) {
         e.stopPropagation();
 
         if (!user) {
-            toast.error('Please login to manage your wishlist');
+            toast.error(t('auth.loginRequired'));
             return;
         }
 
@@ -42,13 +44,14 @@ function ProductCard({ product, onWishlistClick }) {
                 await dispatch(toggleWishlistItemAsync(product.id)).unwrap();
             } catch (error) {
                 console.error('Error toggling wishlist:', error);
+                toast.error(t('common.error'));
             }
         }
     };
 
     async function handleAddToCart(product) {
         if (!user) {
-            toast.error('Please login to add items to cart');
+            toast.error(t('auth.loginToAddToCart'));
             navigator('/auth');
             return;
         }
@@ -60,18 +63,20 @@ function ProductCard({ product, onWishlistClick }) {
                 productId: product.id,
                 quantity: 1
             })).unwrap();
-        } catch (error) {
-            toast.error(error.message || 'Failed to add to cart');
+            toast.success(t('common.addedToCart'));
+        } catch (_error) {
+            console.error('Failed to add to cart:', _error);
+            toast.error(t('common.failedToAddToCart'));
         }
     }
 
     return (
-        <div className="group bg-white dark:bg-gray-900 text-black dark:text-white rounded-2xl border border-gray-200 dark:border-gray-700 hover:shadow-xl overflow-hidden transition-all duration-300 flex flex-col relative">
+        <div className="group bg-white dark:bg-gray-900 text-black dark:text-white rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 flex flex-col relative">
             {/* Discount Badge */}
             {product.discount > 0 && (
                 <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold z-10 flex items-center gap-1">
                     <MdLocalOffer className="text-lg" />
-                    Save {product.discount}%
+                    {t('products.saveDiscount', { discount: product.discount })}
                 </div>
             )}
 
@@ -153,7 +158,7 @@ function ProductCard({ product, onWishlistClick }) {
                     ) : (
                         <>
                             <BiShoppingBag className="text-lg flex-shrink-0" />
-                            Add to Cart
+                            {t('common.addToCart')}
                         </>
                     )}
                 </button>

@@ -1,13 +1,22 @@
-import {  useState } from "react";
+import { useState, useEffect } from "react";
 import { LanguageContext } from "./LanguageContext";
-
+import { useTranslation } from 'react-i18next';
+import '../i18n';
 
 function LanguageProvider({ children }) {
+    const { i18n } = useTranslation();
+    const [language, setLanguage] = useState(i18n.language === 'ar' ? 'rtl' : 'ltr');
 
-    const [language, setLanguage] = useState('ltr');
+    useEffect(() => {
+        document.documentElement.dir = language;
+        document.documentElement.lang = language === 'rtl' ? 'ar' : 'en';
+    }, [language]);
 
     function handleChangeLanguage() {
-        setLanguage(prevLanguage => (prevLanguage === 'ltr' ? 'rtl' : 'ltr'));
+        const newLanguage = language === 'ltr' ? 'rtl' : 'ltr';
+        const newLang = newLanguage === 'rtl' ? 'ar' : 'en';
+        setLanguage(newLanguage);
+        i18n.changeLanguage(newLang);
     }
 
     const LanguageCtx = {

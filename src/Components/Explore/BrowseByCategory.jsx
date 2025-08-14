@@ -1,7 +1,8 @@
-import LightProductCard from "../../Components/LightProductCard";
+import LightProductCard from "../LightProductCard";
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import { MdWatch } from 'react-icons/md';
 import { GiMirrorMirror } from "react-icons/gi";
 import { GiClothes } from "react-icons/gi";
@@ -13,6 +14,7 @@ export default function HorizontalCategorySection({ category, products, index })
     const cardWidth = 220;
     const [isHovered, setIsHovered] = useState(false);
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     // Determine direction: even indices move right-to-left, odd indices move left-to-right
     const isMovingLeft = index % 2 === 0;
@@ -76,7 +78,7 @@ export default function HorizontalCategorySection({ category, products, index })
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 + 0.2 }}
                 >
-                    {category}
+                    {t(`products.categories.${category.toLowerCase()}`)}
                 </motion.h2>
             </div>
 
@@ -127,7 +129,7 @@ export default function HorizontalCategorySection({ category, products, index })
                 onClick={() => navigate(`/products?category=${category}`)}
                 className="mt-4 px-6 py-2 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
             >
-                View All {category}
+                {t('common.viewAll')} {t(`products.categories.${category.toLowerCase()}`)}
             </motion.button>
         </motion.section>
     );
@@ -135,23 +137,29 @@ export default function HorizontalCategorySection({ category, products, index })
 
 export function BrowseByCategory() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
+
+    function handleCategoryClick(category) {
+        navigate(`/products?category=${category}`);
+    }
 
     const categories = [
-        { id: 1, name: 'Beauty', icon: GiMirrorMirror },
-        { id: 2, name: 'Clothes', icon: GiClothes },
-        { id: 3, name: 'Digital', icon: MdWatch },
-        { id: 4, name: 'Fragrances', icon: GiDelicatePerfume },
-        { id: 5, name: 'Furniture', icon: LuSofa },
-        { id: 6, name: 'Groceries', icon: LiaLemonSolid },
+        { id: 1, name: 'beauty', icon: GiMirrorMirror },
+        { id: 2, name: 'clothes', icon: GiClothes },
+        { id: 3, name: 'digital', icon: MdWatch },
+        { id: 4, name: 'fragrances', icon: GiDelicatePerfume },
+        { id: 5, name: 'furniture', icon: LuSofa },
+        { id: 6, name: 'groceries', icon: LiaLemonSolid },
     ];
 
     return (
-        <section className="py-12">
+        <section className="py-12 px-4 md:px-8 lg:px-16 xl:px-24">
             <div className="container mx-auto px-4">
                 {/* Title Section */}
                 <div className="flex items-center gap-2 mb-8">
                     <div className="w-2 h-8 bg-primary rounded"></div>
-                    <h2 className="text-2xl font-bold dark:text-white">Categories</h2>
+                    <h2 className="text-2xl font-bold dark:text-white">{t('products.category')}</h2>
                 </div>
 
                 {/* Categories Grid */}
@@ -159,11 +167,11 @@ export function BrowseByCategory() {
                     {categories.map((category) => (
                         <div
                             key={category.id}
-                            onClick={() => navigate(`/products?category=${category.name.toLowerCase()}`)}
+                            onClick={() => handleCategoryClick(category.name)}
                             className="bg-white border border-gray-400 hover:bg-primary hover:text-white text-primary dark:bg-neutral-800 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition-all duration-300"
                         >
                             <category.icon className="text-4xl mb-3 " />
-                            <h3 className="text-center font-medium dark:text-white">{category.name}</h3>
+                            <h3 className="text-center font-medium dark:text-white">{t(`products.categories.${category.name}`)}</h3>
                         </div>
                     ))}
                 </div>

@@ -9,6 +9,7 @@ import { MdAccountCircle } from "react-icons/md";
 import { FaBars, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { useAuth } from '../../Context/useAuth'
 import placeholder from '../../assets/placeholder.jpg';
+import { useTranslation } from 'react-i18next';
 
 function UpperNanBar() {
     const { language, handleChangeLanguage } = useContext(LanguageContext);
@@ -16,10 +17,10 @@ function UpperNanBar() {
     const { signOut, user } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const handleNavigation = (path) => {
         navigate(path);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
         setMenuOpen(false);
     };
 
@@ -30,8 +31,10 @@ function UpperNanBar() {
                 <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-12 md:h-16">
                         <div className="flex items-center gap-3">
-                            <img src={Logo} alt="logo" className="w-12 h-12 object-contain transition-transform hover:scale-105" />
-                            <a className="font-bold text-xl sm:text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">ShopSphere</a>
+                            <img src={Logo} alt={t('brand.name')} className="w-12 h-12 object-contain transition-transform hover:scale-105" />
+                            <a className="font-bold text-xl sm:text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                                {t('brand.name')}
+                            </a>
                         </div>
                         <div className="hidden sm:flex gap-6 items-center">
                             <button
@@ -41,7 +44,7 @@ function UpperNanBar() {
                                     <div className="relative">
                                         <img
                                             src={user.image}
-                                            alt={`${user.name}'s profile`}
+                                            alt={t('auth.welcome', { name: user.name })}
                                             className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600 group-hover:border-primary dark:group-hover:border-primary transition-all duration-300 shadow-sm group-hover:shadow-md"
                                             onError={(e) => {
                                                 e.target.onerror = null;
@@ -50,12 +53,12 @@ function UpperNanBar() {
                                         />
                                     </div>
                                 : <MdAccountCircle className="text-2xl" />}
-                                <span className="text-sm font-medium">My Account</span>
+                                <span className="text-sm font-medium">{t('navigation.account')}</span>
                             </button>                            
                             <button
                                 onClick={() => handleNavigation('/cart')}
                                 className="relative group flex items-center gap-0 hover:gap-2 bg-gradient-to-r from-primary to-secondary text-white py-2 px-2 rounded-lg transition-all duration-300 hover:shadow-lg hover:px-4">
-                                <span className="w-0 text-sm font-medium group-hover:w-auto overflow-hidden transition-all duration-300 whitespace-nowrap">Cart</span>
+                                <span className="w-0 text-sm font-medium group-hover:w-auto overflow-hidden transition-all duration-300 whitespace-nowrap">{t('navigation.cart')}</span>
                                 <FaCartShopping className="text-xl" />
                                 {cart?.length > 0 && (
                                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
@@ -74,7 +77,7 @@ function UpperNanBar() {
                                 <button
                                     onClick={() => handleNavigation('/auth')}
                                     className="hidden sm:block text-sm font-medium px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-all duration-300 hover:shadow-lg">
-                                    Create Account
+                                    {t('auth.signUp')}
                                 </button>
                             )}
                         </div>
@@ -98,14 +101,15 @@ function UpperNanBar() {
                     {/* Header with Logo */}
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-3">
-                            <img src={Logo} alt="logo" className="w-10 h-10 object-contain" />
+                            <img src={Logo} alt={t('brand.name')} className="w-10 h-10 object-contain" />
                             <span className="font-bold text-xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                                Menu
+                                {t('common.menu')}
                             </span>
                         </div>
                         <button
                             onClick={() => setMenuOpen(false)}
                             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-primary transition-all duration-300"
+                            aria-label={t('common.close')}
                         >
                             <FaTimes className="text-xl" />
                         </button>
@@ -117,7 +121,7 @@ function UpperNanBar() {
                             <div className="flex items-center gap-4 mb-4">
                                 <div className="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white">
                                     {user.image ? (
-                                        <img src={user.image} alt="profile" className="w-full h-full rounded-full object-cover" />
+                                        <img src={user.image} alt={t('auth.welcome', { name: user.displayName })} className="w-full h-full rounded-full object-cover" />
                                     ) : (
                                         <MdAccountCircle className="text-2xl" />
                                     )}
@@ -134,7 +138,7 @@ function UpperNanBar() {
                                 className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500 hover:text-white transition-all duration-300"
                             >
                                 <FaSignOutAlt className="text-lg" />
-                                <span>Sign Out</span>
+                                <span>{t('auth.signOut')}</span>
                             </button>
                         </div>
                     ) : (
@@ -143,7 +147,7 @@ function UpperNanBar() {
                             className="mb-8 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-primary to-secondary text-white hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 w-full"
                         >
                             <MdAccountCircle className="text-xl" />
-                            <span>Sign In / Create Account</span>
+                            <span>{t('auth.signIn')} / {t('auth.signUp')}</span>
                         </button>
                     )}
 
@@ -154,7 +158,7 @@ function UpperNanBar() {
                             className="flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-full text-left"
                         >
                             <MdAccountCircle className="text-xl" />
-                            <span>My Account</span>
+                            <span>{t('navigation.account')}</span>
                         </button>
                         <button
                             onClick={() => handleNavigation('/cart')}
@@ -168,7 +172,7 @@ function UpperNanBar() {
                                     </span>
                                 )}
                             </div>
-                            <span>Cart</span>
+                            <span>{t('navigation.cart')}</span>
                         </button>
                     </nav>
 

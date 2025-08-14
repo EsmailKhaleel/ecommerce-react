@@ -2,36 +2,35 @@ import { useState } from 'react';
 import { FaBars } from 'react-icons/fa6';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaTimes } from "react-icons/fa";
-import Logo from '../../assets/logo.png'
+import Logo from '../../assets/logo.png';
+import { useTranslation } from 'react-i18next';
 
-const menu = [
+const getMenuItems = (t) => [
     {
         id: 1,
-        name: "Explore",
+        name: t('navigation.explore'),
         link: "/",
     }, {
         id: 2,
-        name: "Products",
+        name: t('navigation.products'),
         link: "/products",
     }, {
         id: 3,
-        name: "Add Product",
+        name: t('navigation.addProduct', 'Add Product'),
         link: "/addProduct",
     }, {
         id: 4,
-        name: "My Wishlist",
+        name: t('navigation.wishlist'),
         link: "/wishlist",
     }];
 function LowerNavBar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const { t } = useTranslation();
+    const menu = getMenuItems(t);
 
     const handleNavigation = (path) => {
         navigate(path);
-        window.scrollTo({
-            top: 0,
-            behavior: 'instant'
-        });
     };
 
     const toggleMobileMenu = () => {

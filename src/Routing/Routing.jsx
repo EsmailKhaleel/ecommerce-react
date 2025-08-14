@@ -4,7 +4,6 @@ import About from '../Pages/About/About';
 import NotFound from '../Pages/NotFound/NotFound';
 import Products from '../Pages/Products/Products';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import Product from '../Components/ProductDetails';
 import Cart from '../Pages/Cart/Cart';
 import Login from '../Pages/Login/Login';
 import Register from '../Pages/Register/Register';
@@ -17,6 +16,7 @@ import Success from '../Pages/Checkout/Success';
 import LandingPage from '../Pages/LandingPage/LandingPage';
 import AuthSuccess from '../Pages/AuthSuccess/AuthSuccess';
 import AuthError from '../Pages/AuthError/AuthError';
+import ProductDetails from '../features/products/ProductDetails';
 
 const routing = createBrowserRouter([
     {
@@ -29,7 +29,7 @@ const routing = createBrowserRouter([
             { path: "cart", element: <Cart /> },
             { path: "about", element: <About /> },
             { path: "wishlist", element: <Wishlist /> },
-            { path: "products/:id", element: <Product /> },
+            { path: "products/:id", element: <ProductDetails /> },
             { path: "auth", element: <Login /> },
             { path: "login", element: <Navigate to="/auth" replace /> },
             { path: "register", element: <Register /> },

@@ -11,10 +11,6 @@ const GoogleSignInButton = ({ mode = 'signin' }) => {
             const user = await signInWithGoogle();
             if (user) {
                 navigate('/products');
-                window.scrollTo({
-                    top: 0,
-                    behavior: "instant"
-                });
             }
         } catch (error) {
             console.error('Error signing in with Google:', error);

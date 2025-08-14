@@ -2,7 +2,7 @@ import ReactPaginate from 'react-paginate';
 import { motion } from 'framer-motion';
 
 function Pagination({ pageCount, onPageChange, currentPage }) {
-  // Don't render pagination if there are no pages
+  // No pagination if there are no pages
   if (pageCount <= 0) return null;
 
   // Ensure currentPage is within valid range

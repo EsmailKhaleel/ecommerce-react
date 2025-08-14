@@ -1,5 +1,4 @@
 import { ErrorMessage, Field } from 'formik'
-import React from 'react'
 
 function MyCustomField({ type='text', placeholder='', name='' }) {
     return (

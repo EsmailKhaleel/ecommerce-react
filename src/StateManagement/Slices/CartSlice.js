@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { addToCart, removeFromCart } from '../../utils/api';
+import { addToCart, removeFromCart } from '../../services/api';
 import { toast } from 'react-toastify';
-import axiosInstance from '../../utils/axiosInstance';
+import axiosInstance from '../../services/axiosInstance';
 
 // Async thunks
 export const addToCartAsync = createAsyncThunk(
@@ -46,6 +46,7 @@ export const getCartAsync = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get('/auth/cart');
+            console.log('Fetched cart:', response.data.cart);
             return response.data.cart;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Failed to fetch cart');

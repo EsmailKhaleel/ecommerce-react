@@ -6,9 +6,9 @@ import Routing from './Routing/Routing';
 function App() {
   const { language } = useContext(LanguageContext);
   return (
-      <div dir={language}>
-        <RouterProvider router={Routing}></RouterProvider>
-      </div>
+    <div dir={language}>
+      <RouterProvider router={Routing}></RouterProvider>
+    </div>
   )
 }
 

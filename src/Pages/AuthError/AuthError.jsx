@@ -8,14 +8,10 @@ const AuthError = () => {
 
     useEffect(() => {
         const errorMessage = searchParams.get('message') || 'Authentication failed';
-        
         console.error('Auth error:', errorMessage);
-        
-        // Redirect to login after a delay
         const timeout = setTimeout(() => {
             navigate('/auth?error=' + encodeURIComponent(errorMessage));
         }, 3000);
-
         return () => clearTimeout(timeout);
     }, [navigate, searchParams]);
 
