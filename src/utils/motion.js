@@ -158,3 +158,10 @@ export const heroVariants = {
     },
   },
 };
+
+export const presets = {
+  fadeLeft: fadeIn("left", "spring", 0.6, 1.5),
+  fadeRight: fadeIn("right", "spring", 1, 1.5),
+  fadeUpDots: fadeIn("up", "spring", 1.2, 1.5),
+  zoomPulse: zoomIn(0.8, 1),
+};

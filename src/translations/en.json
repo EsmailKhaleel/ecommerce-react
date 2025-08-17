@@ -48,7 +48,7 @@
   "auth": {
     "signIn": "Sign In",
     "signOut": "Sign Out",
-    "signUp": "Sign Up",
+    "signUp": "Create Account",
     "welcome": "Welcome, {{name}}",
     "loginRequired": "Please login to manage your wishlist",
     "loginToAddToCart": "Please login to add items to cart"

@@ -16,6 +16,7 @@ import Success from '../Pages/Checkout/Success';
 import AuthSuccess from '../Pages/AuthSuccess/AuthSuccess';
 import AuthError from '../Pages/AuthError/AuthError';
 import ProductDetails from '../features/products/ProductDetails';
+
 const routing = createBrowserRouter([
     {
         path: "", element: <Layout />,
