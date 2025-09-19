@@ -8,7 +8,10 @@ function HeroText({ translatedSlide }) {
 
     return (
         <motion.div
-            variants={presets.fadeLeft}
+            variants={presets.fadeRight}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: false, amount: 0.7 }}
             className="flex-1 space-y-4"
         >
             <motion.span

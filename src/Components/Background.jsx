@@ -5,19 +5,19 @@ export const Background = () => {
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 {/* Left gradient wave */}
                 <div
-                    className="absolute -top-32 -left-32 w-[32rem] h-[150vh] rounded-full bg-gradient-to-br from-secondary/30 to-transparent rotate-12 scale-150 animate-float-slow dark:from-secondary/5"
+                    className="absolute -top-32 -left-32 w-[32rem] h-[150vh] rounded-full bg-gradient-to-br from-secondary/50 to-transparent rotate-12 scale-150 animate-float-slow dark:from-secondary/5"
                 >
                 </div>
 
                 {/* Right gradient wave */}
                 <div
-                    className="absolute -top-32 -right-32 w-[32rem] h-[150vh] rounded-full bg-gradient-to-bl from-secondary/30 to-transparent -rotate-12 scale-150 animate-float-slow delay-1000 dark:from-secondary/5"
+                    className="absolute -top-32 -right-32 w-[32rem] h-[150vh] rounded-full bg-gradient-to-bl from-secondary/50 to-transparent -rotate-12 scale-150 animate-float-slow delay-1000 dark:from-secondary/5"
                 >
                 </div>
 
                 {/* Center gradient wave */}
                 <div
-                    className="absolute inset-0 w-full h-full bg-gradient-to-b from-background/5 to-transparent dark:from-secondary/5"
+                    className="absolute inset-0 w-full h-full bg-gradient-to-b from-primary/10 to-primary/5 dark:from-secondary/5"
                     style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }}
                 >
                 </div>

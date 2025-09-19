@@ -8,17 +8,19 @@ import FirstBanner from "../../Components/Explore/FirstBanner";
 import SecondBanner from "../../Components/Explore/SecondBanner";
 import ThirdSection from "../../Components/Explore/ThirdSection";
 import FeaturesSection from "../../Components/Explore/FeaturesSection";
+import { ProductGridSections } from "../../Components/Explore/ProductGridSections";
 
 function Explore() {
     return (
-        <>
+        <div className="overflow-x-hidden">
             <ScrollToTopButton />
             <Hero />
             <BrowseByCategory />
+            <ProductGridSections />
             <div className="min-h-screen dark:bg-neutral-dark relative overflow-hidden">
                 <Background />
                 <main className="relative z-10 py-20">
-                    <div className="max-w-7xl mx-auto px-0">
+                    <div className="mx-auto px-4 sm:px-6 lg:px-8">
                         <Heading />
                         <AnimatedCollections />
                         <div className="mt-32 space-y-32">
@@ -30,7 +32,7 @@ function Explore() {
                 </main>
             </div>
             <FeaturesSection />
-        </>
+        </div>
     );
 }
 

@@ -1,0 +1,40 @@
+.hero-pagination {
+    position: relative !important;
+    margin-top: 56px;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0.8rem !important;
+    z-index: 50 !important;
+}
+
+.hero-pagination .swiper-pagination-bullet {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 9999px;
+    background-color: black;
+    opacity: 100;
+    cursor: pointer;
+    transition: all 700ms;
+}
+
+.hero-pagination .swiper-pagination-bullet:hover,
+.hero-pagination .swiper-pagination-bullet-active {
+    background-color: var(--color-primary);
+}
+
+.hero-pagination .swiper-pagination-bullet::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 1px solid var(--color-primary);
+    transform: scale(0);
+    transition: transform 400ms;
+}
+
+.hero-pagination .swiper-pagination-bullet-active::after {
+    transform: scale(2);
+}

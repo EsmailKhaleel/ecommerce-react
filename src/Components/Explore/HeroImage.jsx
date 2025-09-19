@@ -5,7 +5,10 @@ import { Slides } from "./heroImages"
 function HeroImage({ currentSlide }) {
     return (
         <motion.div
-            variants={presets.fadeRight}
+            variants={presets.fadeLeft}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: false, amount: 0.7 }}
             className="flex-1"
         >
             <div className="flex-1 relative w-full aspect-[16/9] min-h-[200px]">

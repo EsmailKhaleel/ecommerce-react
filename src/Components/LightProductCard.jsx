@@ -9,7 +9,7 @@ function LightProductCard({ product }) {
 
     return (
         <motion.div
-            className="bg-white relative w-[220px] h-[220px] rounded-sm overflow-hidden"
+            className="bg-white relative w-[400px] h-[300px] rounded-sm overflow-hidden"
             whileHover="hover"
             animate={isTapped ? "hover" : "initial"}
             initial="initial"
@@ -41,10 +41,10 @@ function LightProductCard({ product }) {
             {/* Hover Overlay */}
             <motion.div
                 className="absolute inset-0 bg-black/60 flex flex-col items-center justify-start p-6 text-white"
-                initial={{ opacity: 0 }}
+                initial={{ opacity: 0, y: "100%" }}
                 variants={{
-                    hover: { opacity: 1 },
-                    initial: { opacity: 0 }
+                    hover: { opacity: 1, y: 0 },
+                    initial: { opacity: 0, y: "100%" }
                 }}
                 transition={{ duration: 0.2 }}
             >
@@ -52,7 +52,7 @@ function LightProductCard({ product }) {
                     {product.description}
                 </p>
                 <motion.button
-                    onClick={() => navigate(`/products/${product.id}`)}
+                    onClick={() => navigate(`/products/${product._id}`)}
                     className="px-6 py-2 bg-primary text-white rounded-full hover:bg-primary-dark transition-colors cursor-pointer"
                 >
                     Order Now

@@ -7,7 +7,7 @@ export default function SecondBanner() {
     
     return (
         <motion.section
-            className="relative h-[300px] md:h-[500px] rounded-3xl overflow-hidden bg-background-light dark:bg-neutral-dark"
+            className="relative h-[300px] md:h-[500px] rounded-3xl overflow-hidden bg-primary/10 dark:bg-neutral-dark"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0.3 }}

@@ -3,9 +3,11 @@ import OrderCard from "./OrderCard"
 import { useSelector } from "react-redux";
 import Spinner from "../../Components/Spinner";
 import { FaBox } from "react-icons/fa";
+import { useState } from "react";
 
 function OrdersList() {
     const { items: orders, status: ordersStatus } = useSelector(state => state.orders);
+    const [openOrderId, setOpenOrderId] = useState(null);
     return (
         <motion.div
             key="orders"
@@ -32,9 +34,14 @@ function OrdersList() {
                     </p>
                 </div>
             ) : (
-                <div className="space-y-6">
+                <div className="space-y-8">
                     {orders.map((order) => (
-                        <OrderCard key={order._id} order={order} />
+                        <OrderCard 
+                            key={order._id} 
+                            order={order}
+                            isOpen={openOrderId === order._id}
+                            onToggle={() => setOpenOrderId(openOrderId === order._id ? null : order._id)}
+                        />
                     ))}
                 </div>
             )}
