@@ -11,17 +11,17 @@ function NanBar() {
     <>
       <div className="sticky top-0 z-[1000]">
         <DesktopNavBar />
-        <div
-          className={`absolute h-screen left-0 top-0 bg-white dark:bg-gray-900 transform transition-transform duration-500
+      </div>
+      <div
+        className={`fixed top-0 left-0 right-0 sm:w-80 w-[280px] h-full z-[999] bg-white dark:bg-gray-900 transform transition-transform duration-500
           ${isMainDrawerOpen ? "translate-y-0" : "-translate-y-full"}`}
-        >
-          <MobileNavBar />
-        </div>
+      >
+        <MobileNavBar />
       </div>
 
       {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black/10 z-[999] backdrop-blur transition-all duration-500 ${isMainDrawerOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        className={`fixed inset-0 bg-black/10 z-[998] backdrop-blur transition-all duration-500 ${isMainDrawerOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         onClick={() => dispatch(closeAllDrawers())}
       ></div>
     </>

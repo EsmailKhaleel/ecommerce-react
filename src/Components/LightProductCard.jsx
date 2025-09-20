@@ -48,7 +48,7 @@ function LightProductCard({ product }) {
                 }}
                 transition={{ duration: 0.2 }}
             >
-                <p className="text-sm text-gray-200 mb-4 text-center line-clamp-3">
+                <p className="text-lg text-gray-200 mb-4 text-center line-clamp-3">
                     {product.description}
                 </p>
                 <motion.button

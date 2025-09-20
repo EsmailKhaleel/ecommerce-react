@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { setCart } from "../../StateManagement/Slices/CartSlice";
+import { clearCartAsync } from "../../StateManagement/Slices/CartSlice";
 import { useAuth } from "../../Context/useAuth";
 import { createCheckoutSession } from "../../services/api";
 
@@ -17,14 +17,23 @@ export default function useCheckout() {
 
   // Handle Stripe redirect outcomes
   useEffect(() => {
-    if (
-      location.pathname === "/checkout/success" ||
-      window.location.href.includes("/checkout/success")
-    ) {
-      toast.success("Payment successful! Your order has been placed.");
-      dispatch(setCart([]));
-      navigate("/", { replace: true });
-    }
+    const handleSuccess = async () => {
+      if (
+        location.pathname === "/checkout/success" ||
+        window.location.href.includes("/checkout/success")
+      ) {
+        toast.success("Payment successful! Your order has been placed.");
+        try {
+          await dispatch(clearCartAsync()).unwrap();
+        } catch (error) {
+          console.error('Failed to clear cart:', error);
+          toast.error('Failed to clear cart');
+        }
+        navigate("/", { replace: true });
+      }
+    };
+    
+    handleSuccess();
 
     if (
       (location.pathname === "/cart" &&

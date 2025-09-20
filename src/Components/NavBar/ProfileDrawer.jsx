@@ -20,7 +20,7 @@ function ProfileDrawer() {
             <div className="flex items-center gap-3 mb-8">
                 <button
                     onClick={() => dispatch(setIsProfileDrawerOpen(false))}
-                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-300 text-primary transition-all duration-300"
+                    className="p-2 rounded-full hover:bg-gray-100 text-primary transition-all duration-300"
                     aria-label={t('common.close')}
                 >
                     <FaArrowAltCircleLeft className="text-xl" />
@@ -68,14 +68,14 @@ function ProfileDrawer() {
             <nav className="space-y-2">
                 <button
                     onClick={() => handleNavigation('/account')}
-                    className="flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-full text-left"
+                    className="flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 hover:bg-primary hover:text-white dark:text-white dark:hover:bg-primary w-full text-left"
                 >
                     <MdAccountCircle className="text-xl" />
                     <span>{t('navigation.account')}</span>
                 </button>
                 <button
                     onClick={() => handleNavigation('/cart')}
-                    className="flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-full text-left"
+                    className="flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 hover:bg-primary hover:text-white dark:text-white dark:hover:bg-primary w-full text-left"
                 >
                     <div className="relative">
                         <FaCartShopping className="text-xl" />

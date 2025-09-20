@@ -18,7 +18,7 @@ function DesktopNavBar() {
     const { handleNavigation } = useNavHandler();
 
     return (
-        <div className="sticky top-0 z-50 flex items-center gap-4 justify-between px-4 py-2 shadow-md backdrop-blur-2xl bg-[#FFDCCF] dark:bg-primary/10">
+        <div className="sticky overflow-hidden top-0 z-50 flex items-center gap-4 justify-between px-4 py-2 shadow-md backdrop-blur-2xl bg-[#FFDCCF] dark:bg-primary/10">
             <BurgerButton />
 
             <div className="flex items-center gap-3">
@@ -33,7 +33,7 @@ function DesktopNavBar() {
             <div className="hidden sm:flex gap-6 items-center">
                 <button
                     onClick={() => handleNavigation('/account')}
-                    className="group flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors before:content-[''] before:absolute before:w-0 before:bottom-[-5px] before:h-[2px] before:bg-primary before:transition-all before:duration-300 hover:before:w-full relative">
+                    className="group cursor-pointer flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors before:content-[''] before:absolute before:w-0 before:bottom-[-5px] before:h-[2px] before:bg-primary before:transition-all before:duration-300 hover:before:w-full relative">
                     {user?.image ?
                         <div className="relative">
                             <img
@@ -51,8 +51,10 @@ function DesktopNavBar() {
                 </button>
                 <button
                     onClick={() => handleNavigation('/cart')}
-                    className="relative group flex items-center gap-0 hover:gap-2 bg-gradient-to-r from-primary to-secondary text-white py-2 px-2 rounded-lg transition-all duration-300 hover:shadow-lg hover:px-4">
-                    <span className="w-0 text-sm font-medium group-hover:w-auto overflow-hidden transition-all duration-300 whitespace-nowrap">{t('navigation.cart')}</span>
+                    className="relative group flex items-center gap-0 hover:gap-2 bg-gradient-to-r from-primary to-secondary text-white py-2 px-2 rounded-lg transition-all duration-300 hover:shadow-lg hover:px-4 cursor-pointer">
+                    <span className="max-w-0 text-sm font-medium group-hover:max-w-[100px] overflow-hidden transition-all duration-300 whitespace-nowrap">
+                        {t('navigation.cart')}
+                    </span>
                     <FaCartShopping className="text-xl" />
                     {cart?.length > 0 && (
                         <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-bounce">

@@ -9,7 +9,7 @@ function DrawerHeading() {
     const dispatch = useDispatch();
     
     return (
-        <div className="flex items-center justify-between mb-8 mt-16">
+        <div className="flex items-center justify-between mb-4 mt-14">
             <div className="flex items-center gap-3">
                 <img src={Logo} alt={t('brand.name')} className="w-10 h-10 object-contain" />
                 <span className="font-bold text-xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">

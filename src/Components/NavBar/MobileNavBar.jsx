@@ -1,6 +1,5 @@
 import ProfileDrawer from './ProfileDrawer'
 import MenuList from './MenuList'
-import DrawerHeading from './DrawerHeading';
 import DarkMode from './DarkMode'
 import { motion } from 'framer-motion';
 import { LanguageContext } from '../../Context/LanguageContext';
@@ -12,8 +11,7 @@ function MobileNavBar() {
     const { isProfileDrawerOpen } = useSelector((state) => state.drawer);
 
     return (
-        <div className="relative h-full p-6 sm:w-80 w-[280px] bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg overflow-hidden">
-            <DrawerHeading />
+        <div className="relative h-full px-6 pt-22 w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg overflow-hidden">
             {/* Main Menu List in Drawer */}
             {!isProfileDrawerOpen && (
                 <motion.div
@@ -36,7 +34,7 @@ function MobileNavBar() {
                 </motion.div>
             )}
             {/* Settings Section */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 border-t dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+            <div className="absolute p-6 bottom-5 left-0 right-0  border-t dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
                 <div className="flex items-center justify-between gap-4">
                     <button
                         onClick={handleChangeLanguage}

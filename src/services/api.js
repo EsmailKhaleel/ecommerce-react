@@ -97,6 +97,15 @@ export const removeFromCart = async (productId) => {
   }
 };
 
+export const clearCart = async () => {
+  try {
+    const response = await axiosInstance.delete('/auth/cart');
+    return response;
+  } catch (error) {
+    handleApiError(error, 'Failed to clear cart.');
+  }
+};
+
 // Wishlist API calls
 export const toggleWishlist = async (productId) => {
   try {

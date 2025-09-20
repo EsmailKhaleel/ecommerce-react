@@ -30,7 +30,7 @@ function DarkMode() {
     return (
         <button
             onClick={handleToggle}
-            className="relative inline-flex h-8 w-16 items-center rounded-full transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+            className="relative cursor-pointer inline-flex h-8 w-16 items-center rounded-full transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
             style={{
                 background: theme === 'dark' 
                     ? 'linear-gradient(to right, #1F2937, #374151)'

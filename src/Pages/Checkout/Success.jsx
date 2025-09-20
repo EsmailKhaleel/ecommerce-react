@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { clearCart } from '../../StateManagement/Slices/CartSlice';
+import { clearCartAsync } from '../../StateManagement/Slices/CartSlice';
 import axiosInstance from '../../services/axiosInstance';
 import { toast } from 'react-toastify';
 import { format } from '../../utils/helpers';
@@ -24,7 +24,12 @@ function Success() {
                 }
 
                 // Clear the cart immediately
-                dispatch(clearCart());
+                try {
+                    await dispatch(clearCartAsync()).unwrap();
+                } catch (error) {
+                    console.error('Failed to clear cart:', error);
+                    toast.error('Failed to clear cart');
+                }
 
                 // The webhook will handle creating the order
                 // We just need to wait a bit to let the webhook process

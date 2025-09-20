@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { addToCart, removeFromCart } from '../../services/api';
+import { addToCart, removeFromCart, clearCart } from '../../services/api';
 import { toast } from 'react-toastify';
 import axiosInstance from '../../services/axiosInstance';
 
@@ -54,6 +54,18 @@ export const getCartAsync = createAsyncThunk(
     }
 );
 
+export const clearCartAsync = createAsyncThunk(
+    'cart/clearCart',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await clearCart();
+            return response.data.cart;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to clear cart');
+        }
+    }
+);
+
 const cartSlice = createSlice({
     name: 'cart',
     initialState: {
@@ -61,7 +73,8 @@ const cartSlice = createSlice({
         status: {
             addToCart: 'idle',
             removeFromCart: 'idle',
-            getCart: 'idle'
+            getCart: 'idle',
+            clearCart: 'idle'
         },
         loadingItems: {}, // Track loading state per product
         error: null
@@ -69,9 +82,6 @@ const cartSlice = createSlice({
     reducers: {
         setCart: (state, action) => {
             state.items = action.payload;
-        },
-        clearCart: (state) => {
-            state.items = [];
         }
     },
     extraReducers: (builder) => {
@@ -125,9 +135,23 @@ const cartSlice = createSlice({
                 state.status.getCart = 'failed';
                 state.error = action.payload;
                 toast.error(action.payload || 'Failed to fetch cart');
+            })
+            .addCase(clearCartAsync.pending, (state) => {
+                state.status.clearCart = 'loading';
+                state.error = null;
+            })
+            .addCase(clearCartAsync.fulfilled, (state) => {
+                state.status.clearCart = 'succeeded';
+                state.items = [];
+                toast.success('Cart cleared successfully');
+            })
+            .addCase(clearCartAsync.rejected, (state, action) => {
+                state.status.clearCart = 'failed';
+                state.error = action.payload;
+                toast.error(action.payload || 'Failed to clear cart');
             });
     }
 });
 
-export const { setCart, clearCart } = cartSlice.actions;
+export const { setCart } = cartSlice.actions;
 export default cartSlice.reducer;

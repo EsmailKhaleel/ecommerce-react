@@ -19,7 +19,7 @@ function MenuList({ inDrawer = false }) {
     };
 
     return (
-        <ul className={inDrawer ? "mt-12 space-y-6" : "sm:flex hidden items-center gap-4"}>
+        <ul className={inDrawer ? "space-y-6" : "sm:flex hidden items-center gap-4"}>
             {menu.map(data => {
                 if (!inDrawer && data.link === '/account') return null;
                 return (<li
@@ -32,7 +32,7 @@ function MenuList({ inDrawer = false }) {
                             onClick={() => dispatch(toggleProfileDrawer())}
                         >
                             {data.name}
-                            <MdOutlineKeyboardArrowRight className="inline-block ml-2 text-lg transition-all duration-200 group-hover:bg-primary group-hover:text-white text-primary bg-white" />
+                            <MdOutlineKeyboardArrowRight className="w-6 h-6 flex-shrink-0 transition-all duration-200 group-hover:bg-white group-hover:text-primary text-primary bg-white dark:bg-primary dark:text-white rounded-full" />
                         </button>
                         :
                         <NavLink

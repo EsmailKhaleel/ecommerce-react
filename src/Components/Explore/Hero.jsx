@@ -41,7 +41,7 @@ function Hero() {
                         clickable: true,
                         el: '.hero-pagination',
                     }}
-                    className="mySwiper"
+                    className="keep-ltr"
                 >
                     {Slides.map((slide, index) => (
                         <SwiperSlide key={slide.id}>
