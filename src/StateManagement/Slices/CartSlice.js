@@ -143,7 +143,6 @@ const cartSlice = createSlice({
             .addCase(clearCartAsync.fulfilled, (state) => {
                 state.status.clearCart = 'succeeded';
                 state.items = [];
-                toast.success('Cart cleared successfully');
             })
             .addCase(clearCartAsync.rejected, (state, action) => {
                 state.status.clearCart = 'failed';
