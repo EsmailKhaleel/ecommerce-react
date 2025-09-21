@@ -1,13 +1,13 @@
 import { motion } from "framer-motion"
 import { useTranslation } from "react-i18next";
-import useCartAction from "./useCartAction";
-import useWishlistActions from "./useWishlistAction";
 import useShare from "../../hooks/useShare";
 import Spinner from "../../Components/Spinner";
 import { BiCar, BiHeart, BiRefresh, BiShare, BiShield, BiShoppingBag, BiSolidHeart } from "react-icons/bi";
 import { MdOutlineShoppingCartCheckout } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import useCartAction from "../../hooks/cart/useCartAction";
+import useWishlistActions from "../../hooks/wishList/useWishlistAction";
 
 
 function ProductActions({ product }) {

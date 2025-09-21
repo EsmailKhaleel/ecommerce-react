@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import Spinner from "../../Components/Spinner";
-import useWindowWidth from "./useWindowWidth";
-import useCategories from "../../hooks/useCategories";
+import useWindowWidth from "../../hooks/useWindowWidth";
+import useCategories from "../../hooks/products/useCategories";
 
 
 function CategoryFilter({ setShowFilters }) {

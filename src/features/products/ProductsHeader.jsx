@@ -1,10 +1,10 @@
 import { motion } from "framer-motion"
 import { useTranslation } from 'react-i18next';
 import { BiSearch, BiFilter } from 'react-icons/bi';
-import useDebouncedValue from "./useDebouncedValue";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm } from '../../StateManagement/Slices/FilterSlice';
+import useDebouncedValue from "../../hooks/useDebouncedValue";
 
 function ProductsHeader({ showFilters, setShowFilters }) {
     const dispatch = useDispatch();

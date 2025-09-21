@@ -9,7 +9,7 @@ import ProductGrid from '../../features/products/ProductGrid';
 import ProductsLoading from '../../features/products/ProductsLoading';
 import NoProductsFound from '../../features/products/NoProductsFound';
 import Pagination from '../../Components/Pagination/Pagination';
-import { useProducts } from '../../features/products/useProducts';
+import { useProducts } from '../../hooks/products/useProducts';
 
 function Products() {
     const { t } = useTranslation();

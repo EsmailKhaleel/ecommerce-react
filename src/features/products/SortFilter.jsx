@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleSection, setSortOrder } from '../../StateManagement/Slices/FilterSlice';
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { AnimatePresence, motion } from 'framer-motion';
-import useWindowWidth from './useWindowWidth';
+import useWindowWidth from '../../hooks/useWindowWidth';
 
 function SortFilter({ setShowFilters }) {
     const dispatch = useDispatch();

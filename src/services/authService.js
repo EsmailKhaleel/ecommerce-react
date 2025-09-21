@@ -1,35 +1,5 @@
+import { handleApiError } from './apiError';
 import axiosInstance from './axiosInstance';
-
-class ApiError extends Error {
-  constructor(message, status, data = null) {
-    super(message);
-    this.name = 'ApiError';
-    this.status = status;
-    this.data = data;
-  }
-}
-
-export const handleApiError = (error, customMessage) => {
-  if (error.response) {
-    // Server responded with an error status
-    throw new ApiError(
-      error.response.data.message || customMessage,
-      error.response.status,
-      error.response.data
-    );
-  } else if (error.request) {
-    // Request was made but no response received
-    throw new ApiError(
-      'No response from server. Please check your connection.',
-      'NETWORK_ERROR'
-    );
-  } else {
-    throw new ApiError(
-      error.message || 'An unexpected error occurred',
-      'CLIENT_ERROR'
-    );
-  }
-};
 
 // Auth API calls
 export const loginUser = async (email, password) => {
@@ -75,44 +45,6 @@ export const handleGoogleCallback = async (code) => {
     return response;
   } catch (error) {
     handleApiError(error, 'Google authentication failed.');
-  }
-};
-
-// Cart API calls
-export const addToCart = async (productId, quantity = 1) => {
-  try {
-    const response = await axiosInstance.post('/auth/cart', { productId, quantity });
-    return response;
-  } catch (error) {
-    handleApiError(error, 'Failed to add item to cart.');
-  }
-};
-
-export const removeFromCart = async (productId) => {
-  try {
-    const response = await axiosInstance.delete(`/auth/cart/${productId}`);
-    return response;
-  } catch (error) {
-    handleApiError(error, 'Failed to remove item from cart.');
-  }
-};
-
-export const clearCart = async () => {
-  try {
-    const response = await axiosInstance.delete('/auth/cart');
-    return response;
-  } catch (error) {
-    handleApiError(error, 'Failed to clear cart.');
-  }
-};
-
-// Wishlist API calls
-export const toggleWishlist = async (productId) => {
-  try {
-    const response = await axiosInstance.post('/auth/wishlist', { productId });
-    return response;
-  } catch (error) {
-    handleApiError(error, 'Failed to update wishlist.');
   }
 };
 

@@ -1,8 +1,7 @@
 import { useEffect, useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { getWishlistAsync, toggleWishlistItemAsync, clearWishlistAsync } from "../../StateManagement/Slices/WishlistSlice";
-import { useAuth } from "../../Context/useAuth";
+import { getWishlistAsync, clearWishlistAsync } from "../../StateManagement/Slices/WishlistSlice";
+import { useAuth } from "../../Context/useAuth"
 
 export default function useWishlist() {
   const dispatch = useDispatch();
@@ -13,19 +12,6 @@ export default function useWishlist() {
   useEffect(() => {
     if (user) dispatch(getWishlistAsync());
   }, [dispatch, user]);
-
-  const handleToggleWishlist = useCallback(async (productId) => {
-    if (!user) {
-      toast.error("Please login to manage your wishlist");
-      return;
-    }
-    if (status.toggleItem === "loading") return;
-    try {
-      await dispatch(toggleWishlistItemAsync(productId)).unwrap();
-    } catch (error) {
-      console.error("Error toggling wishlist:", error);
-    }
-  }, [dispatch, status.toggleItem, user]);
 
   const handleClearWishlist = useCallback(async () => {
     if (status.clearWishlist === "loading") return;
@@ -43,7 +29,6 @@ export default function useWishlist() {
     status,
     showConfirmClear,
     setShowConfirmClear,
-    handleToggleWishlist,
     handleClearWishlist,
   };
 }

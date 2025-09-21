@@ -6,8 +6,6 @@ import { store } from "./StateManagement/store";
 import "react-toastify/dist/ReactToastify.css";
 import ToastWrapper from "./Components/ToastWrapper";
 
-
-
 const AppProviders = ({ children }) => {
     const queryClient = new QueryClient();
     

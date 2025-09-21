@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { getGroupedProducts } from "../services/productsService";
+import { getGroupedProducts } from "../../services/productsService";
 
-export default function useGroupedProducts()  {
+export default function useProductsByCategory()  {
   return useQuery({
     queryKey: ['products', 'grouped'],
     queryFn: getGroupedProducts,

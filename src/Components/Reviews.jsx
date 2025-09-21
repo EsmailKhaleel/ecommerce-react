@@ -1,48 +1,23 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BiStar, BiSolidStar } from 'react-icons/bi';
-import axiosInstance from '../services/axiosInstance';
 import { useAuth } from '../Context/useAuth';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import { useReviews } from '../hooks/reviews/useReviews';
+import { useReviewMutation } from '../hooks/reviews/useReviewMutation';
 
 function Reviews({ productId }) {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState('');
-    const queryClient = useQueryClient();
 
     // Fetch reviews with optimized query config
-    const { data: reviewsData, isLoading: isLoadingReviews } = useQuery({
-        queryKey: ['reviews', productId],
-        queryFn: async () => {
-            const { data } = await axiosInstance.get(`/reviews?productId=${productId}`);
-            return data;
-        },
-        staleTime: 30000,
-        cacheTime: 5 * 60 * 1000,
-        refetchOnWindowFocus: false,
-    });
+    const { data: reviews , isLoading: isLoadingReviews } = useReviews(productId);
 
     // Add review mutation
-    const addReviewMutation = useMutation({
-        mutationFn: async (reviewData) => {
-            const { data } = await axiosInstance.post('/reviews', reviewData);
-            return data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['reviews', productId]);
-            queryClient.invalidateQueries(['productRating', productId]);
-            toast.success(t('reviews.submitted'));
-            setComment('');
-            setRating(5);
-        },
-        onError: () => {
-            toast.error(t('reviews.error'));
-        }
-    });
+    const addReviewMutation = useReviewMutation(productId);
 
     const handleSubmitReview = (e) => {
         e.preventDefault();
@@ -55,6 +30,15 @@ function Reviews({ productId }) {
             rating,
             comment,
             userName: user.name || 'Anonymous',
+        }, {
+            onSuccess: () => {
+                toast.success(t('reviews.submitted'));
+                setComment('');
+                setRating(5);
+            },
+            onError: () => {
+                toast.error(t('reviews.error'));
+            }
         });
     };
 
@@ -123,12 +107,12 @@ function Reviews({ productId }) {
             </form>
 
             {/* Reviews List */}
-            {reviewsData.reviews.length > 0 && <div className="space-y-6">
+            {reviews.length > 0 && <div className="space-y-6">
                 <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
                     {t('reviews.customerReviews')}
                 </h3>
                 <AnimatePresence>
-                    {reviewsData?.reviews.map((review) => (
+                    {reviews.map((review) => (
                         <motion.div
                             key={review._id}
                             initial={{ opacity: 0, y: 20 }}

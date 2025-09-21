@@ -1,6 +1,8 @@
+import { createPortal } from "react-dom"
+
 export default function WishlistModalConfirm({ onCancel, onConfirm, isLoading }) {
   return (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur flex items-center justify-center z-50 p-4">
+    createPortal(<div className="fixed inset-0 bg-black/30 backdrop-blur flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
         <h3 className="text-lg font-semibold mb-4 dark:text-white">Clear Wishlist?</h3>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
@@ -26,6 +28,6 @@ export default function WishlistModalConfirm({ onCancel, onConfirm, isLoading })
           </button>
         </div>
       </div>
-    </div>
+    </div>, document.body)
   );
 }

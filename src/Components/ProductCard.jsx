@@ -1,27 +1,22 @@
 import { useNavigate } from 'react-router-dom';
-import { addToCartAsync } from '../StateManagement/Slices/CartSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BiHeart, BiShoppingBag, BiSolidHeart } from 'react-icons/bi';
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { MdLocalOffer } from 'react-icons/md';
 import placeholderImage from '../assets/unavailable.png';
-import { toast } from 'react-toastify';
-import { useAuth } from '../Context/useAuth';
-import { toggleWishlistItemAsync } from '../StateManagement/Slices/WishlistSlice';
 import Spinner from './Spinner';
 import { Rating } from './Rating';
 import { useTranslation } from 'react-i18next';
+import useCartAction from '../hooks/cart/useCartAction'
+import useWishlistActions from '../hooks/wishList/useWishlistAction';
 
-function ProductCard({ product, onWishlistClick }) {
+function ProductCard({ product }) {
     const navigator = useNavigate();
-    const dispatch = useDispatch();
-    const { user } = useAuth();
     const { t } = useTranslation();
     const wishlistItems = useSelector(state => state.wishlist.items);
-    const wishlistLoadingItems = useSelector(state => state.wishlist.loadingItems);
-    const cartLoadingItems = useSelector(state => state.cart.loadingItems);
-    const isWishlistLoading = wishlistLoadingItems[product.id];
-    const isCartLoading = cartLoadingItems[product.id];
+    const { handleAddToCart, isCartLoading } = useCartAction(product.id);
+    const { handleToggleWishlist, isWishlistLoading } = useWishlistActions(product.id);
+
 
     function showProduct(id) {
         navigator(`/products/${id}`);
@@ -29,46 +24,8 @@ function ProductCard({ product, onWishlistClick }) {
 
     const handleWishlistClick = async (e) => {
         e.stopPropagation();
-
-        if (!user) {
-            toast.error(t('auth.loginRequired'));
-            return;
-        }
-
-        if (isWishlistLoading) return;
-
-        if (onWishlistClick) {
-            onWishlistClick();
-        } else {
-            try {
-                await dispatch(toggleWishlistItemAsync(product.id)).unwrap();
-            } catch (error) {
-                console.error('Error toggling wishlist:', error);
-                toast.error(t('common.error'));
-            }
-        }
+        await handleToggleWishlist();
     };
-
-    async function handleAddToCart(product) {
-        if (!user) {
-            toast.error(t('auth.loginToAddToCart'));
-            navigator('/auth');
-            return;
-        }
-
-        if (isCartLoading) return;
-
-        try {
-            await dispatch(addToCartAsync({
-                productId: product.id,
-                quantity: 1
-            })).unwrap();
-            toast.success(t('common.addedToCart'));
-        } catch (_error) {
-            console.error('Failed to add to cart:', _error);
-            toast.error(t('common.failedToAddToCart'));
-        }
-    }
 
     return (
         <div className="group bg-white dark:bg-gray-900 text-black dark:text-white rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 flex flex-col relative">
@@ -147,7 +104,7 @@ function ProductCard({ product, onWishlistClick }) {
                 </div>
 
                 <button
-                    onClick={() => handleAddToCart(product)}
+                    onClick={() => handleAddToCart(1)}
                     disabled={isCartLoading}
                     className="w-[150px] text-primary border border-primary hover:text-white dark:hover:text-white px-1 md:px-3 py-2 rounded-xl font-semibold
                                  hover:bg-primary transition-colors duration-300 flex items-center 

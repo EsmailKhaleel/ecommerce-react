@@ -11,7 +11,6 @@ import Account from '../Pages/Account/Account';
 import ProtectedRoute from './ProtectedRoute';
 import AddProduct from '../Pages/AddProduct/AddProduct';
 import Wishlist from '../Pages/Wishlist/Wishlist';
-import Checkout from '../Pages/Checkout/Checkout';
 import Success from '../Pages/Checkout/Success';
 import AuthSuccess from '../Pages/AuthSuccess/AuthSuccess';
 import AuthError from '../Pages/AuthError/AuthError';
@@ -32,7 +31,6 @@ const routing = createBrowserRouter([
             { path: "login", element: <Navigate to="/auth" replace /> },
             { path: "register", element: <Register /> },
             { path: "addProduct", element: <AddProduct /> },
-            { path: "checkout", element: <Checkout /> },
             { path: "checkout/success", element: <Success /> },
             { path: "auth/success", element: <AuthSuccess /> },
             { path: "auth/error", element: <AuthError /> },

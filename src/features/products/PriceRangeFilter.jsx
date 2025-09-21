@@ -3,7 +3,7 @@ import { setSelectedPriceRange, toggleSection } from '../../StateManagement/Slic
 import { BiChevronDown, BiChevronUp, } from 'react-icons/bi';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import useWindowWidth from './useWindowWidth';
+import useWindowWidth from '../../hooks/useWindowWidth';
 
 function PriceRangeFilter({ setShowFilters }) {
     const dispatch = useDispatch();

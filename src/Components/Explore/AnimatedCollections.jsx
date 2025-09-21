@@ -1,9 +1,9 @@
 import { motion } from "framer-motion"
 import Spinner from "../Spinner"
 import HorizontalCategorySection from "./HorizontalCategorySection";
-import useCategories from "../../hooks/useCategories";
-import useProductsByCategory from "../../hooks/useProductsByCategory";
 import Error from "./Error";
+import useProductsByCategory from "../../hooks/products/useProductsByCategory";
+import useCategories from "../../hooks/products/useCategories";
 
 function AnimatedCollections() {
         // Categories Query

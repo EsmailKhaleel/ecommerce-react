@@ -28,3 +28,31 @@
   font-family: "Red Rose", "Arial Rounded MT Bold", "Segoe UI", "Helvetica Neue", sans-serif, "Arial", "sans-serif";
   user-select: none;
 }
+/* toast.css */
+.Toastify__toast {
+  @apply rounded-2xl shadow-lg p-4 flex items-center gap-3 border transition-all;
+}
+
+.Toastify__toast--success {
+  @apply bg-accent-light dark:bg-accent-dark text-neutral-dark dark:text-neutral-light border-accent;
+}
+
+.Toastify__toast--error {
+  @apply bg-primary-light dark:bg-primary-dark text-neutral-dark dark:text-neutral-light border-primary;
+}
+
+.Toastify__toast--warning {
+  @apply bg-secondary-light dark:bg-secondary-dark text-neutral-dark dark:text-neutral-light border-secondary;
+}
+
+.Toastify__toast--info {
+  @apply bg-background-light dark:bg-background-dark text-neutral-dark dark:text-neutral-light border-background;
+}
+
+.Toastify__toast-body {
+  @apply flex items-center text-sm font-medium;
+}
+
+.Toastify__progress-bar {
+  @apply h-1 rounded-b-lg bg-accent-dark dark:bg-accent-light;
+}

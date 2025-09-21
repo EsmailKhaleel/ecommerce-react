@@ -3,7 +3,8 @@ import { useAuth } from "../../Context/useAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { addToCartAsync } from "../../StateManagement/Slices/CartSlice";
+import { addToCartAsync, getCartAsync, removeFromCartAsync } from "../../StateManagement/Slices/CartSlice";
+import { useState } from "react";
 
 export default function useCartAction(id) {
   const { user } = useAuth();
@@ -12,6 +13,7 @@ export default function useCartAction(id) {
   const navigate = useNavigate();
   const cartLoadingItems = useSelector((state) => state.cart.loadingItems);
   const isCartLoading = cartLoadingItems[id];
+  const [isRemoving, setIsRemoving] = useState(false);
 
   const handleAddToCart = async (newQuantity) => {
     if (!user) {
@@ -29,16 +31,36 @@ export default function useCartAction(id) {
           quantity: newQuantity,
         })
       ).unwrap();
-      toast.success(t("common.addedToCart"));
+      await dispatch(getCartAsync()).unwrap();
     } catch (error) {
       console.error("Failed to add to cart:", error);
-      toast.error(t("common.failedToAddToCart"));
     }
   };
-    
+
+  const handleRemoveCartItem = async () => {
+    if (!user) {
+      toast.error("Please login to manage your cart");
+      navigate("/auth");
+      return;
+    }
+
+    if (isRemoving) return;
+    setIsRemoving(true);
+
+    try {
+      await dispatch(removeFromCartAsync(id)).unwrap();
+      await dispatch(getCartAsync()).unwrap();
+    } catch (error) {
+      toast.error(error.message || "Failed to remove item");
+    } finally {
+      setIsRemoving(false);
+    }
+  };
 
   return {
     handleAddToCart,
-    isCartLoading
+    isCartLoading,
+    handleRemoveCartItem,
+    isRemoving
   };
 }

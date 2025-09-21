@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { clearCartAsync } from "../../StateManagement/Slices/CartSlice";
 import { useAuth } from "../../Context/useAuth";
-import { createCheckoutSession } from "../../services/api";
+import { createCheckoutSession } from "../../services/authService";
 
 export default function useCheckout() {
   const { user } = useAuth();

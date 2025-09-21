@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axiosInstance from '../../services/axiosInstance';
+import { getWishlist, toggleWishlist, clearWishlist } from '../../services/wishlistService';
 
 // Async thunks
 export const getWishlistAsync = createAsyncThunk(
     'wishlist/getWishlist',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get('/auth/wishlist');
+            const response = await getWishlist();
             return response.data.wishlist;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Failed to fetch wishlist');
@@ -18,7 +18,7 @@ export const toggleWishlistItemAsync = createAsyncThunk(
     'wishlist/toggleItem',
     async (productId, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.post('/auth/wishlist', { productId });
+            const response = await toggleWishlist(productId);
             return {
                 items: response.data.wishlist,
                 message: response.data.message,
@@ -37,7 +37,7 @@ export const clearWishlistAsync = createAsyncThunk(
     'wishlist/clearWishlist',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.delete('/auth/wishlist');
+            const response = await clearWishlist();
             return {
                 items: response.data.wishlist,
                 message: response.data.message
@@ -61,7 +61,7 @@ const wishlistSlice = createSlice({
         message: null
     },
     reducers: {
-        clearWishlist: (state) => {
+        clearWishlistReducer: (state) => {
             state.items = [];
         }
     },
@@ -119,5 +119,5 @@ const wishlistSlice = createSlice({
     }
 });
 
-export const { clearWishlist } = wishlistSlice.actions;
+export const { clearWishlistReducer } = wishlistSlice.actions;
 export default wishlistSlice.reducer;

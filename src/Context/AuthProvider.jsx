@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { loginUser, registerUser, getCurrentUser, toggleWishlist, getGoogleAuthUrl } from '../services/api';
+import { loginUser, registerUser, getCurrentUser, getGoogleAuthUrl } from '../services/authService';
 import { AuthContext } from './AuthContext';
 import { useDispatch } from 'react-redux';
 import { setCart } from '../StateManagement/Slices/CartSlice';
 import axiosInstance from "../services/axiosInstance";
+import { toggleWishlist } from "../services/wishlistService";
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);

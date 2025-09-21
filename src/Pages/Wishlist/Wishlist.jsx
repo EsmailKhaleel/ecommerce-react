@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 import ProductCard from "../../Components/ProductCard";
 import EmptyWishlist from "../../features/wishlist/EmptyWishlist";
-import useWishlist from "../../features/wishlist/useWishlist";
 import WishlistModalConfirm from "../../features/wishlist/WishlistModalConfirm";
 import ProductsLoading from "../../features/products/ProductsLoading";
 import WishlistHeading from "../../features/wishlist/WishlistHeading";
+import useWishlist from "../../hooks/wishList/useWishlist";
 
 function Wishlist() {
   const {
@@ -13,7 +13,6 @@ function Wishlist() {
     status,
     showConfirmClear,
     setShowConfirmClear,
-    handleToggleWishlist,
     handleClearWishlist,
   } = useWishlist();
 
@@ -47,7 +46,6 @@ function Wishlist() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onWishlistClick={() => handleToggleWishlist(product.id)}
                 isInWishlist={true}
               />
             ))}

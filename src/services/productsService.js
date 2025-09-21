@@ -1,4 +1,4 @@
-import { handleApiError } from "./api";
+import { handleApiError } from "./apiError";
 import axiosInstance from "./axiosInstance";
 
 // Get single product details

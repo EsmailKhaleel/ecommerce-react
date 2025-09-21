@@ -1,4 +1,3 @@
-import useRelatedProducts from "./useRelatedProducts";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { motion } from "framer-motion";
 import ProductCardSkeleton from "../../Components/ProductCardSkeleton";
@@ -7,6 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import useRelatedProducts from "../../hooks/products/useRelatedProducts";
 
 function RelatedProductsCarousel({ product }) {
     const { data: relatedProducts, isLoading: relatedLoading } = useRelatedProducts(product);

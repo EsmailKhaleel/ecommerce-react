@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { BiError } from 'react-icons/bi';
 import Reviews from '../../Components/Reviews';
-import useProduct from "./useProduct";
 import ProductBreadcrumbs from "./ProductBreadcrumbs";
 import ProductGallery from "./ProductGallery";
 import ProductDetailsSkeleton from "../../Components/ProductDetailsSkeleton";
@@ -12,6 +11,7 @@ import RelatedProductsCarousel from "./RelatedProductsCarousel";
 import Expander from "../../Components/Expander";
 import ProductActions from './ProductActions';
 import MobileBackButton from '../../Components/MobileBackButton';
+import useProduct from '../../hooks/products/useProduct';
 
 function ProductDetails() {
     const { id } = useParams();

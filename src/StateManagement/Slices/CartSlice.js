@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { addToCart, removeFromCart, clearCart } from '../../services/api';
 import { toast } from 'react-toastify';
-import axiosInstance from '../../services/axiosInstance';
+import { addToCart, clearCart, getCart, removeFromCart } from '../../services/cartService';
 
 // Async thunks
 export const addToCartAsync = createAsyncThunk(
@@ -45,7 +44,7 @@ export const getCartAsync = createAsyncThunk(
     'cart/getCart',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get('/auth/cart');
+            const response = await getCart();
             console.log('Fetched cart:', response.data.cart);
             return response.data.cart;
         } catch (error) {
@@ -86,6 +85,7 @@ const cartSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            // Add to cart
             .addCase(addToCartAsync.pending, (state, action) => {
                 state.status.addToCart = 'loading';
                 // Set loading state for specific product
@@ -105,6 +105,7 @@ const cartSlice = createSlice({
                 state.error = action.payload.message;
                 toast.error(action.payload.message || 'Failed to update cart');
             })
+            // Remove from cart
             .addCase(removeFromCartAsync.pending, (state, action) => {
                 state.status.removeFromCart = 'loading';
                 // Set loading state for specific product
@@ -124,6 +125,7 @@ const cartSlice = createSlice({
                 state.error = action.payload.message;
                 toast.error(action.payload.message || 'Failed to remove item');
             })
+            // Get cart
             .addCase(getCartAsync.pending, (state) => {
                 state.status.getCart = 'loading';
             })
@@ -136,6 +138,7 @@ const cartSlice = createSlice({
                 state.error = action.payload;
                 toast.error(action.payload || 'Failed to fetch cart');
             })
+            // Clear cart
             .addCase(clearCartAsync.pending, (state) => {
                 state.status.clearCart = 'loading';
                 state.error = null;

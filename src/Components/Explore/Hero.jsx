@@ -34,7 +34,7 @@ function Hero() {
                     centeredSlides={true}
                     dir={i18n.dir()}
                     autoplay={{
-                        delay: 2000,
+                        delay: 3000,
                         disableOnInteraction: false,
                     }}
                     pagination={{
