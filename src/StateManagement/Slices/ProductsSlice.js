@@ -42,7 +42,7 @@ export const fetchProducts = createAsyncThunk(
 );
 
 export const productsSlice = createSlice({
-  name: 'cart',
+  name: 'products',
   initialState,
   extraReducers: (builder) => {
     builder
@@ -67,7 +67,6 @@ export const productsSlice = createSlice({
           state.limit = action.payload.products.length;
           state.totalPages = 1;
         }
-        console.log("Updated Products:", state.products);
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = 'failed';

@@ -10,11 +10,21 @@ export const getProduct = async (productId) => {
         handleApiError(error, 'Failed to fetch product details.');
     }
 };
-// Get Products Categories
+// Get Products Categories (categories that currently have products)
 export const getCategories = async () => {
   try {
     const response = await axiosInstance.get('/products/categories');
     return response.data.categories;
+  } catch (error) {
+    handleApiError(error, 'Failed to fetch categories.');
+  }
+};
+
+// Every category the backend schema accepts, for admin product forms
+export const getAllowedCategories = async () => {
+  try {
+    const response = await axiosInstance.get('/products/categories');
+    return response.data.allCategories || response.data.categories || [];
   } catch (error) {
     handleApiError(error, 'Failed to fetch categories.');
   }

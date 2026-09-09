@@ -28,6 +28,13 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Error loading user:', error);
+            // A rejected token must not linger, or the app stays stuck in a
+            // half-authenticated state on every reload
+            if (error.status === 401) {
+                localStorage.removeItem('token');
+                setToken(null);
+                setUser(null);
+            }
         } finally {
             setLoading(false);
         }
@@ -58,7 +65,9 @@ export const AuthProvider = ({ children }) => {
             toast.success('Successfully signed in!');
             return userData;
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to sign in');
+            // Services throw ApiError, which carries the server message on
+            // .message rather than on .response
+            toast.error(error.message || 'Failed to sign in');
             return null;
         }
     };
@@ -77,7 +86,7 @@ export const AuthProvider = ({ children }) => {
             toast.success('Successfully registered!');
             return user;
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to register');
+            toast.error(error.message || 'Failed to register');
             return null;
         }
     };
@@ -122,7 +131,7 @@ export const AuthProvider = ({ children }) => {
             }));
             toast.success('Wishlist updated!');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to update wishlist');
+            toast.error(error.message || 'Failed to update wishlist');
         }
     };
 

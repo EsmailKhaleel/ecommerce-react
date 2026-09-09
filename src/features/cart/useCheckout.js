@@ -56,9 +56,8 @@ export default function useCheckout() {
       window.location.href = response.data.url;
     } catch (error) {
       console.error("Checkout error:", error);
-      toast.error(
-        error.response?.data?.error || "Error creating checkout session"
-      );
+      // Services throw ApiError, which exposes the server message on .message
+      toast.error(error.message || "Error creating checkout session");
     } finally {
       setIsProcessing(false);
     }

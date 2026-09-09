@@ -1,16 +1,24 @@
 import { useState } from "react";
 import { Formik, Form, ErrorMessage, Field } from "formik";
+import { useQuery } from "@tanstack/react-query";
 import MyCustomField from "../../Components/MyCustomField";
 import { AddProductSchema } from "../../utils/yupValidationSchema";
 import axiosInstance from "../../services/axiosInstance";
+import { getAllowedCategories } from "../../services/productsService";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../../Context/useAuth";
 
 const AddProduct = () => {
     const { user } = useAuth();
-    console.log("user in AddProduct:", user);
     const isAdmin = user && user?.role === "admin";
+
+    // Offer exactly the categories the backend schema accepts
+    const { data: allowedCategories = [] } = useQuery({
+        queryKey: ['allowedCategories'],
+        queryFn: getAllowedCategories,
+        staleTime: 10 * 60 * 1000,
+    });
     const [imagePreview, setImagePreview] = useState(null);
     const [image, setImage] = useState("");
     const [additionalImages, setAdditionalImages] = useState([]);
@@ -48,8 +56,7 @@ const AddProduct = () => {
                 const res = await axios.post("https://api.cloudinary.com/v1_1/dxxkqw3bf/image/upload", formData);
                 additionalImageUrls.push(res.data.secure_url);
             }
-            console.log("product object:", { ...values, image, additionalImages });
-            const response = await axiosInstance.post("/products", {
+            await axiosInstance.post("/products", {
                 name: values.name,
                 price: values.price,
                 old_price: values.old_price,
@@ -60,15 +67,18 @@ const AddProduct = () => {
                 images: additionalImageUrls,
             });
             toast.success("Product added successfully");
-            console.log("Product added successfully:", response.data);
             resetForm();
             setImagePreview(null);
             setImage("");
             setAdditionalImages([]);
             setAdditionalImagePreviews([]);
         } catch (error) {
-            console.log("Error submitting form:", error);
-            toast.error("Failed to submit product. Please try again.");
+            console.error("Error submitting form:", error);
+            toast.error(
+                error.response?.data?.message
+                || error.response?.data?.error
+                || "Failed to submit product. Please try again."
+            );
         }
         setSubmitting(false);
     };
@@ -149,10 +159,11 @@ const AddProduct = () => {
                                 className="w-full px-4 py-2 rounded-lg bg-stone-100 outline-none transition-all"
                             >
                                 <option value="">Select a category</option>
-                                <option value="digital">Digital</option>
-                                <option value="clothes">Clothes</option>
-                                <option value="other">Other</option>
-                                <option value="beauty">Beauty</option>
+                                {allowedCategories.map((category) => (
+                                    <option key={category} value={category}>
+                                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                                    </option>
+                                ))}
                             </Field>
                             <ErrorMessage name="category" component="div" className="text-red-500 text-sm mt-1" />
                         </div>

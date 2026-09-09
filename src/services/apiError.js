@@ -9,11 +9,16 @@ class ApiError extends Error {
 
 export const handleApiError = (error, customMessage) => {
   if (error.response) {
-    // Server responded with an error status
+    // The API reports failures as { message } in some modules and { error } in
+    // others, so accept either before falling back.
+    const data = error.response.data;
+    const serverMessage =
+      typeof data === 'string' ? data : data?.message || data?.error;
+
     throw new ApiError(
-      error.response.data.message || customMessage,
+      serverMessage || customMessage,
       error.response.status,
-      error.response.data
+      data
     );
   } else if (error.request) {
     // Request was made but no response received

@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import Layout from '../Layout/Layout';
 import Explore from '../Pages/Explore/Explore';
 import About from '../Pages/About/About';
@@ -15,8 +16,48 @@ import Success from '../Pages/Checkout/Success';
 import AuthSuccess from '../Pages/AuthSuccess/AuthSuccess';
 import AuthError from '../Pages/AuthError/AuthError';
 import ProductDetails from '../features/products/ProductDetails';
+import SpinnerBig from '../Components/SpinnerBig';
+
+// The admin area pulls in MUI, DataGrid and charts, so it is code-split away
+// from the customer bundle and only downloaded by admins who visit /admin.
+const AdminLayout = lazy(() => import('../features/admin/AdminLayout'));
+const AdminDashboard = lazy(() => import('../Pages/Admin/AdminDashboard'));
+const AdminProducts = lazy(() => import('../Pages/Admin/AdminProducts'));
+const AdminOrders = lazy(() => import('../Pages/Admin/AdminOrders'));
+const AdminCustomers = lazy(() => import('../Pages/Admin/AdminCustomers'));
+const AdminInventory = lazy(() => import('../Pages/Admin/AdminInventory'));
+const AdminCoupons = lazy(() => import('../Pages/Admin/AdminCoupons'));
+const AdminReviews = lazy(() => import('../Pages/Admin/AdminReviews'));
+const AdminAnalytics = lazy(() => import('../Pages/Admin/AdminAnalytics'));
+
+const adminFallback = (
+    <div className="flex items-center justify-center min-h-screen">
+        <SpinnerBig />
+    </div>
+);
 
 const routing = createBrowserRouter([
+    {
+        path: "admin",
+        element: (
+            <ProtectedRoute requireAdmin>
+                <Suspense fallback={adminFallback}>
+                    <AdminLayout />
+                </Suspense>
+            </ProtectedRoute>
+        ),
+        errorElement: <NotFound />,
+        children: [
+            { index: true, element: <AdminDashboard /> },
+            { path: "products", element: <AdminProducts /> },
+            { path: "orders", element: <AdminOrders /> },
+            { path: "customers", element: <AdminCustomers /> },
+            { path: "inventory", element: <AdminInventory /> },
+            { path: "coupons", element: <AdminCoupons /> },
+            { path: "reviews", element: <AdminReviews /> },
+            { path: "analytics", element: <AdminAnalytics /> },
+        ]
+    },
     {
         path: "", element: <Layout />,
         errorElement: <NotFound />,
@@ -30,7 +71,10 @@ const routing = createBrowserRouter([
             { path: "auth", element: <Login /> },
             { path: "login", element: <Navigate to="/auth" replace /> },
             { path: "register", element: <Register /> },
-            { path: "addProduct", element: <AddProduct /> },
+            {
+                path: "addProduct",
+                element: <ProtectedRoute requireAdmin><AddProduct /></ProtectedRoute>
+            },
             { path: "checkout/success", element: <Success /> },
             { path: "auth/success", element: <AuthSuccess /> },
             { path: "auth/error", element: <AuthError /> },
