@@ -13,6 +13,8 @@ import useWishlistActions from '../hooks/wishList/useWishlistAction';
 function ProductCard({ product }) {
     const navigator = useNavigate();
     const { t } = useTranslation();
+    const cartItems = useSelector(state => state.cart.items);
+    const quantity = cartItems.find(item => (item.product?.id || item.product?._id) === product.id)?.quantity || 0;
     const wishlistItems = useSelector(state => state.wishlist.items);
     const { handleAddToCart, isCartLoading } = useCartAction(product.id);
     const { handleToggleWishlist, isWishlistLoading } = useWishlistActions(product.id);
@@ -39,6 +41,8 @@ function ProductCard({ product }) {
 
             {/* Favorite Button */}
             <button
+                aria-label="Toggle wishlist"
+                disabled={isWishlistLoading}
                 onClick={handleWishlistClick}
                 className="absolute top-4 right-4 z-10 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md hover:scale-110 transition-transform"
             >
@@ -60,6 +64,7 @@ function ProductCard({ product }) {
 
             {/* View Details Button */}
             <button
+                aria-label={`View ${product.name}`}
                 onClick={() => showProduct(product.id)}
                 className="absolute top-15 right-4 z-10 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md hover:scale-110 transition-transform"
             >
@@ -69,6 +74,7 @@ function ProductCard({ product }) {
             {/* Image Container */}
             <div className="relative overflow-hidden p-4 bg-gray-50 dark:bg-gray-800/50 h-64 group-hover:bg-gray-100 dark:group-hover:bg-gray-800 transition-colors">
                 <img
+                    loading="lazy"
                     src={product.image}
                     alt={product.name}
                     onError={(e) => {
@@ -104,9 +110,9 @@ function ProductCard({ product }) {
                 </div>
 
                 <button
-                    onClick={() => handleAddToCart(1)}
-                    disabled={isCartLoading}
-                    className="w-[150px] text-primary border border-primary hover:text-white dark:hover:text-white px-1 md:px-3 py-2 rounded-xl font-semibold
+                    onClick={() => handleAddToCart(quantity + 1)}
+                    disabled={isCartLoading || product.availableStock === 0}
+                    className="w-full text-primary border border-primary hover:text-white dark:hover:text-white px-1 md:px-3 py-2 rounded-xl font-semibold
                                  hover:bg-primary transition-colors duration-300 flex items-center 
                                  justify-center gap-1.5 text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -115,7 +121,7 @@ function ProductCard({ product }) {
                     ) : (
                         <>
                             <BiShoppingBag className="text-lg flex-shrink-0" />
-                            {t('common.addToCart')}
+                            {product.availableStock === 0 ? 'Unavailable' : t('common.addToCart')}
                         </>
                     )}
                 </button>

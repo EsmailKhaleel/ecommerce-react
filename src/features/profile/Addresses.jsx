@@ -1,0 +1,19 @@
+import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import axiosInstance from '../../services/axiosInstance';
+
+const empty = { type: 'both', firstName: '', lastName: '', company: '', taxId: '', addressLine1: '', addressLine2: '', city: '', state: '', postalCode: '', country: 'EG', phone: '', isDefault: false };
+const unwrap = response => response.data.data || response.data;
+
+export default function Addresses() {
+  const client = useQueryClient(); const [draft, setDraft] = useState(empty); const [editing, setEditing] = useState(null);
+  const query = useQuery({ queryKey: ['addresses'], queryFn: async () => { const data = unwrap(await axiosInstance.get('/addresses/my')); return data.addresses || data; } });
+  const save = useMutation({ mutationFn: async value => editing ? axiosInstance.put(`/addresses/${editing}`, value) : axiosInstance.post('/addresses', value), onSuccess: () => { toast.success('Address saved'); setDraft(empty); setEditing(null); client.invalidateQueries({ queryKey: ['addresses'] }); }, onError: error => toast.error(error.response?.data?.message || 'Could not save address') });
+  const remove = useMutation({ mutationFn: id => axiosInstance.delete(`/addresses/${id}`), onSuccess: () => client.invalidateQueries({ queryKey: ['addresses'] }) });
+  const fields = [['firstName', 'First name'], ['lastName', 'Last name'], ['company', 'Company'], ['taxId', 'Tax / VAT ID'], ['addressLine1', 'Address line 1'], ['addressLine2', 'Address line 2'], ['city', 'City'], ['state', 'State'], ['postalCode', 'Postal code'], ['country', 'Country code'], ['phone', 'Phone']];
+  return <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 space-y-6"><h2 className="text-3xl font-bold">Addresses</h2>
+    <div className="grid md:grid-cols-2 gap-4">{(query.data || []).map(address => <article key={address._id} className="rounded-lg border dark:border-gray-700 p-4"><div className="flex justify-between"><strong>{address.firstName} {address.lastName}</strong>{address.isDefault && <span className="text-xs text-primary">Default</span>}</div><p>{address.addressLine1}, {address.city}, {address.state} {address.postalCode}, {address.country}</p><p className="text-sm text-gray-500">{address.type}</p><div className="flex gap-3 mt-3"><button className="underline" onClick={() => { setEditing(address._id); setDraft({ ...empty, ...address }); }}>Edit</button><button className="underline text-red-600" onClick={() => remove.mutate(address._id)}>Delete</button></div></article>)}</div>
+    <form onSubmit={event => { event.preventDefault(); save.mutate(draft); }} className="grid sm:grid-cols-2 gap-3"><h3 className="font-bold text-xl sm:col-span-2">{editing ? 'Edit address' : 'Add address'}</h3><select value={draft.type} onChange={event => setDraft(value => ({ ...value, type: event.target.value }))} className="rounded border p-2 bg-transparent"><option value="shipping">Shipping</option><option value="billing">Billing</option><option value="both">Billing and shipping</option></select>{fields.map(([name, label]) => <input key={name} required={!['company', 'taxId', 'addressLine2', 'phone'].includes(name)} value={draft[name] || ''} placeholder={label} onChange={event => setDraft(value => ({ ...value, [name]: event.target.value }))} className="rounded border p-2 bg-transparent" />)}<label className="flex gap-2 items-center"><input type="checkbox" checked={draft.isDefault} onChange={event => setDraft(value => ({ ...value, isDefault: event.target.checked }))} />Default address</label><div className="flex gap-2"><button disabled={save.isPending} className="rounded bg-black text-white px-5 py-2">Save</button>{editing && <button type="button" onClick={() => { setEditing(null); setDraft(empty); }} className="underline">Cancel</button>}</div></form>
+  </section>;
+}

@@ -1,67 +1,49 @@
-import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { clearCartAsync } from "../../StateManagement/Slices/CartSlice";
-import { useAuth } from "../../Context/useAuth";
-import { createCheckoutSession } from "../../services/authService";
+import { useState, useEffect, useRef } from 'react';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAuth } from '../../Context/useAuth';
+import { createCheckoutSession } from '../../services/authService';
+import axiosInstance from '../../services/axiosInstance';
 
 export default function useCheckout() {
   const { user } = useAuth();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
   const [searchParams] = useSearchParams();
-  const cartItems = useSelector((state) => state.cart.items);
+  const { items: cartItems, loadingItems, status } = useSelector(state => state.cart);
   const [isProcessing, setIsProcessing] = useState(false);
-
-  // Handle Stripe redirect outcomes
-  useEffect(() => {
-    const handleSuccess = async () => {
-      if (
-        location.pathname === "/checkout/success" ||
-        window.location.href.includes("/checkout/success")
-      ) {
-        toast.success("Payment successful! Your order has been placed.");
-        try {
-          await dispatch(clearCartAsync()).unwrap();
-        } catch (error) {
-          console.error('Failed to clear cart:', error);
-          toast.error('Failed to clear cart');
-        }
-        navigate("/", { replace: true });
-      }
-    };
-    
-    handleSuccess();
-
-    if (
-      (location.pathname === "/cart" &&
-        searchParams.get("canceled") === "true") ||
-      window.location.href.includes("/cart?canceled=true")
-    ) {
-      toast.info(
-        "Order canceled -- continue shopping and checkout when ready."
-      );
-      navigate("/cart", { replace: true });
-    }
-  }, [dispatch, navigate, location, searchParams]);
-
-  const handleCheckout = async () => {
-    if (!user || isProcessing) return;
+  const locked = useRef(false);
+  const storageKey = `checkout:${user?._id}`;
+  const cancelCheckout = async () => {
+    if (locked.current) return;
+    locked.current = true;
     setIsProcessing(true);
-
     try {
-      const response = await createCheckoutSession(cartItems, user);
-      window.location.href = response.data.url;
+      await axiosInstance.post('/stripe/cancel-checkout');
+      sessionStorage.removeItem(storageKey);
+      toast.info('Previous checkout closed. You can check out again.');
+      navigate('/cart', { replace: true });
     } catch (error) {
-      console.error("Checkout error:", error);
-      // Services throw ApiError, which exposes the server message on .message
-      toast.error(error.message || "Error creating checkout session");
-    } finally {
+      toast.error(error.response?.data?.message || error.response?.data?.error || 'Could not close checkout. Please retry.');
+    } finally { locked.current = false; setIsProcessing(false); }
+  };
+  useEffect(() => {
+    if (searchParams.get('canceled') === 'true') toast.info('Payment was not completed. Resume checkout or close it below to change your cart.');
+  }, [searchParams]);
+  const handleCheckout = async (couponCode = '') => {
+    if (!user || locked.current || !cartItems.length || Object.keys(loadingItems).length || status.clearCart === 'loading') return;
+    locked.current = true;
+    setIsProcessing(true);
+    try {
+      let key = sessionStorage.getItem(storageKey);
+      if (!key) { key = crypto.randomUUID(); sessionStorage.setItem(storageKey, key); }
+      const response = await createCheckoutSession(cartItems, user, key, couponCode.trim());
+      window.location.assign(response.data.url);
+    } catch (error) {
+      toast.error(error.message || 'Could not start checkout');
+      locked.current = false;
       setIsProcessing(false);
     }
   };
-
-  return { handleCheckout, isProcessing };
+  return { handleCheckout, cancelCheckout, isProcessing: isProcessing || Object.keys(loadingItems).length > 0 || status.clearCart === 'loading' };
 }

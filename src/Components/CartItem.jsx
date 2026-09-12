@@ -9,7 +9,7 @@ function CartItem({ cartItem }) {
     const quantity = cartItem.quantity;
     const [loadingAction, setLoadingAction] = useState(null); // 'increase', 'decrease', or null
 
-    const { handleAddToCart, isCartLoading, handleRemoveCartItem, isRemoving } = useCartAction(cartItem.product.id);
+    const { handleAddToCart, isCartLoading, handleRemoveCartItem, isRemoving } = useCartAction(cartItem.product.id, cartItem.variant?._id);
 
     const handleQuantityChange = async (newQuantity, action) => {
         if (newQuantity < 1) {
@@ -37,6 +37,7 @@ function CartItem({ cartItem }) {
                     />
                     <div className="text-center md:text-left">
                         <h3 className="text-sm md:text-base font-semibold">{cartItem.product.name}</h3>
+                        {cartItem.variant && <p className="text-xs font-medium text-primary">{cartItem.variant.name} · {cartItem.variant.options?.map(option => option.value).join(' / ')}</p>}
                         <p className="text-xs text-gray-500 dark:text-gray-400 text-nowrap text-ellipsis w-[60px] md:w-[250px] overflow-hidden">
                             {cartItem.product.description}
                         </p>
@@ -45,7 +46,7 @@ function CartItem({ cartItem }) {
             </td>
             <td className="py-4 px-2 text-center">
                 <p className="font-semibold text-sm md:text-base">
-                    ${(cartItem.product.price || 0).toFixed(2)}
+                    ${(cartItem.variant?.price ?? cartItem.product.price ?? 0).toFixed(2)}
                 </p>
             </td>
             <td className="py-4 px-2 text-center">
@@ -53,6 +54,7 @@ function CartItem({ cartItem }) {
                     {/* Quantity Controls */}
                     <div className="flex items-center justify-center space-x-2">
                         <button
+                            aria-label={`Decrease quantity of ${cartItem.product.name}`}
                             onClick={() => handleQuantityChange(quantity - 1, 'decrease')}
                             className="px-2 py-2 flex place-items-center bg-gray-200 dark:bg-gray-700 rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             disabled={loadingAction === 'decrease' || loadingAction === 'increase' || isRemoving || isCartLoading}
@@ -67,6 +69,7 @@ function CartItem({ cartItem }) {
                             {quantity}
                         </span>
                         <button
+                            aria-label={`Increase quantity of ${cartItem.product.name}`}
                             onClick={() => handleQuantityChange(quantity + 1, 'increase')}
                             className="px-2 py-2 flex place-items-center bg-gray-200 dark:bg-gray-700 rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             disabled={loadingAction === 'decrease' || loadingAction === 'increase' || isRemoving || isCartLoading}
@@ -80,12 +83,13 @@ function CartItem({ cartItem }) {
                     </div>
                     {/* Total Price */}
                     <p className="font-semibold text-sm md:text-base">
-                        ${(cartItem.product.price * quantity || 0).toFixed(2)}
+                        ${((cartItem.variant?.price ?? cartItem.product.price) * quantity || 0).toFixed(2)}
                     </p>
                 </div>
             </td>
             <td className="py-4 px-2 text-center">
                 <button
+                    aria-label={`Remove ${cartItem.product.name} from cart`}
                     onClick={handleRemoveCartItem}
                     className="text-red-500 hover:text-red-600 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={loadingAction === 'decrease' || loadingAction === 'increase' || isRemoving}

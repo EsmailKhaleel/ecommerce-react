@@ -1,6 +1,8 @@
 import { format } from "../../utils/helpers"
 import { motion, AnimatePresence } from "framer-motion"
 import { FaChevronDown, FaBox, FaClock, FaMoneyBillWave } from "react-icons/fa"
+import { createReturn, downloadInvoice, requestRefund } from '../../services/invoiceService';
+import { toast } from 'react-toastify';
 
 function OrderCard({ order, isOpen, onToggle }) {
     return (
@@ -17,6 +19,10 @@ function OrderCard({ order, isOpen, onToggle }) {
         >
             <div 
                 className="flex flex-col sm:flex-row sm:items-center gap-4 cursor-pointer group"
+                role="button"
+                tabIndex={0}
+                aria-expanded={isOpen}
+                onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onToggle(); } }}
                 onClick={onToggle}
             >
                 <div className="flex-1 space-y-2">
@@ -48,7 +54,7 @@ function OrderCard({ order, isOpen, onToggle }) {
                     <span className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-full transition-colors ${
                         order.status === 'processing' 
                             ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 ring-1 ring-blue-600/20' 
-                            : order.status === 'completed' 
+                            : order.status === 'delivered'
                                 ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300 ring-1 ring-green-600/20' 
                                 : 'bg-gray-50 text-gray-700 dark:bg-gray-700 dark:text-gray-300 ring-1 ring-gray-600/20'
                     }`}>
@@ -137,6 +143,31 @@ function OrderCard({ order, isOpen, onToggle }) {
                                         ${order.totalAmount.toFixed(2)}
                                     </span>
                                 </div>
+                            </div>
+                            <div className="flex flex-wrap gap-3 mt-5">
+                                {order.invoiceId && (
+                                    <button type="button" className="px-4 py-2 rounded-md bg-primary text-white" onClick={() => downloadInvoice(order.invoiceId, `invoice-${order._id.slice(-8)}`).catch(error => toast.error(error.message))}>
+                                        Download invoice
+                                    </button>
+                                )}
+                                {['paid', 'partially_refunded'].includes(order.paymentStatus) && !order.refundRequested && (
+                                    <button type="button" className="px-4 py-2 rounded-md border border-red-500 text-red-600" onClick={async () => {
+                                        const reason = window.prompt('Why are you requesting a refund?');
+                                        if (!reason?.trim()) return;
+                                        try { await requestRefund(order._id, reason.trim()); toast.success('Refund request submitted'); }
+                                        catch (error) { toast.error(error.message); }
+                                    }}>
+                                        Request refund
+                                    </button>
+                                )}
+                                {order.status === 'delivered' && (
+                                    <button type="button" className="px-4 py-2 rounded-md border border-amber-500 text-amber-700" onClick={async () => {
+                                        const reason = window.prompt('Why are you returning these items?');
+                                        if (!reason?.trim()) return;
+                                        try { await createReturn(order, reason.trim()); toast.success('Return request created'); }
+                                        catch (error) { toast.error(error.message); }
+                                    }}>Return order items</button>
+                                )}
                             </div>
                         </motion.div>
                     </motion.div>

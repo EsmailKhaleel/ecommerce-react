@@ -8,10 +8,12 @@ import CartSummary from '../../features/cart/CartSummary';
 
 
 function Cart() {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
     const navigate = useNavigate();
-    const { items: cartItems, isLoading, totalPrice, cartItemsNumber } = useCart();
+    const { items: cartItems, isLoading, error, totalPrice, cartItemsNumber } = useCart();
 
+    if (loading) return <SpinnerBig />;
+    if (error) return <div role="alert" className="p-8 text-center"><p>{error}</p><button onClick={() => window.location.reload()}>Retry loading cart</button></div>;
     if (!user) return (
         <EmptyCart
             message={"Please login to view your cart"}

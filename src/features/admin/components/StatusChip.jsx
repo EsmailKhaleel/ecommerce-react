@@ -13,6 +13,7 @@ const COLORS = {
   paid: 'success',
   unpaid: 'warning',
   refunded: 'default',
+  partially_refunded: 'warning',
   // Inventory status
   in_stock: 'success',
   low_stock: 'warning',

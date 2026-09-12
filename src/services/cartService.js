@@ -2,18 +2,18 @@ import { handleApiError } from "./apiError";
 import axiosInstance from "./axiosInstance";
 
 // Cart API calls
-export const addToCart = async (productId, quantity = 1) => {
+export const addToCart = async (productId, quantity = 1, variantId) => {
   try {
-    const response = await axiosInstance.post('/auth/cart', { productId, quantity });
+    const response = await axiosInstance.post('/auth/cart', { productId, quantity, ...(variantId && { variantId }) });
     return response;
   } catch (error) {
     handleApiError(error, 'Failed to add item to cart.');
   }
 };
 
-export const removeFromCart = async (productId) => {
+export const removeFromCart = async (productId, variantId) => {
   try {
-    const response = await axiosInstance.delete(`/auth/cart/${productId}`);
+    const response = await axiosInstance.delete(`/auth/cart/${productId}`, { params: variantId ? { variantId } : undefined });
     return response;
   } catch (error) {
     handleApiError(error, 'Failed to remove item from cart.');

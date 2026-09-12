@@ -7,11 +7,12 @@ import { toast } from "react-toastify";
 export function useCart() {
   const { user } = useAuth();
   const dispatch = useDispatch();
-  const items = useSelector((state) => state.cart.items);
+  const { items, error, status } = useSelector((state) => state.cart);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
+      setIsLoading(true);
       dispatch(getCartAsync())
         .unwrap()
         .catch(() => toast.error("Error loading cart"))
@@ -22,7 +23,7 @@ export function useCart() {
   }, [user, dispatch]);
 
   const totalPrice = items.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
+    (sum, item) => sum + (item.variant?.price ?? item.product.price) * item.quantity,
     0
   );
 
@@ -31,5 +32,5 @@ export function useCart() {
     0
   );
 
-  return { items, isLoading, totalPrice, cartItemsNumber };
+  return { items, isLoading, error: status.getCart === 'failed' ? error : null, totalPrice, cartItemsNumber };
 }

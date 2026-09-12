@@ -12,6 +12,7 @@ import Expander from "../../Components/Expander";
 import ProductActions from './ProductActions';
 import MobileBackButton from '../../Components/MobileBackButton';
 import useProduct from '../../hooks/products/useProduct';
+import { useEffect, useState } from 'react';
 
 function ProductDetails() {
     const { id } = useParams();
@@ -19,6 +20,11 @@ function ProductDetails() {
 
     // Query product details
     const { data: product = {}, error, isLoading } = useProduct(id);
+    const [selectedVariantId, setSelectedVariantId] = useState('');
+    useEffect(() => {
+        setSelectedVariantId(product.variants?.[0]?._id || '');
+    }, [product.variants]);
+    const selectedVariant = product.variants?.find(variant => variant._id === selectedVariantId);
 
     if (isLoading) return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -55,8 +61,8 @@ function ProductDetails() {
                         className="order-2 lg:order-2 lg:sticky lg:top-8 lg:self-start"
                     >
                         <div className="rounded-lg p-4 lg:p-6">
-                            <ProductInfo product={product} />
-                            <ProductActions product={product} />
+                            <ProductInfo product={product} selectedVariant={selectedVariant} />
+                            <ProductActions product={product} selectedVariant={selectedVariant} selectedVariantId={selectedVariantId} onVariantChange={setSelectedVariantId} />
                         </div>
                     </motion.div>
                 </div>

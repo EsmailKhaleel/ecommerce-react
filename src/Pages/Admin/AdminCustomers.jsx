@@ -99,8 +99,7 @@ export default function AdminCustomers() {
             onChange={(e) => roleMutation.mutate({ id: params.row._id, role: e.target.value })}
             sx={{ width: 120 }}
           >
-            <MenuItem value="user">User</MenuItem>
-            <MenuItem value="admin">Admin</MenuItem>
+            {['user', 'support', 'fulfillment', 'inventory', 'finance', 'admin', ...(currentUser?.role === 'owner' ? ['owner'] : [])].map(option => <MenuItem key={option} value={option}>{option.replace('_', ' ')}</MenuItem>)}
           </TextField>
         );
       },
@@ -157,7 +156,7 @@ export default function AdminCustomers() {
         );
       },
     },
-  ], [currentUser?._id, roleMutation]);
+  ], [currentUser?._id, currentUser?.role, roleMutation]);
 
   return (
     <>
@@ -202,8 +201,7 @@ export default function AdminCustomers() {
             sx={{ minWidth: 160 }}
           >
             <MenuItem value="">All roles</MenuItem>
-            <MenuItem value="user">Users</MenuItem>
-            <MenuItem value="admin">Admins</MenuItem>
+            {['user', 'support', 'fulfillment', 'inventory', 'finance', 'admin', 'owner'].map(option => <MenuItem key={option} value={option}>{option.replace('_', ' ')}</MenuItem>)}
           </TextField>
         </Stack>
 

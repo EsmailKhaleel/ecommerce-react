@@ -23,10 +23,10 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
 
     if (!user) {
         // Remember where the user was headed so login can return them there
-        return <Navigate to="/auth" replace state={{ from: location.pathname }} />;
+        return <Navigate to="/auth" replace state={{ from: location.pathname + location.search }} />;
     }
 
-    if (requireAdmin && user.role !== 'admin') {
+    if (requireAdmin && !['owner', 'admin', 'finance', 'support', 'inventory', 'fulfillment'].includes(user.role)) {
         return <Navigate to="/" replace />;
     }
 

@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { loginUser, registerUser, getCurrentUser, getGoogleAuthUrl } from '../services/authService';
+import { loginUser, registerUser, getCurrentUser } from '../services/authService';
+import { useQueryClient } from '@tanstack/react-query';
 import { AuthContext } from './AuthContext';
 import { useDispatch } from 'react-redux';
 import { setCart } from '../StateManagement/Slices/CartSlice';
@@ -13,6 +14,7 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
+    const queryClient = useQueryClient();
 
     const loadUser = useCallback(async () => {
         try {
@@ -21,6 +23,7 @@ export const AuthProvider = ({ children }) => {
                 return;
             }
             const response = await getCurrentUser();
+            if (token !== localStorage.getItem('token')) return;
             setUser(response.data.user);
             // Update cart in Redux store
             if (response.data.user.cart) {
@@ -30,7 +33,7 @@ export const AuthProvider = ({ children }) => {
             console.error('Error loading user:', error);
             // A rejected token must not linger, or the app stays stuck in a
             // half-authenticated state on every reload
-            if (error.status === 401) {
+            if (error.status === 401 && token === localStorage.getItem('token')) {
                 localStorage.removeItem('token');
                 setToken(null);
                 setUser(null);
@@ -54,6 +57,8 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await loginUser(email, password);
             const { token: newToken, user: userData } = response.data;
+            queryClient.clear();
+            dispatch({ type: 'auth/sessionReset' });
             localStorage.setItem('token', newToken);
             setToken(newToken);
             setUser(userData);
@@ -76,6 +81,8 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await registerUser(name, email, password);
             const { token, user } = response.data;
+            queryClient.clear();
+            dispatch({ type: 'auth/sessionReset' });
             localStorage.setItem('token', token);
             setToken(token);
             setUser(user);
@@ -92,34 +99,32 @@ export const AuthProvider = ({ children }) => {
     };
 
     const signInWithGoogle = async () => {
-        try {
-            // Step 1: Get Google OAuth URL from your server
-            const response = await getGoogleAuthUrl();
-            const data = response.data;
-            
-            if (data.status === true) {
-                // Step 2: Redirect user to Google OAuth
-                window.location.href = data.authUrl;
-            } else {
-                console.error('Failed to get Google OAuth URL:', data.message);
-                toast.error('Failed to initiate Google sign-in');
-                return null;
-            }
-        } catch (error) {
-            console.error('Google Sign In Error:', error);
-            toast.error('Failed to sign in with Google');
-            return null;
-        }
+        window.location.assign(axiosInstance.getUri({ url: '/auth/google/url' }));
     };
 
-    const signOut = useCallback(() => {
+    const signOut = useCallback(async () => {
+        try { await axiosInstance.post("/auth/signout"); } catch { /* Always allow local logout. */ }
         localStorage.removeItem('token');
         setToken(null);
         setUser(null);
-        dispatch(setCart([])); // Clear cart in Redux store
+        dispatch({ type: 'auth/sessionReset' });
+        queryClient.clear();
         delete axiosInstance.defaults.headers.common['Authorization'];
         toast.success('Successfully logged out!');
-    }, [dispatch]);
+    }, [dispatch, queryClient]);
+
+    useEffect(() => {
+        const expire = () => {
+            setUser(null);
+            setToken(null);
+            dispatch({ type: 'auth/sessionReset' });
+            queryClient.clear();
+        };
+        const storage = (event) => { if (event.key === 'token') { expire(); setToken(event.newValue); } };
+        window.addEventListener('auth-expired', expire);
+        window.addEventListener('storage', storage);
+        return () => { window.removeEventListener('auth-expired', expire); window.removeEventListener('storage', storage); };
+    }, [dispatch, queryClient]);
 
     // Wishlist functions
     const toggleProductInWishlist = async (productId) => {

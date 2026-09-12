@@ -12,7 +12,7 @@ import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 
-import { getDashboardStats, getProductAnalytics, getLowStock } from '../../services/adminService';
+import { getDashboardStats, getProductAnalytics, getLowStock, getOperationsHealth } from '../../services/adminService';
 import PageHeader from '../../features/admin/components/PageHeader';
 import StatCard from '../../features/admin/components/StatCard';
 import StatusChip from '../../features/admin/components/StatusChip';
@@ -37,6 +37,11 @@ export default function AdminDashboard() {
     queryFn: getLowStock,
   });
 
+  const operations = useQuery({
+    queryKey: ['admin', 'analytics', 'operations-health'],
+    queryFn: () => getOperationsHealth(),
+  });
+
   if (dashboard.isError) {
     return (
       <>
@@ -54,7 +59,10 @@ export default function AdminDashboard() {
   const categoryPerformance = productStats.data?.categoryPerformance || [];
   const loading = dashboard.isLoading;
 
-  const statusEntries = Object.entries(statusStats).filter(([, count]) => count > 0);
+  const statusEntries = Object.entries(statusStats).map(([status, value]) => [status, typeof value === 'number' ? value : value?.count || 0]).filter(([, count]) => count > 0);
+  const health = operations.data || {};
+  const profitability = health.profitability || {};
+  const attention = health.attention || {};
 
   return (
     <>
@@ -113,6 +121,13 @@ export default function AdminDashboard() {
             loading={loading}
           />
         </Grid>
+      </Grid>
+
+      <Grid container spacing={2.5} sx={{ mt: 1.5 }}>
+        <Grid size={{ xs: 12, sm: 6, lg: 3 }}><StatCard label="Gross profit" value={currency(profitability.grossProfit)} caption={`${number(profitability.grossMarginPercent)}% margin`} color="success" loading={operations.isLoading} /></Grid>
+        <Grid size={{ xs: 12, sm: 6, lg: 3 }}><StatCard label="Return backlog" value={number(attention.pendingReturns)} caption="Needs operations review" color="warning" loading={operations.isLoading} /></Grid>
+        <Grid size={{ xs: 12, sm: 6, lg: 3 }}><StatCard label="Open purchase orders" value={number(attention.openPurchaseOrders)} caption="Draft or awaiting stock" color="secondary" loading={operations.isLoading} /></Grid>
+        <Grid size={{ xs: 12, sm: 6, lg: 3 }}><StatCard label="Shipment exceptions" value={number(attention.shipmentExceptions)} caption="Failed or returned" color="error" loading={operations.isLoading} /></Grid>
       </Grid>
 
       <Grid container spacing={2.5} sx={{ mt: 0.5 }}>

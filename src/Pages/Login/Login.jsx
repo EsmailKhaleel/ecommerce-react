@@ -79,6 +79,7 @@ function Login() {
                         <Form className="space-y-4">
                             <MyCustomField type="email" name="email" placeholder='Email' />
                             <MyCustomField type="password" name="password" placeholder='Password' />
+                            <div className="text-right"><NavLink to="/forgot-password" className="text-sm text-primary hover:underline">Forgot password?</NavLink></div>
                             <SubmitButton 
                                 label="Sign In" 
                                 loadingLabel="Signing in..."

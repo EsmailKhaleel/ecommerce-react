@@ -46,10 +46,13 @@ export const productsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProducts.pending, (state) => {
+      .addCase(fetchProducts.pending, (state, action) => {
+        state.requestId = action.meta.requestId;
+        state.error = null;
         state.status = 'loading';
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
+        if (state.requestId !== action.meta.requestId) return;
         state.status = 'succeeded';
         state.products = action.payload.products;
 
@@ -69,6 +72,7 @@ export const productsSlice = createSlice({
         }
       })
       .addCase(fetchProducts.rejected, (state, action) => {
+        if (state.requestId !== action.meta.requestId) return;
         state.status = 'failed';
         state.error = action.error.message;
       })

@@ -1,12 +1,14 @@
 import { motion } from "framer-motion"
 import OrderCard from "./OrderCard"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserOrdersAsync } from '../../StateManagement/Slices/OrdersSlice';
 import Spinner from "../../Components/Spinner";
 import { FaBox } from "react-icons/fa";
 import { useState } from "react";
 
 function OrdersList() {
-    const { items: orders, status: ordersStatus } = useSelector(state => state.orders);
+    const { items: orders, status: ordersStatus, error, page, totalPages } = useSelector(state => state.orders);
+    const dispatch = useDispatch();
     const [openOrderId, setOpenOrderId] = useState(null);
     return (
         <motion.div
@@ -17,7 +19,7 @@ function OrdersList() {
             className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8"
         >
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">My Orders</h2>
-            {ordersStatus === 'loading' ? (
+            {ordersStatus === 'failed' ? <div role="alert"><p>{error}</p><button onClick={() => dispatch(getUserOrdersAsync({ page }))}>Retry</button></div> : ordersStatus === 'loading' ? (
                 <div className="flex justify-center py-12">
                     <div className="w-12 h-12">
                         <Spinner />
@@ -45,6 +47,11 @@ function OrdersList() {
                     ))}
                 </div>
             )}
+            {totalPages > 1 && <nav aria-label="Order pages" className="flex justify-between mt-6">
+                <button disabled={page <= 1 || ordersStatus === 'loading'} onClick={() => dispatch(getUserOrdersAsync({ page: page - 1 }))}>Previous</button>
+                <span>Page {page} of {totalPages}</span>
+                <button disabled={page >= totalPages || ordersStatus === 'loading'} onClick={() => dispatch(getUserOrdersAsync({ page: page + 1 }))}>Next</button>
+            </nav>}
         </motion.div>
     )
 }

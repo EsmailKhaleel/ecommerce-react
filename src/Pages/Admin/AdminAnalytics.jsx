@@ -63,6 +63,7 @@ export default function AdminAnalytics() {
         subtitle="Sales, customer and product performance"
         action={
           <Stack direction="row" spacing={1}>
+            <Button variant="outlined" startIcon={<DownloadOutlinedIcon />} onClick={() => downloadReport('/reports/tax/csv', 'tax-report.csv')}>Tax CSV</Button>
             <Button
               variant="outlined" startIcon={<DownloadOutlinedIcon />}
               onClick={() => downloadReport('/reports/products/csv', 'products.csv')}

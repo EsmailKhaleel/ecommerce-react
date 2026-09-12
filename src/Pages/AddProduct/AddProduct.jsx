@@ -20,7 +20,7 @@ const AddProduct = () => {
         staleTime: 10 * 60 * 1000,
     });
     const [imagePreview, setImagePreview] = useState(null);
-    const [image, setImage] = useState("");
+    const [, setImage] = useState("");
     const [additionalImages, setAdditionalImages] = useState([]);
     const [additionalImagePreviews, setAdditionalImagePreviews] = useState([]);
 

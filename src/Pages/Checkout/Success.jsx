@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { clearCartAsync } from '../../StateManagement/Slices/CartSlice';
+import { getCartAsync } from '../../StateManagement/Slices/CartSlice';
 import axiosInstance from '../../services/axiosInstance';
-import { toast } from 'react-toastify';
 import { format } from '../../utils/helpers';
 
 function Success() {
@@ -13,48 +12,46 @@ function Success() {
     const [order, setOrder] = useState(null);
     const [isVerifying, setIsVerifying] = useState(true);
 
+    const [error, setError] = useState('');
+    const [retry, setRetry] = useState(0);
     useEffect(() => {
-        const verifySession = async () => {
+        let stopped = false;
+        let timer;
+        const controller = new AbortController();
+        let attempts = 0;
+        setIsVerifying(true);
+        setError('');
+        const verify = async () => {
             try {
-                const sessionId = searchParams.get('session_id');
-                if (!sessionId) {
-                    toast.error('Invalid checkout session');
-                    navigate('/');
+                const id = searchParams.get('session_id');
+                if (!id) throw new Error('Missing checkout session. Open your account to view your orders.');
+                const { data } = await axiosInstance.get('/stripe/sessions/' + encodeURIComponent(id), { signal: controller.signal });
+                if (stopped) return;
+                if (data.order?.paymentStatus === 'paid') {
+                    setOrder(data.order);
+                    sessionStorage.removeItem('checkout:' + data.order.userId);
+                    dispatch(getCartAsync());
+                    setIsVerifying(false);
                     return;
                 }
-
-                // Clear the cart immediately
-                try {
-                    await dispatch(clearCartAsync()).unwrap();
-                } catch (error) {
-                    console.error('Failed to clear cart:', error);
-                    toast.error('Failed to clear cart');
-                }
-
-                // The webhook will handle creating the order
-                // We just need to wait a bit to let the webhook process
-                await new Promise(resolve => setTimeout(resolve, 2000));
-
-                // Check if the order was created
-                const response = await axiosInstance.get(`/orders/latest`);
-                if (response.data?.order) {
-                    setOrder(response.data.order);
-                }
-
-                // Start redirect timer
-                setTimeout(() => {
-                    navigate('/', { replace: true });
-                }, 5000);
-            } catch (error) {
-                console.error('Payment verification failed:', error);
-                toast.error('Could not verify order. Please contact support.');
-            } finally {
+                if (data.order?.status === 'cancelled') throw new Error('This checkout expired or was cancelled. Your cart is still available.');
+                if (++attempts < 10) { timer = setTimeout(verify, 2000); return; }
+                throw new Error('Payment confirmation is still pending. Check again shortly; do not pay again.');
+            } catch (err) {
+                if (stopped) return;
+                setError(err.response?.data?.message || err.message || 'Could not verify this payment. Please retry.');
                 setIsVerifying(false);
             }
         };
+        verify();
+        return () => { stopped = true; clearTimeout(timer); controller.abort(); };
+    }, [dispatch, searchParams, retry]);
 
-        verifySession();
-    }, [dispatch, navigate, searchParams]);
+    if (error) return <div className="container mx-auto px-4 py-16 text-center" role="alert">
+        <p className="mb-6">{error}</p>
+        <button className="bg-primary text-white px-6 py-2 rounded-lg mr-4" onClick={() => setRetry(value => value + 1)}>Check again</button>
+        <button onClick={() => navigate('/account')}>View my orders</button>
+    </div>;
 
     if (isVerifying) {
         return (
@@ -105,7 +102,7 @@ function Success() {
                                     <p className="capitalize">
                                         <span className={`inline-block px-2 py-1 text-xs rounded ${
                                             order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                                            order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                            order.status === 'delivered' ? 'bg-green-100 text-green-800' :
                                             'bg-gray-100 text-gray-800'
                                         }`}>
                                             {order.status}
@@ -159,10 +156,10 @@ function Success() {
                         </div>
                     )}
                     <p className="mb-8">
-                        Thank you for your purchase! A confirmation email has been sent to {order?.customerEmail}.
+                        Thank you for your purchase! You can view this order in your account.
                     </p>
                     <p className="text-sm">
-                        You will be redirected to the home page in a few seconds...
+                        Keep your order ID for reference.
                     </p>
                 </div>
                 <button

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useAuth } from "../../Context/useAuth";
 import { useNavigate } from "react-router-dom";
-import { FaBox, FaHeart, FaSignOutAlt } from "react-icons/fa";
+import { FaBox, FaHeart, FaMapMarkerAlt, FaSignOutAlt } from "react-icons/fa";
 import ProfileAvatarUploader from "./ProfileAvatarUploader";
 
 
@@ -22,6 +22,7 @@ function ProfileSidebar({ activeTab, setActiveTab }) {
     const tabs = [
         { id: 'orders', label: 'Orders', icon: <FaBox className={`${activeTab === 'orders' ? 'text-white' : 'text-primary'}`} /> },
         { id: 'wishlist', label: 'Wishlist', icon: <FaHeart className={`${activeTab === 'wishlist' ? 'text-white' : 'text-primary'}`} /> },
+        { id: 'addresses', label: 'Addresses', icon: <FaMapMarkerAlt className={`${activeTab === 'addresses' ? 'text-white' : 'text-primary'}`} /> },
     ];
     return (
         <motion.aside

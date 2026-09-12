@@ -11,18 +11,21 @@ import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import { toast } from 'react-toastify';
 
 import {
-  getAllOrders, getOrderById, updateOrderStatus, downloadReport,
+  getAllOrders, getOrderById, updateOrderStatus, downloadReport, processRefund, createShipment,
 } from '../../services/adminService';
+import { downloadInvoice } from '../../services/invoiceService';
 import PageHeader from '../../features/admin/components/PageHeader';
 import ServerDataGrid from '../../features/admin/components/ServerDataGrid';
 import StatusChip from '../../features/admin/components/StatusChip';
 import { LoadingState, ErrorState } from '../../features/admin/components/StateBlocks';
 import { currency, dateTime, shortId, number } from '../../features/admin/utils/format';
+import { useAuth } from '../../Context/useAuth';
 
 const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-const PAYMENT_STATUSES = ['paid', 'unpaid', 'refunded'];
+const PAYMENT_STATUSES = ['paid', 'unpaid', 'partially_refunded', 'refunded'];
 
 export default function AdminOrders() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
   const [status, setStatus] = useState('');
@@ -64,6 +67,21 @@ export default function AdminOrders() {
       queryClient.invalidateQueries({ queryKey: ['admin', 'inventory'] });
     },
     onError: (error) => toast.error(error.message || 'Failed to update order'),
+  });
+
+  const refundMutation = useMutation({
+    mutationFn: processRefund,
+    onSuccess: () => {
+      toast.success('Refund decision saved');
+      queryClient.invalidateQueries({ queryKey: ['admin', 'orders'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'order', selectedId] });
+    },
+    onError: error => toast.error(error.message || 'Failed to process refund'),
+  });
+  const shipmentMutation = useMutation({
+    mutationFn: createShipment,
+    onSuccess: () => { toast.success('Shipment created'); queryClient.invalidateQueries({ queryKey: ['admin'] }); },
+    onError: error => toast.error(error.message || 'Failed to create shipment'),
   });
 
   const openOrder = (id) => {
@@ -249,6 +267,12 @@ export default function AdminOrders() {
                   {order.refundStatus ? ` (${order.refundStatus})` : ''}
                 </Alert>
               )}
+              {order.refundStatus === 'pending' && ['owner', 'admin', 'finance'].includes(user?.role) && (
+                <Stack direction="row" spacing={1}>
+                  <Button color="success" variant="contained" disabled={refundMutation.isPending} onClick={() => refundMutation.mutate({ orderId: order._id, approve: true })}>Approve and refund</Button>
+                  <Button color="error" variant="outlined" disabled={refundMutation.isPending} onClick={() => refundMutation.mutate({ orderId: order._id, approve: false })}>Reject</Button>
+                </Stack>
+              )}
 
               <Box>
                 <Typography variant="subtitle2" gutterBottom>Customer</Typography>
@@ -325,7 +349,16 @@ export default function AdminOrders() {
 
               <Divider />
 
-              <Box>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                {order.invoiceId && <Button variant="outlined" startIcon={<DownloadOutlinedIcon />} onClick={() => downloadInvoice(order.invoiceId, `invoice-${shortId(order._id)}`)}>Download invoice</Button>}
+                {order.paymentStatus === 'paid' && ['owner', 'admin', 'fulfillment'].includes(user?.role) && !['cancelled', 'delivered'].includes(order.status) && <Button variant="outlined" disabled={shipmentMutation.isPending} onClick={() => {
+                  const carrier = window.prompt('Carrier name'); if (!carrier?.trim()) return;
+                  const trackingNumber = window.prompt('Tracking number (optional)') || undefined;
+                  shipmentMutation.mutate({ orderId: order._id, carrier: carrier.trim(), trackingNumber });
+                }}>Create shipment</Button>}
+              </Stack>
+
+              {['owner', 'admin', 'fulfillment'].includes(user?.role) && <Box>
                 <Typography variant="subtitle2" gutterBottom>Update status</Typography>
                 <Grid container spacing={1.5}>
                   <Grid size={12}>
@@ -347,7 +380,7 @@ export default function AdminOrders() {
                       placeholder={order.trackingNumber || 'Optional'}
                       value={trackingDraft}
                       onChange={(e) => setTrackingDraft(e.target.value)}
-                      helperText="Sent to the customer when status becomes Shipped"
+                      helperText="Saved with the order for shipment tracking"
                     />
                   </Grid>
                   <Grid size={12}>
@@ -367,7 +400,7 @@ export default function AdminOrders() {
                     </Button>
                   </Grid>
                 </Grid>
-              </Box>
+              </Box>}
             </Stack>
           ) : null}
         </Box>

@@ -1,68 +1,28 @@
-import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Context/useAuth';
-import { useDispatch } from 'react-redux';
-import { setCart } from '../../StateManagement/Slices/CartSlice';
 import axiosInstance from '../../services/axiosInstance';
 import Spinner from '../../Components/Spinner';
-import { toast } from 'react-toastify';
 
-const AuthSuccess = () => {
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const { setUser, setToken } = useAuth();
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        const handleAuthSuccess = async () => {
-            // Get token and user data from URL parameters
-            const token = searchParams.get('token');
-            const userData = searchParams.get('user');
-
-            if (token && userData) {
-                try {
-                    const user = JSON.parse(userData);
-                    // Store authentication token
-                    localStorage.setItem('token', token);
-                    // Update AuthProvider context
-                    setToken(token);
-                    setUser(user);
-                    // Update axios headers
-                    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    // Update cart in Redux store
-                    if (user.cart) {
-                        dispatch(setCart(user.cart));
-                    }
-                    // Clean up URL
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                    toast.success('Successfully signed in with Google!');
-                    navigate('/products');
-                } catch (error) {
-                    console.error('Error parsing user data:', error);
-                    toast.error('Authentication failed');
-                    navigate('/login?error=auth_failed');
-                }
-            } else {
-                console.error('Missing token or user data');
-                toast.error('Authentication failed');
-                navigate('/login?error=auth_failed');
-            }
-        };
-
-        // Handle the OAuth callback
-        handleAuthSuccess();
-    }, [navigate, setToken, setUser, dispatch, searchParams]);
-
-    return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-            <div className="text-center">
-                <div className="mb-4">
-                    <Spinner />
-                </div>
-                <p className="text-gray-600 dark:text-gray-400">Processing authentication...</p>
-            </div>
-        </div>
-    );
-};
-
-export default AuthSuccess; 
+export default function AuthSuccess() {
+  const navigate = useNavigate();
+  const { setUser, setToken } = useAuth();
+  const started = useRef(false);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    const token = new URLSearchParams(window.location.hash.slice(1)).get('token');
+    window.history.replaceState({}, '', window.location.pathname);
+    if (!token) { setError('Missing sign-in token. Please sign in again.'); return; }
+    localStorage.setItem('token', token);
+    axiosInstance.get('/auth/me').then(({ data }) => {
+      setToken(token);
+      setUser(data.user);
+      navigate('/products', { replace: true });
+    }).catch(() => { localStorage.removeItem('token'); setError('Sign-in could not be verified. Please sign in again.'); });
+  }, [navigate, setToken, setUser]);
+  return <div className="min-h-screen flex flex-col gap-4 items-center justify-center" role="status">
+    {error ? <><p>{error}</p><button onClick={() => navigate('/auth')}>Return to sign in</button></> : <><Spinner /><p>Verifying sign-in...</p></>}
+  </div>;
+}

@@ -14,6 +14,7 @@ const resolveBaseUrl = () => {
 
 const axiosInstance = axios.create({
     baseURL: resolveBaseUrl(),
+    timeout: 20000,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -25,6 +26,8 @@ axiosInstance.interceptors.request.use(
         const token = localStorage.getItem('token');
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
+        } else {
+            delete config.headers.Authorization;
         }
         return config;
     },
@@ -37,8 +40,10 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
+        if (error.response?.status === 401 && !['/auth/login', '/auth/register'].includes(error.config?.url) && error.config?.headers?.Authorization === `Bearer ${localStorage.getItem('token')}`) {
             localStorage.removeItem('token');
+            delete axiosInstance.defaults.headers.common.Authorization;
+            window.dispatchEvent(new Event('auth-expired'));
         }
         return Promise.reject(error);
     }

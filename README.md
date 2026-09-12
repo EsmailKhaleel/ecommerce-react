@@ -1,6 +1,6 @@
 # Modern E-Commerce Platform 🛍️
 
-A feature-rich e-commerce platform built with React, Vite, and Firebase, offering a modern shopping experience with seamless authentication, cart management, and responsive design.
+A feature-rich e-commerce platform built with React and Vite, backed by the companion Express/MongoDB API. It includes secure Stripe checkout, invoicing, returns, fulfilment, purchasing and an operations console.
 
 ![E-Commerce Platform](src/assets/logo.png)
 
@@ -38,7 +38,7 @@ A feature-rich e-commerce platform built with React, Vite, and Firebase, offerin
 ### Technical Features
 - React + Vite for blazing fast development
 - Redux Toolkit for state management
-- Firebase Authentication and Firestore
+- Express/MongoDB authentication and commerce API
 - Formik + Yup for form validation
 - Tailwind CSS for styling
 - React Router for navigation

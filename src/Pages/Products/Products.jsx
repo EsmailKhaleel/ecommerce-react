@@ -13,7 +13,7 @@ import { useProducts } from '../../hooks/products/useProducts';
 
 function Products() {
     const { t } = useTranslation();
-    const [showFilters, setShowFilters] = useState(true);
+    const [showFilters, setShowFilters] = useState(() => window.innerWidth >= 1024);
     const {
         products,
         status,

@@ -3,10 +3,10 @@ import axiosInstance from '../../services/axiosInstance';
 
 export const getUserOrdersAsync = createAsyncThunk(
     'orders/getUserOrders',
-    async (userId, { rejectWithValue }) => {
+    async (options, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(`/orders?userId=${userId}`);
-            return response.data.orders;
+            const response = await axiosInstance.get('/orders', { params: { page: options?.page || 1, limit: 10 } });
+            return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Failed to fetch orders');
         }
@@ -18,7 +18,9 @@ const ordersSlice = createSlice({
     initialState: {
         items: [],
         status: 'idle',
-        error: null
+        error: null,
+        page: 1,
+        totalPages: 0
     },
     reducers: {
         clearOrders: (state) => {
@@ -27,16 +29,21 @@ const ordersSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getUserOrdersAsync.pending, (state) => {
+            .addCase(getUserOrdersAsync.pending, (state, action) => {
+                state.requestId = action.meta.requestId;
                 state.status = 'loading';
                 state.error = null;
             })
             .addCase(getUserOrdersAsync.fulfilled, (state, action) => {
+                if (state.requestId !== action.meta.requestId) return;
                 state.status = 'succeeded';
-                state.items = action.payload;
+                state.items = action.payload.orders;
+                state.page = action.payload.page;
+                state.totalPages = action.payload.totalPages;
                 state.error = null;
             })
             .addCase(getUserOrdersAsync.rejected, (state, action) => {
+                if (state.requestId !== action.meta.requestId) return;
                 state.status = 'failed';
                 state.error = action.payload;
             });

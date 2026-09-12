@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { getUserOrdersAsync } from "../../StateManagement/Slices/OrdersSlice";
 import ProfileSidebar from "../../features/profile/ProfileSidebar";
 import OrdersList from "../../features/profile/OrdersList";
+import Addresses from '../../features/profile/Addresses';
 
 function Account() {
     const { user } = useAuth();
@@ -38,6 +39,7 @@ function Account() {
                         {activeTab === 'orders' && (<OrdersList />)}
 
                         {activeTab === 'wishlist' && (<Wishlist />)}
+                        {activeTab === 'addresses' && (<Addresses />)}
                     </motion.div>
                 </div>
             </div>

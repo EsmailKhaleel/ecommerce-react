@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { Rating } from "../../Components/Rating"
 
-function ProductInfo({ product }) {
+function ProductInfo({ product, selectedVariant }) {
     return (
         <>
             {/* Product Name */}
@@ -22,7 +22,7 @@ function ProductInfo({ product }) {
             >
                 <div className="flex items-center gap-3 mb-2">
                     <p className="text-2xl sm:text-3xl font-bold text-primary dark:text-primary-light">
-                        ${product.price.toFixed(2)}
+                        ${(selectedVariant?.price ?? product.price).toFixed(2)}
                     </p>
                     {product.old_price > product.price && (
                         <span className="text-base text-gray-400 line-through">

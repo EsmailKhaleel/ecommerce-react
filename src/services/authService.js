@@ -49,7 +49,7 @@ export const handleGoogleCallback = async (code) => {
 };
 
 // Create Checkout Session
-export const createCheckoutSession = async (cartItems, user) => {
+export const createCheckoutSession = async (cartItems, user, idempotencyKey, couponCode) => {
   try {
     const response = await axiosInstance.post(
         "/stripe/create-checkout-session",
@@ -57,10 +57,13 @@ export const createCheckoutSession = async (cartItems, user) => {
           userId: user._id,
           email: user.email,
           products: cartItems.map((item) => ({
-            id: item.product.id,
+            id: item.product.id || item.product._id,
+            ...((item.variantId || item.variant?._id) && { variantId: item.variantId || item.variant._id }),
             amount: item.quantity,
           })),
-        }
+          ...(couponCode && { couponCode }),
+        },
+        { headers: { 'Idempotency-Key': idempotencyKey } }
       );
       return response;
   } catch (error) {

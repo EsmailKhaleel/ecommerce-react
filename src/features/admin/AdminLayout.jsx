@@ -15,6 +15,11 @@ import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import ReviewsOutlinedIcon from '@mui/icons-material/ReviewsOutlined';
 import InsightsOutlinedIcon from '@mui/icons-material/InsightsOutlined';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 import { useAuth } from '../../Context/useAuth';
@@ -24,14 +29,19 @@ import useColorScheme from './theme/useColorScheme';
 const DRAWER_WIDTH = 248;
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', to: '/admin', icon: <DashboardOutlinedIcon />, end: true },
-  { label: 'Products', to: '/admin/products', icon: <Inventory2OutlinedIcon /> },
-  { label: 'Orders', to: '/admin/orders', icon: <ShoppingBagOutlinedIcon /> },
-  { label: 'Customers', to: '/admin/customers', icon: <PeopleOutlinedIcon /> },
-  { label: 'Inventory', to: '/admin/inventory', icon: <WarehouseOutlinedIcon /> },
-  { label: 'Coupons', to: '/admin/coupons', icon: <LocalOfferOutlinedIcon /> },
-  { label: 'Reviews', to: '/admin/reviews', icon: <ReviewsOutlinedIcon /> },
-  { label: 'Analytics', to: '/admin/analytics', icon: <InsightsOutlinedIcon /> },
+  { label: 'Dashboard', to: '/admin', icon: <DashboardOutlinedIcon />, end: true, roles: ['owner', 'admin'] },
+  { label: 'Products', to: '/admin/products', icon: <Inventory2OutlinedIcon />, roles: ['owner', 'admin'] },
+  { label: 'Orders', to: '/admin/orders', icon: <ShoppingBagOutlinedIcon />, roles: ['owner', 'admin', 'support', 'fulfillment', 'finance'] },
+  { label: 'Invoices', to: '/admin/invoices', icon: <ReceiptLongOutlinedIcon />, roles: ['owner', 'admin', 'finance', 'support'] },
+  { label: 'Operations', to: '/admin/operations', icon: <LocalShippingOutlinedIcon />, roles: ['owner', 'admin', 'support', 'fulfillment', 'inventory', 'finance'] },
+  { label: 'Procurement', to: '/admin/procurement', icon: <LocalMallOutlinedIcon />, roles: ['owner', 'admin', 'inventory'] },
+  { label: 'Merchandising', to: '/admin/merchandising', icon: <CategoryOutlinedIcon />, roles: ['owner', 'admin'] },
+  { label: 'Growth', to: '/admin/growth', icon: <CampaignOutlinedIcon />, roles: ['owner', 'admin'] },
+  { label: 'Customers', to: '/admin/customers', icon: <PeopleOutlinedIcon />, roles: ['owner', 'admin'] },
+  { label: 'Inventory', to: '/admin/inventory', icon: <WarehouseOutlinedIcon />, roles: ['owner', 'admin', 'inventory'] },
+  { label: 'Coupons', to: '/admin/coupons', icon: <LocalOfferOutlinedIcon />, roles: ['owner', 'admin'] },
+  { label: 'Reviews', to: '/admin/reviews', icon: <ReviewsOutlinedIcon />, roles: ['owner', 'admin'] },
+  { label: 'Analytics', to: '/admin/analytics', icon: <InsightsOutlinedIcon />, roles: ['owner', 'admin', 'finance'] },
 ];
 
 export default function AdminLayout() {
@@ -70,7 +80,7 @@ export default function AdminLayout() {
       <Divider />
 
       <List sx={{ px: 1, py: 1.5, flexGrow: 1 }}>
-        {NAV_ITEMS.map((item) => (
+        {NAV_ITEMS.filter(item => item.roles.includes(user?.role)).map((item) => (
           <ListItemButton
             key={item.to}
             component={NavLink}
@@ -133,7 +143,7 @@ export default function AdminLayout() {
 
             <Typography variant="h6" sx={{ flexGrow: 1 }}>{currentTitle}</Typography>
 
-            <Chip label="Admin" color="primary" size="small" sx={{ fontWeight: 700 }} />
+            <Chip label={user?.role || 'Staff'} color="primary" size="small" sx={{ fontWeight: 700, textTransform: 'capitalize' }} />
 
             <Tooltip title={user?.email || ''}>
               <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)} aria-label="Account menu">

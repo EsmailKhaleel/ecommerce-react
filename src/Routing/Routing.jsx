@@ -17,11 +17,14 @@ import AuthSuccess from '../Pages/AuthSuccess/AuthSuccess';
 import AuthError from '../Pages/AuthError/AuthError';
 import ProductDetails from '../features/products/ProductDetails';
 import SpinnerBig from '../Components/SpinnerBig';
+import ForgotPassword from '../Pages/ForgotPassword/ForgotPassword';
+import ResetPassword from '../Pages/ResetPassword/ResetPassword';
+import AdminRoleRoute from '../features/admin/AdminRoleRoute';
 
 // The admin area pulls in MUI, DataGrid and charts, so it is code-split away
 // from the customer bundle and only downloaded by admins who visit /admin.
 const AdminLayout = lazy(() => import('../features/admin/AdminLayout'));
-const AdminDashboard = lazy(() => import('../Pages/Admin/AdminDashboard'));
+const AdminHome = lazy(() => import('../features/admin/AdminHome'));
 const AdminProducts = lazy(() => import('../Pages/Admin/AdminProducts'));
 const AdminOrders = lazy(() => import('../Pages/Admin/AdminOrders'));
 const AdminCustomers = lazy(() => import('../Pages/Admin/AdminCustomers'));
@@ -29,6 +32,11 @@ const AdminInventory = lazy(() => import('../Pages/Admin/AdminInventory'));
 const AdminCoupons = lazy(() => import('../Pages/Admin/AdminCoupons'));
 const AdminReviews = lazy(() => import('../Pages/Admin/AdminReviews'));
 const AdminAnalytics = lazy(() => import('../Pages/Admin/AdminAnalytics'));
+const AdminInvoices = lazy(() => import('../Pages/Admin/AdminInvoices'));
+const AdminOperations = lazy(() => import('../Pages/Admin/AdminOperations'));
+const AdminProcurement = lazy(() => import('../Pages/Admin/AdminProcurement'));
+const AdminGrowth = lazy(() => import('../Pages/Admin/AdminGrowth'));
+const AdminMerchandising = lazy(() => import('../Pages/Admin/AdminMerchandising'));
 
 const adminFallback = (
     <div className="flex items-center justify-center min-h-screen">
@@ -48,14 +56,19 @@ const routing = createBrowserRouter([
         ),
         errorElement: <NotFound />,
         children: [
-            { index: true, element: <AdminDashboard /> },
-            { path: "products", element: <AdminProducts /> },
-            { path: "orders", element: <AdminOrders /> },
-            { path: "customers", element: <AdminCustomers /> },
-            { path: "inventory", element: <AdminInventory /> },
-            { path: "coupons", element: <AdminCoupons /> },
-            { path: "reviews", element: <AdminReviews /> },
-            { path: "analytics", element: <AdminAnalytics /> },
+            { index: true, element: <AdminHome /> },
+            { path: "products", element: <AdminRoleRoute roles={['owner', 'admin']}><AdminProducts /></AdminRoleRoute> },
+            { path: "orders", element: <AdminRoleRoute roles={['owner', 'admin', 'support', 'fulfillment', 'finance']}><AdminOrders /></AdminRoleRoute> },
+            { path: "customers", element: <AdminRoleRoute roles={['owner', 'admin']}><AdminCustomers /></AdminRoleRoute> },
+            { path: "inventory", element: <AdminRoleRoute roles={['owner', 'admin', 'inventory']}><AdminInventory /></AdminRoleRoute> },
+            { path: "coupons", element: <AdminRoleRoute roles={['owner', 'admin']}><AdminCoupons /></AdminRoleRoute> },
+            { path: "reviews", element: <AdminRoleRoute roles={['owner', 'admin']}><AdminReviews /></AdminRoleRoute> },
+            { path: "analytics", element: <AdminRoleRoute roles={['owner', 'admin', 'finance']}><AdminAnalytics /></AdminRoleRoute> },
+            { path: "invoices", element: <AdminRoleRoute roles={['owner', 'admin', 'finance', 'support']}><AdminInvoices /></AdminRoleRoute> },
+            { path: "operations", element: <AdminRoleRoute roles={['owner', 'admin', 'support', 'fulfillment', 'inventory', 'finance']}><AdminOperations /></AdminRoleRoute> },
+            { path: "procurement", element: <AdminRoleRoute roles={['owner', 'admin', 'inventory']}><AdminProcurement /></AdminRoleRoute> },
+            { path: "growth", element: <AdminRoleRoute roles={['owner', 'admin']}><AdminGrowth /></AdminRoleRoute> },
+            { path: "merchandising", element: <AdminRoleRoute roles={['owner', 'admin']}><AdminMerchandising /></AdminRoleRoute> },
         ]
     },
     {
@@ -71,11 +84,13 @@ const routing = createBrowserRouter([
             { path: "auth", element: <Login /> },
             { path: "login", element: <Navigate to="/auth" replace /> },
             { path: "register", element: <Register /> },
+            { path: "forgot-password", element: <ForgotPassword /> },
+            { path: "reset-password", element: <ResetPassword /> },
             {
                 path: "addProduct",
                 element: <ProtectedRoute requireAdmin><AddProduct /></ProtectedRoute>
             },
-            { path: "checkout/success", element: <Success /> },
+            { path: "checkout/success", element: <ProtectedRoute><Success /></ProtectedRoute> },
             { path: "auth/success", element: <AuthSuccess /> },
             { path: "auth/error", element: <AuthError /> },
             {

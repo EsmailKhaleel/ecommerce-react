@@ -38,7 +38,7 @@ function RatingFilter({ setShowFilters }) {
                             className={`w-full flex items-center gap-2 p-2 rounded-md transition-colors duration-200 ${selectedRating === rating ? 'bg-primary text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}
                         >
                             <Rating rating={rating} />
-                            <span className="text-sm">Up to {rating} stars</span>
+                            <span className="text-sm">{rating} stars & up</span>
                         </button>
                     ))}
                 </motion.div>

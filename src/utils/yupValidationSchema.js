@@ -19,7 +19,8 @@ export const RegisterSchema = Yup.object({
     .email("Invalid email format")
     .required("Email is required"),
   password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
+    .min(8, "Password must be at least 8 characters")
+    .test("byte-length", "Password must be at most 72 bytes", value => !value || new TextEncoder().encode(value).length <= 72)
     .required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
