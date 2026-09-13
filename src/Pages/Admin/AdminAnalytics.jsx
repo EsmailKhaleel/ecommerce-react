@@ -143,6 +143,7 @@ export default function AdminAnalytics() {
                       label: 'Revenue',
                       yAxisId: 'money',
                       valueFormatter: (value) => currency(value),
+                      color: '#FF4F0F',
                       area: true,
                       showMark: salesData.length < 40,
                     },
@@ -150,7 +151,7 @@ export default function AdminAnalytics() {
                       data: salesData.map((entry) => entry.orders ?? 0),
                       label: 'Orders',
                       yAxisId: 'count',
-                      color: '#0EA5E9',
+                      color: '#03A6A1',
                       showMark: salesData.length < 40,
                     },
                   ]}
@@ -187,6 +188,7 @@ export default function AdminAnalytics() {
                     data: productPerformance.slice(0, 8).map((p) => p.totalRevenue ?? 0),
                     label: 'Revenue',
                     valueFormatter: (value) => currency(value),
+                    color: '#FF4F0F',
                   }]}
                   margin={{ left: 160 }}
                 />

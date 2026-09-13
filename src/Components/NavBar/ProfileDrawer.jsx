@@ -1,6 +1,6 @@
 import { FaArrowAltCircleLeft, FaSignOutAlt } from "react-icons/fa"
 import { FaCartShopping } from "react-icons/fa6"
-import { MdAccountCircle } from "react-icons/md"
+import { MdAccountCircle, MdDashboard } from "react-icons/md"
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../Context/useAuth";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,8 @@ function ProfileDrawer() {
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart.items);
     const { handleNavigation } = useNavHandler();
+    const displayName = user?.name || user?.displayName || user?.email?.split('@')[0] || 'User';
+    const initials = displayName.charAt(0).toUpperCase();
 
 
     return (
@@ -32,16 +34,15 @@ function ProfileDrawer() {
             {user ? (
                 <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-secondary/10 dark:from-primary/5 dark:to-secondary/5">
                     <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white">
+                        <div className="relative w-12 h-12 rounded-full bg-accent flex items-center justify-center overflow-hidden text-white font-bold">
+                            <span>{initials}</span>
                             {user.image ? (
-                                <img src={user.image} alt={t('auth.welcome', { name: user.displayName })} className="w-full h-full rounded-full object-cover" />
-                            ) : (
-                                <MdAccountCircle className="text-2xl" />
-                            )}
+                                <img src={user.image} alt={t('auth.welcome', { name: displayName })} className="absolute inset-0 w-full h-full object-cover" onError={(event) => { event.currentTarget.style.display = 'none'; }} />
+                            ) : null}
                         </div>
                         <div>
                             <h3 className="font-medium text-gray-900 dark:text-white">
-                                {user.displayName || user.email.split('@')[0]}
+                                {displayName}
                             </h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
                         </div>
@@ -66,6 +67,13 @@ function ProfileDrawer() {
 
             {/* Navigation Links */}
             <nav className="space-y-2">
+                {['owner', 'admin'].includes(user?.role) && <button
+                    onClick={() => handleNavigation('/admin')}
+                    className="flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 bg-primary/10 text-primary hover:bg-primary hover:text-white dark:hover:bg-primary w-full text-left"
+                >
+                    <MdDashboard className="text-xl" />
+                    <span>Admin dashboard</span>
+                </button>}
                 <button
                     onClick={() => handleNavigation('/account')}
                     className="flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 hover:bg-primary hover:text-white dark:text-white dark:hover:bg-primary w-full text-left"

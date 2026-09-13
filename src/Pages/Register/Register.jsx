@@ -37,8 +37,8 @@ function Register() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 dark:bg-gray-900">
-            <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 dark:bg-gray-300">
+        <div className="customer-page customer-auth-page min-h-screen bg-gray-100 flex items-center justify-center p-4 dark:bg-gray-900">
+            <div className="customer-auth-card max-w-md w-full bg-white rounded-xl shadow-lg p-8 dark:bg-gray-300">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Sign Up</h2>
                 <Formik
                     initialValues={initialValues}

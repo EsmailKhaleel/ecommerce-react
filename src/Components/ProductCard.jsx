@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { BiHeart, BiShoppingBag, BiSolidHeart } from 'react-icons/bi';
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { MdLocalOffer } from 'react-icons/md';
-import placeholderImage from '../assets/unavailable.png';
+import placeholderImage from '../assets/product-placeholder.png';
 import Spinner from './Spinner';
 import { Rating } from './Rating';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +30,7 @@ function ProductCard({ product }) {
     };
 
     return (
-        <div className="group bg-white dark:bg-gray-900 text-black dark:text-white rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 flex flex-col relative">
+        <div className="customer-product-card group bg-white dark:bg-gray-900 text-black dark:text-white rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 flex flex-col relative">
             {/* Discount Badge */}
             {product.discount > 0 && (
                 <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold z-10 flex items-center gap-1">

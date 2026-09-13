@@ -19,10 +19,26 @@ import ServerDataGrid from '../../features/admin/components/ServerDataGrid';
 import ConfirmDialog from '../../features/admin/components/ConfirmDialog';
 import useDebouncedValue from '../../hooks/useDebouncedValue';
 import { currency, number } from '../../features/admin/utils/format';
+import ProductImageDropzone from '../../features/admin/components/ProductImageDropzone';
+import { uploadProductImages } from '../../services/productImageService';
 
-const EMPTY_FORM = {
+const emptyForm = () => ({
   name: '', description: '', price: '', old_price: '', discount: '',
-  category: '', image: '', images: '',
+  category: '', media: [],
+});
+const existingImage = url => ({ id: `url-${url}`, url });
+
+const serializeProduct = async form => {
+  const uploads = form.media.filter(item => item.file);
+  const uploadedUrls = await uploadProductImages(uploads.map(item => item.file));
+  let uploadIndex = 0;
+  const urls = form.media.map(item => item.file ? uploadedUrls[uploadIndex++] : item.url);
+  return {
+    name: form.name.trim(), description: form.description.trim(), price: Number(form.price), category: form.category,
+    image: urls[0], images: urls.slice(1),
+    ...(form.old_price !== '' && { old_price: Number(form.old_price) }),
+    ...(form.discount !== '' && { discount: Number(form.discount) }),
+  };
 };
 
 export default function AdminProducts() {
@@ -35,7 +51,7 @@ export default function AdminProducts() {
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState(EMPTY_FORM);
+  const [form, setForm] = useState(emptyForm);
   const [formErrors, setFormErrors] = useState({});
   const [deleteTarget, setDeleteTarget] = useState(null);
 
@@ -74,7 +90,7 @@ export default function AdminProducts() {
   };
 
   const createMutation = useMutation({
-    mutationFn: createProduct,
+    mutationFn: async value => createProduct(await serializeProduct(value)),
     onSuccess: () => {
       toast.success('Product created');
       setFormOpen(false);
@@ -84,7 +100,7 @@ export default function AdminProducts() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: updateProduct,
+    mutationFn: async ({ id, value }) => updateProduct({ id, ...(await serializeProduct(value)) }),
     onSuccess: () => {
       toast.success('Product updated');
       setFormOpen(false);
@@ -105,7 +121,7 @@ export default function AdminProducts() {
 
   const openCreate = () => {
     setEditing(null);
-    setForm(EMPTY_FORM);
+    setForm(emptyForm());
     setFormErrors({});
     setFormOpen(true);
   };
@@ -119,8 +135,7 @@ export default function AdminProducts() {
       old_price: product.old_price ?? '',
       discount: product.discount ?? '',
       category: product.category ?? '',
-      image: product.image ?? '',
-      images: (product.images || []).join(', '),
+      media: [...new Set([product.image, ...(product.images || [])].filter(Boolean))].map(existingImage),
     });
     setFormErrors({});
     setFormOpen(true);
@@ -134,7 +149,7 @@ export default function AdminProducts() {
     if (!form.description.trim()) errors.description = 'Description is required';
     if (form.price === '' || Number(form.price) < 0) errors.price = 'A non-negative price is required';
     if (!form.category) errors.category = 'Category is required';
-    if (!form.image.trim()) errors.image = 'Image URL is required';
+    if (!form.media.length) errors.media = 'At least one product image is required';
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -142,23 +157,10 @@ export default function AdminProducts() {
   const handleSubmit = () => {
     if (!validate()) return;
 
-    const payload = {
-      name: form.name.trim(),
-      description: form.description.trim(),
-      price: Number(form.price),
-      category: form.category,
-      image: form.image.trim(),
-      ...(form.old_price !== '' && { old_price: Number(form.old_price) }),
-      ...(form.discount !== '' && { discount: Number(form.discount) }),
-      images: form.images
-        ? form.images.split(',').map((url) => url.trim()).filter(Boolean)
-        : [],
-    };
-
     if (editing) {
-      updateMutation.mutate({ id: editing._id || editing.id, ...payload });
+      updateMutation.mutate({ id: editing._id || editing.id, value: form });
     } else {
-      createMutation.mutate(payload);
+      createMutation.mutate(form);
     }
   };
 
@@ -385,36 +387,8 @@ export default function AdminProducts() {
               />
             </Grid>
             <Grid size={12}>
-              <TextField
-                label="Main image URL" fullWidth required
-                value={form.image}
-                onChange={(e) => setForm({ ...form, image: e.target.value })}
-                error={Boolean(formErrors.image)}
-                helperText={formErrors.image}
-              />
+              <ProductImageDropzone value={form.media} onChange={media => setForm(current => ({ ...current, media }))} error={formErrors.media} disabled={saving} />
             </Grid>
-            <Grid size={12}>
-              <TextField
-                label="Additional image URLs" fullWidth
-                placeholder="Comma separated"
-                value={form.images}
-                onChange={(e) => setForm({ ...form, images: e.target.value })}
-                helperText="Separate multiple URLs with commas"
-              />
-            </Grid>
-            {form.image && (
-              <Grid size={12}>
-                <Box
-                  component="img"
-                  src={form.image}
-                  alt="Preview"
-                  sx={{
-                    width: '100%', maxHeight: 180, objectFit: 'contain',
-                    borderRadius: 2, bgcolor: 'action.hover',
-                  }}
-                />
-              </Grid>
-            )}
           </Grid>
         </DialogContent>
         <DialogActions>

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm } from '../../StateManagement/Slices/FilterSlice';
 import useDebouncedValue from "../../hooks/useDebouncedValue";
+import axiosInstance from "../../services/axiosInstance";
 
 function ProductsHeader({ showFilters, setShowFilters }) {
     const dispatch = useDispatch();
@@ -26,6 +27,7 @@ function ProductsHeader({ showFilters, setShowFilters }) {
 
     useEffect(() => {
         dispatch(setSearchTerm(debouncedSearchTerm));
+        if (debouncedSearchTerm.trim() && localStorage.getItem('token')) axiosInstance.post('/activities/track/search', { query: debouncedSearchTerm.trim() }).catch(() => {});
     }, [debouncedSearchTerm, dispatch]);
 
     const numActiveFilters = [selectedCategory !== t('common.all'), searchTerm, selectedPriceRange !== null, selectedRating !== null].filter(Boolean).length;

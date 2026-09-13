@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useAuth } from "../../Context/useAuth";
 import { useNavigate } from "react-router-dom";
-import { FaBox, FaHeart, FaMapMarkerAlt, FaSignOutAlt } from "react-icons/fa";
+import { FaBox, FaHeart, FaMapMarkerAlt, FaSignOutAlt, FaBell, FaChartLine, FaUserCog, FaUserFriends } from "react-icons/fa";
 import ProfileAvatarUploader from "./ProfileAvatarUploader";
 
 
@@ -23,6 +23,10 @@ function ProfileSidebar({ activeTab, setActiveTab }) {
         { id: 'orders', label: 'Orders', icon: <FaBox className={`${activeTab === 'orders' ? 'text-white' : 'text-primary'}`} /> },
         { id: 'wishlist', label: 'Wishlist', icon: <FaHeart className={`${activeTab === 'wishlist' ? 'text-white' : 'text-primary'}`} /> },
         { id: 'addresses', label: 'Addresses', icon: <FaMapMarkerAlt className={`${activeTab === 'addresses' ? 'text-white' : 'text-primary'}`} /> },
+        { id: 'profile', label: 'Profile & Security', icon: <FaUserCog className={`${activeTab === 'profile' ? 'text-white' : 'text-primary'}`} /> },
+        { id: 'notifications', label: 'Notifications', icon: <FaBell className={`${activeTab === 'notifications' ? 'text-white' : 'text-primary'}`} /> },
+        { id: 'activity', label: 'Activity & Insights', icon: <FaChartLine className={`${activeTab === 'activity' ? 'text-white' : 'text-primary'}`} /> },
+        { id: 'referrals', label: 'Referrals', icon: <FaUserFriends className={`${activeTab === 'referrals' ? 'text-white' : 'text-primary'}`} /> },
     ];
     return (
         <motion.aside

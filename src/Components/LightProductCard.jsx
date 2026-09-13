@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import Unavailable from '../assets/unavailable.png';
+import Unavailable from '../assets/product-placeholder.png';
 
 function LightProductCard({ product }) {
     const navigate = useNavigate();

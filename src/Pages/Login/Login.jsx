@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
-import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { LoginSchema } from '../../utils/yupValidationSchema';
 import { FaInfoCircle } from 'react-icons/fa';
 import MyCustomField from '../../Components/MyCustomField';
@@ -10,8 +10,9 @@ import { toast } from 'react-toastify';
 import SubmitButton from '../../Components/SubmitButton';
 
 function Login() {
-    const { signIn } = useAuth();
+    const { signIn, user: currentUser } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [searchParams] = useSearchParams();
 
     const initialValues = {
@@ -19,6 +20,10 @@ function Login() {
         password: ''
     };
     const [isSuccess, setIsSuccess] = useState(false);
+
+    useEffect(() => {
+        if (['owner', 'admin'].includes(currentUser?.role)) navigate('/admin', { replace: true });
+    }, [currentUser, navigate]);
 
     // Handle OAuth errors
     useEffect(() => {
@@ -35,7 +40,7 @@ function Login() {
             const user = await signIn(values.email, values.password);
             if (user) {
                 setIsSuccess(true);
-                navigate('/products');
+                navigate(['owner', 'admin'].includes(user.role) ? '/admin' : (location.state?.from || '/products'), { replace: true });
             } else {
                 setIsSuccess(false);
             }
@@ -48,8 +53,8 @@ function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 dark:bg-gray-900">
-            <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 dark:bg-gray-300">
+        <div className="customer-page customer-auth-page min-h-screen bg-gray-100 flex items-center justify-center p-4 dark:bg-gray-900">
+            <div className="customer-auth-card max-w-md w-full bg-white rounded-xl shadow-lg p-8 dark:bg-gray-300">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Sign In</h2>
 
                 {/* Test Credentials Section */}

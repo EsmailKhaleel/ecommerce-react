@@ -32,7 +32,7 @@ function Cart() {
     );
 
     return (
-        <div className="container mx-auto px-2 py-8 flex flex-col lg:flex-row gap-10 dark:text-stone-100">
+        <div className="customer-page customer-cart container mx-auto px-2 py-8 flex flex-col lg:flex-row gap-10 dark:text-stone-100">
             <CartTable cartItems={cartItems} />
             <CartSummary totalPrice={totalPrice} cartItemsNumber={cartItemsNumber} />
         </div>

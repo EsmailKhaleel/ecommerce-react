@@ -19,7 +19,7 @@ export default function AuthSuccess() {
     axiosInstance.get('/auth/me').then(({ data }) => {
       setToken(token);
       setUser(data.user);
-      navigate('/products', { replace: true });
+      navigate(['owner', 'admin'].includes(data.user?.role) ? '/admin' : '/products', { replace: true });
     }).catch(() => { localStorage.removeItem('token'); setError('Sign-in could not be verified. Please sign in again.'); });
   }, [navigate, setToken, setUser]);
   return <div className="min-h-screen flex flex-col gap-4 items-center justify-center" role="status">

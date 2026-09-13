@@ -5,7 +5,7 @@ import { useAuth } from "../../Context/useAuth";
 
 export default function useImageUpload() {
   const [isUploading, setIsUploading] = useState(false);
-  const { user } = useAuth();
+  const { setUser } = useAuth();
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -37,8 +37,10 @@ export default function useImageUpload() {
         }
       );
       if (response.data?.status === true) {
-        // Update user image in the context
-        user.image = response.data.image;
+        setUser((currentUser) => ({
+          ...currentUser,
+          image: response.data.image,
+        }));
         toast.success("Profile picture updated successfully!");
       }
     } catch (error) {

@@ -8,6 +8,7 @@ import { getUserOrdersAsync } from "../../StateManagement/Slices/OrdersSlice";
 import ProfileSidebar from "../../features/profile/ProfileSidebar";
 import OrdersList from "../../features/profile/OrdersList";
 import Addresses from '../../features/profile/Addresses';
+import { ActivityPanel, NotificationsPanel, ProfileSettings, ReferralsPanel } from '../../features/profile/AccountFeatures';
 
 function Account() {
     const { user } = useAuth();
@@ -27,7 +28,7 @@ function Account() {
     );
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="customer-page min-h-screen bg-gray-50 dark:bg-gray-900">
             <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex flex-col lg:flex-row gap-8">
                     <ProfileSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -40,6 +41,10 @@ function Account() {
 
                         {activeTab === 'wishlist' && (<Wishlist />)}
                         {activeTab === 'addresses' && (<Addresses />)}
+                        {activeTab === 'profile' && (<ProfileSettings />)}
+                        {activeTab === 'notifications' && (<NotificationsPanel />)}
+                        {activeTab === 'activity' && (<ActivityPanel />)}
+                        {activeTab === 'referrals' && (<ReferralsPanel />)}
                     </motion.div>
                 </div>
             </div>

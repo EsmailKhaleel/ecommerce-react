@@ -12,7 +12,7 @@ export default function ForgotPassword() {
     catch { setMessage('Password reset is temporarily unavailable.'); }
     finally { setBusy(false); }
   };
-  return <main className="min-h-[70vh] grid place-items-center p-6"><form onSubmit={submit} className="w-full max-w-md rounded-xl bg-white dark:bg-gray-800 shadow-lg p-8 space-y-5">
+  return <main className="customer-page customer-auth-page min-h-[70vh] grid place-items-center p-6"><form onSubmit={submit} className="customer-auth-card w-full max-w-md rounded-xl bg-white dark:bg-gray-800 shadow-lg p-8 space-y-5">
     <h1 className="text-2xl font-bold">Reset your password</h1>
     <p className="text-gray-500">Enter your account email and we will send a secure reset link.</p>
     <input required type="email" autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} className="w-full rounded-md border px-3 py-2 bg-transparent" placeholder="Email address" />

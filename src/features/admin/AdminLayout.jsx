@@ -20,6 +20,7 @@ import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import HubOutlinedIcon from '@mui/icons-material/HubOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 import { useAuth } from '../../Context/useAuth';
@@ -36,6 +37,7 @@ const NAV_ITEMS = [
   { label: 'Operations', to: '/admin/operations', icon: <LocalShippingOutlinedIcon />, roles: ['owner', 'admin', 'support', 'fulfillment', 'inventory', 'finance'] },
   { label: 'Procurement', to: '/admin/procurement', icon: <LocalMallOutlinedIcon />, roles: ['owner', 'admin', 'inventory'] },
   { label: 'Merchandising', to: '/admin/merchandising', icon: <CategoryOutlinedIcon />, roles: ['owner', 'admin'] },
+  { label: 'Platform', to: '/admin/platform', icon: <HubOutlinedIcon />, roles: ['owner', 'admin'] },
   { label: 'Growth', to: '/admin/growth', icon: <CampaignOutlinedIcon />, roles: ['owner', 'admin'] },
   { label: 'Customers', to: '/admin/customers', icon: <PeopleOutlinedIcon />, roles: ['owner', 'admin'] },
   { label: 'Inventory', to: '/admin/inventory', icon: <WarehouseOutlinedIcon />, roles: ['owner', 'admin', 'inventory'] },
@@ -67,12 +69,12 @@ export default function AdminLayout() {
             bgcolor: 'primary.main', color: 'primary.contrastText', fontWeight: 800,
           }}
         >
-          A
+          S
         </Box>
         <Box sx={{ minWidth: 0 }}>
-          <Typography variant="subtitle2" noWrap>Admin Console</Typography>
+          <Typography variant="subtitle2" noWrap>ShopSphere</Typography>
           <Typography variant="caption" color="text.secondary" noWrap>
-            Store management
+            Control room
           </Typography>
         </Box>
       </Toolbar>
@@ -90,6 +92,9 @@ export default function AdminLayout() {
             sx={{
               borderRadius: 2,
               mb: 0.5,
+              color: 'rgba(255,246,229,.76)',
+              '& .MuiListItemIcon-root': { color: 'rgba(255,246,229,.56)' },
+              '&:hover': { bgcolor: 'rgba(255,166,115,.12)', color: '#FFF6E5' },
               '&.active': {
                 bgcolor: 'primary.main',
                 color: 'primary.contrastText',
@@ -107,7 +112,7 @@ export default function AdminLayout() {
       <Divider />
 
       <List sx={{ px: 1, py: 1 }}>
-        <ListItemButton component={RouterLink} to="/" sx={{ borderRadius: 2 }}>
+        <ListItemButton component={RouterLink} to="/" sx={{ borderRadius: 2, color: 'rgba(255,246,229,.76)', '& .MuiListItemIcon-root': { color: 'secondary.main' }, '&:hover': { bgcolor: 'rgba(255,166,115,.12)', color: '#FFF6E5' } }}>
           <ListItemIcon sx={{ minWidth: 38 }}><StorefrontOutlinedIcon /></ListItemIcon>
           <ListItemText primary="Back to store" slotProps={{ primary: { fontSize: 14.5 } }} />
         </ListItemButton>
@@ -129,6 +134,7 @@ export default function AdminLayout() {
             borderBottom: 1,
             borderColor: 'divider',
             bgcolor: 'background.paper',
+            backdropFilter: 'blur(18px)',
           }}
         >
           <Toolbar sx={{ gap: 1 }}>
@@ -193,7 +199,8 @@ export default function AdminLayout() {
               boxSizing: 'border-box',
               borderRight: 1,
               borderColor: 'divider',
-              bgcolor: 'background.paper',
+              bgcolor: '#171411',
+              color: '#FFF6E5',
             },
           }}
         >
@@ -207,6 +214,9 @@ export default function AdminLayout() {
             width: { lg: `calc(100% - ${DRAWER_WIDTH}px)` },
             p: { xs: 2, md: 3 },
             pt: { xs: 10, md: 11 },
+            background: mode === 'dark'
+              ? 'linear-gradient(145deg, #11110F 0%, #211811 100%)'
+              : 'linear-gradient(145deg, #FFF6E5 0%, #FFFCF6 58%, #FFE3BB 145%)',
           }}
         >
           <Outlet />

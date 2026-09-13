@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import placeholderImage from '../../assets/unavailable.png';
+import placeholderImage from '../../assets/product-placeholder.png';
 import { useState } from 'react';
 
 function ProductGallery({ product }) {

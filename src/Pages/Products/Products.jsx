@@ -33,7 +33,7 @@ function Products() {
         );
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="customer-page customer-catalog min-h-screen bg-gray-50 dark:bg-gray-900">
             <ProductsHeader
                 showFilters={showFilters}
                 setShowFilters={setShowFilters}

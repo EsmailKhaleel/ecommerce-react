@@ -37,6 +37,7 @@ const AdminOperations = lazy(() => import('../Pages/Admin/AdminOperations'));
 const AdminProcurement = lazy(() => import('../Pages/Admin/AdminProcurement'));
 const AdminGrowth = lazy(() => import('../Pages/Admin/AdminGrowth'));
 const AdminMerchandising = lazy(() => import('../Pages/Admin/AdminMerchandising'));
+const AdminPlatform = lazy(() => import('../Pages/Admin/AdminPlatform'));
 
 const adminFallback = (
     <div className="flex items-center justify-center min-h-screen">
@@ -69,6 +70,7 @@ const routing = createBrowserRouter([
             { path: "procurement", element: <AdminRoleRoute roles={['owner', 'admin', 'inventory']}><AdminProcurement /></AdminRoleRoute> },
             { path: "growth", element: <AdminRoleRoute roles={['owner', 'admin']}><AdminGrowth /></AdminRoleRoute> },
             { path: "merchandising", element: <AdminRoleRoute roles={['owner', 'admin']}><AdminMerchandising /></AdminRoleRoute> },
+            { path: "platform", element: <AdminRoleRoute roles={['owner', 'admin']}><AdminPlatform /></AdminRoleRoute> },
         ]
     },
     {

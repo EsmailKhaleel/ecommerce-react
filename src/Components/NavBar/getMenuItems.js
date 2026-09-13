@@ -4,7 +4,7 @@
  * @param {function} t - The translation function from the i18next library.
  * @returns {Array} An array of objects, each containing an id, name, and link.
  */
-const getMenuItems = (t) => [
+const getMenuItems = (t, user) => [
   {
     id: 1,
     name: t("navigation.explore"),
@@ -17,8 +17,9 @@ const getMenuItems = (t) => [
   },
   {
     id: 3,
-    name: t("navigation.addProduct", "Add Product"),
-    link: "/addProduct",
+    name: "Dashboard",
+    link: "/admin",
+    adminOnly: true,
   },
   {
     id: 4,
@@ -30,6 +31,6 @@ const getMenuItems = (t) => [
     name: t("navigation.account"),
     link: "/account",
   },
-];
+].filter(item => !item.adminOnly || ['owner', 'admin'].includes(user?.role));
 
 export default getMenuItems;

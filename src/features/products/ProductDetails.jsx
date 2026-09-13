@@ -13,6 +13,7 @@ import ProductActions from './ProductActions';
 import MobileBackButton from '../../Components/MobileBackButton';
 import useProduct from '../../hooks/products/useProduct';
 import { useEffect, useState } from 'react';
+import axiosInstance from '../../services/axiosInstance';
 
 function ProductDetails() {
     const { id } = useParams();
@@ -24,10 +25,13 @@ function ProductDetails() {
     useEffect(() => {
         setSelectedVariantId(product.variants?.[0]?._id || '');
     }, [product.variants]);
+    useEffect(() => {
+        if (id && localStorage.getItem('token')) axiosInstance.post(`/activities/track/product/${id}`).catch(() => {});
+    }, [id]);
     const selectedVariant = product.variants?.find(variant => variant._id === selectedVariantId);
 
     if (isLoading) return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="customer-page min-h-screen bg-gray-50 dark:bg-gray-900">
             <div className="container mx-auto px-4 py-4">
                 <ProductDetailsSkeleton />
             </div>
@@ -35,7 +39,7 @@ function ProductDetails() {
     );
 
     if (error) return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="customer-page min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -48,7 +52,7 @@ function ProductDetails() {
     );
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="customer-page product-detail-page min-h-screen bg-gray-50 dark:bg-gray-900">
             <MobileBackButton />
             <div className="container mx-auto px-4 py-4">
                 <ProductBreadcrumbs {...product} />

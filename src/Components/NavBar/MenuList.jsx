@@ -6,11 +6,13 @@ import { useTranslation } from "react-i18next";
 import getMenuItems from "./getMenuItems";
 import { useNavHandler } from "./useNavHandler";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { useAuth } from "../../Context/useAuth";
 
 function MenuList({ inDrawer = false }) {
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const menu = getMenuItems(t);
+    const { user } = useAuth();
+    const menu = getMenuItems(t, user);
     const { handleNavigation } = useNavHandler();
 
     const handleLinkClick = (event, link) => {

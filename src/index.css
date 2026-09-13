@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
 @theme {
   --color-primary: #FF4F0F;
   --color-primary-light: #FF7F47;
@@ -25,9 +38,86 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  font-family: "Red Rose", "Arial Rounded MT Bold", "Segoe UI", "Helvetica Neue", sans-serif, "Arial", "sans-serif";
-  user-select: none;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  color: #222222;
+  background: #fff6e5;
+  font-synthesis: none;
 }
+
+html { background: #fff6e5; }
+body { margin: 0; min-width: 320px; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible { outline: 2px solid #03a6a1; outline-offset: 4px; }
+
+.shop-header{height:68px;position:relative;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 max(2.25vw,1rem);background:rgba(255,246,229,.9);border-bottom:1px solid rgba(34,34,34,.18);backdrop-filter:blur(18px);color:#222}.shop-wordmark{display:flex;align-items:center;gap:.75rem;justify-self:start;cursor:pointer;background:none;border:0;padding:0;color:inherit}.shop-wordmark span{width:38px;height:38px;background:#ff4f0f;color:#fff;display:grid;place-items:center;font:italic 500 1.65rem/1 "Bodoni Moda",serif}.shop-wordmark strong{font-size:.84rem;letter-spacing:-.02em}.shop-header nav{justify-self:center}.shop-header nav ul{gap:1.9rem}.shop-nav-link{position:relative;color:inherit;padding:.5rem 0;text-transform:uppercase;letter-spacing:.14em;font-size:.63rem;font-weight:600}.shop-nav-link:after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:#ff4f0f;transform:scaleX(0);transition:transform .25s}.shop-nav-link:hover:after,.shop-nav-link-active:after{transform:scaleX(1)}.shop-header-actions{justify-self:end;display:flex;align-items:center;gap:.45rem}.shop-desktop-tools{display:flex;align-items:center;gap:.65rem;margin-right:.4rem}.shop-icon-button{appearance:unset;width:40px;height:40px;padding:1px;border:1px solid rgba(34,34,34,.35);background:transparent;border-radius:50%;display:grid;place-items:center;position:relative;font-size:1.15rem;cursor:pointer;overflow:hidden;transition:background .2s,color .2s,border-color .2s}.shop-icon-button:hover{background:#ff4f0f;color:white;border-color:#ff4f0f}.shop-icon-button img{display:block;width:120%;height:inherit;object-fit:cover;object-position:center;background:#ffe3bb}.shop-avatar-initials{width:100%;height:100%;border-radius:50%;display:grid;place-items:center;background:#03a6a1;color:#fff;font-size:.72rem;font-weight:800;text-transform:uppercase}.shop-cart-count{position:absolute;top:-4px;right:-3px;width:18px;height:18px;display:grid;place-items:center;background:#03a6a1;color:#fff;border-radius:50%;font-size:.58rem;font-weight:800}
+
+.editorial-footer{position:relative;isolation:isolate;overflow:hidden;background:#111;color:#fff6e5;padding:2rem max(4vw,1.25rem) 1.4rem}.editorial-footer>:not(.footer-artwork){position:relative;z-index:1}.footer-artwork{position:absolute;z-index:0;right:-8vw;bottom:-10%;width:min(76vw,1180px);height:auto;opacity:.72;pointer-events:none;will-change:transform}.footer-topline,.footer-bottom{display:flex;justify-content:space-between;text-transform:uppercase;letter-spacing:.14em;font-size:.62rem;color:rgba(255,255,255,.55)}.footer-topline{padding-bottom:1.25rem;border-bottom:1px solid rgba(255,255,255,.25)}.footer-main{display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:end;padding:6rem 0}.footer-main>p{font:400 clamp(4rem,9vw,10rem)/.79 "Bodoni Moda",serif;letter-spacing:-.06em;margin:0;text-shadow:0 2px 30px rgba(0,0,0,.32)}.footer-main em{font-weight:400}.footer-links{display:grid;gap:.8rem;min-width:160px}.footer-links a{color:inherit;text-transform:uppercase;letter-spacing:.12em;font-size:.68rem}.footer-links a:hover{color:#ff7f47}.footer-cta{border-top:1px solid rgba(255,255,255,.25);border-bottom:1px solid rgba(255,255,255,.25);padding:1.25rem 0;margin-bottom:1.4rem;color:inherit;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase;letter-spacing:.12em;font-size:.72rem}.footer-cta svg{font-size:1.4rem;transition:transform .25s}.footer-cta:hover{color:#ff7f47}.footer-cta:hover svg{transform:translateX(8px)}
+
+.dark .shop-header{background:rgba(17,17,15,.9);border-color:rgba(255,255,255,.16);color:#f3f0e7}.dark .shop-wordmark span{background:#f3f0e7;color:#11110f}.dark .shop-icon-button{border-color:rgba(255,255,255,.35)}
+@media(max-width:900px){.shop-header{height:60px;grid-template-columns:auto 1fr auto}.shop-header>button:first-child{display:block!important}.shop-wordmark{justify-self:center}.shop-wordmark strong{display:none}.shop-header nav,.shop-desktop-tools,.shop-header-actions .shop-icon-button:first-of-type{display:none}.shop-header-actions{justify-self:end}.footer-main{grid-template-columns:1fr;padding:4rem 0}.footer-links{grid-template-columns:1fr 1fr}.footer-bottom{gap:1rem;flex-direction:column}.editorial-footer{padding-top:1.5rem}.footer-artwork{width:135vw;right:-60vw;bottom:4%;opacity:.52}}
+
+/* Shared customer-facing design system */
+.customer-page {
+  --customer-ink: #222222;
+  --customer-paper: #fff6e5;
+  min-height: 70vh;
+  background: var(--customer-paper) !important;
+  color: var(--customer-ink);
+}
+.customer-page h1, .customer-page h2, .customer-page h3 { letter-spacing: -.035em; }
+.customer-page h1, .customer-page > div > h1, .customer-auth-card h2 { font-family: "Bodoni Moda", serif; font-weight: 400 !important; }
+.customer-page :where(input, select, textarea) { border-radius: 0 !important; border-color: rgba(34,34,34,.35) !important; background: rgba(255,255,255,.56) !important; min-height: 46px; }
+.customer-page :where(input, select, textarea):focus { border-color: #ff4f0f !important; box-shadow: 0 0 0 1px #ff4f0f !important; outline: none; }
+.customer-page button, .customer-page a { transition: color .25s, background .25s, border-color .25s, transform .25s; }
+.customer-page .bg-primary { border-radius: 0 !important; background: #ff4f0f !important; color: #fff !important; }
+.customer-page .bg-accent { border-radius: 0 !important; background: #03a6a1 !important; color: #fff !important; }
+
+.customer-catalog > div:first-child { position: relative !important; top: auto !important; z-index: 2; background: #fff6e5 !important; border-color: rgba(34,34,34,.25) !important; padding: 2.5rem 0 1rem; }
+.customer-catalog > div:first-child h1 { font: 400 clamp(3.2rem,7vw,6.5rem)/.9 "Bodoni Moda",serif !important; }
+.customer-catalog > div:nth-child(2) { max-width: 1500px; padding-top: 2rem; }
+.customer-product-card { border-radius: 0 !important; border-color: rgba(34,34,34,.22) !important; box-shadow: none !important; background: rgba(255,255,255,.35) !important; }
+.customer-product-card > div:nth-of-type(1) { background: #ffe3bb !important; }
+.customer-product-card h3 { font-family: "Bodoni Moda", serif; font-weight: 500 !important; font-size: 1.3rem; }
+.customer-product-card > div:last-child > button { border-radius: 0 !important; border-color: #ff4f0f !important; color: #ff4f0f !important; text-transform: uppercase; letter-spacing: .08em; font-size: .68rem; }
+.customer-product-card > div:last-child > button:hover { background: #ff4f0f !important; color: #fff !important; }
+.customer-product-card > button { box-shadow: none !important; border: 1px solid rgba(34,34,34,.2); }
+
+.product-detail-page { padding: 2.5rem 0 6rem; }
+.product-detail-page > .container { max-width: 1440px; }
+.product-detail-page h1 { font-size: clamp(2.8rem,5vw,5.6rem) !important; line-height: .92; }
+.product-detail-page [class*="rounded-lg"], .customer-cart [class*="rounded"] { border-radius: 0 !important; }
+.product-detail-page [class*="shadow"], .customer-cart [class*="shadow"] { box-shadow: none !important; }
+
+.customer-auth-page { background: linear-gradient(120deg,#ffe3bb 0 50%,#fff6e5 50%) !important; }
+.customer-auth-card { border-radius: 0 !important; border-top: 8px solid #ff4f0f; box-shadow: 0 28px 80px rgba(179,54,0,.14) !important; background: #fffaf1 !important; }
+.customer-auth-card h1, .customer-auth-card h2 { font-size: clamp(2.6rem,6vw,4.25rem) !important; line-height: .95; }
+.customer-auth-card button[type="submit"] { border-radius: 0 !important; background: #ff4f0f !important; min-height: 48px; }
+
+.customer-cart { max-width: 1500px; padding-top: 4rem; padding-bottom: 6rem; }
+.customer-cart > * { background-color: rgba(255,255,255,.34); border-color: rgba(34,34,34,.2) !important; }
+
+.about-page { overflow: hidden; }
+.about-hero { min-height: 72vh; padding: 5rem max(4vw,1.25rem); display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(125deg,#ff7f47,#ffe3bb 62%,#fff6e5); }
+.about-hero > span, .about-story span { text-transform: uppercase; letter-spacing: .18em; font-size: .66rem; }
+.about-hero h1 { margin: 0; font: 400 clamp(4rem,10vw,11rem)/.78 "Bodoni Moda",serif !important; letter-spacing: -.06em; }
+.about-hero em { font-weight: 400; }
+.about-story { padding: 7rem max(4vw,1.25rem); display: grid; grid-template-columns: 1fr 1fr; gap: 8vw; }
+.about-story h2 { font: 400 clamp(3rem,6vw,6rem)/.86 "Bodoni Moda",serif; margin: 3rem 0 0; }
+.about-story > div:last-child { align-self: end; max-width: 620px; }
+.about-story p { font-size: clamp(1.05rem,1.6vw,1.35rem); line-height: 1.7; }
+.about-story a { display: inline-flex; align-items: center; gap: .75rem; margin-top: 2rem; padding-bottom: .6rem; border-bottom: 1px solid; text-transform: uppercase; letter-spacing: .12em; font-size: .7rem; }
+.about-values { display: grid; grid-template-columns: repeat(3,1fr); background: #03a6a1; color: white; }
+.about-values > div { padding: 5rem 4vw; border-right: 1px solid rgba(255,255,255,.35); }
+.about-values h3 { font: 400 2.8rem/1 "Bodoni Moda",serif; margin: 4rem 0 1rem; }
+.about-values p { line-height: 1.65; }
+
+.dark .customer-page { --customer-ink: #f5f5f5; --customer-paper: #111111; }
+.dark .customer-catalog > div:first-child { background: #111 !important; }
+.dark .customer-product-card { background: #181816 !important; border-color: rgba(255,255,255,.18) !important; }
+.dark .customer-auth-page { background: linear-gradient(120deg,#6d280f 0 50%,#111 50%) !important; }
+.dark .customer-auth-card { background: #201f1c !important; color: #f5f5f5; }
+
+@media(max-width:760px){.about-story{grid-template-columns:1fr;gap:3rem;padding-block:5rem}.about-values{grid-template-columns:1fr}.about-values>div{border-right:0;border-bottom:1px solid rgba(255,255,255,.35);padding-block:3rem}.customer-auth-page{background:#ffe3bb!important}.customer-cart{padding-inline:1rem}}
 
 /* toast.css */
 .Toastify__toast {

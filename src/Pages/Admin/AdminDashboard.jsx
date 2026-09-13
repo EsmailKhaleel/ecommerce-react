@@ -164,6 +164,7 @@ export default function AdminDashboard() {
                     data: revenueByMonth.map((entry) => entry.revenue ?? 0),
                     label: 'Revenue',
                     valueFormatter: (value) => currency(value),
+                    color: '#FF4F0F',
                   }]}
                   margin={{ left: 70 }}
                 />
@@ -190,6 +191,7 @@ export default function AdminDashboard() {
                       id: index,
                       value: count,
                       label: status.charAt(0).toUpperCase() + status.slice(1),
+                      color: ['#FF4F0F', '#03A6A1', '#FFA673', '#222222', '#FFD1B0', '#01615E'][index % 6],
                     })),
                     innerRadius: 55,
                     paddingAngle: 2,
@@ -315,7 +317,7 @@ export default function AdminDashboard() {
                     data: categoryPerformance.map((c) => c.totalRevenue ?? 0),
                     label: 'Revenue',
                     valueFormatter: (value) => currency(value),
-                    color: '#0EA5E9',
+                    color: '#03A6A1',
                   }]}
                   margin={{ left: 90 }}
                 />

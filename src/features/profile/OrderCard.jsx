@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { FaChevronDown, FaBox, FaClock, FaMoneyBillWave } from "react-icons/fa"
 import { createReturn, downloadInvoice, requestRefund } from '../../services/invoiceService';
 import { toast } from 'react-toastify';
+import { cancelOrder } from '../../services/commerceService';
 
 function OrderCard({ order, isOpen, onToggle }) {
     return (
@@ -145,6 +146,13 @@ function OrderCard({ order, isOpen, onToggle }) {
                                 </div>
                             </div>
                             <div className="flex flex-wrap gap-3 mt-5">
+                                {['pending', 'processing'].includes(order.status) && (
+                                    <button type="button" className="px-4 py-2 rounded-md border border-red-500 text-red-600" onClick={async () => {
+                                        if (!window.confirm('Cancel this order?')) return;
+                                        try { await cancelOrder(order._id); toast.success('Order cancelled. Refreshing…'); window.location.reload(); }
+                                        catch (error) { toast.error(error.message); }
+                                    }}>Cancel order</button>
+                                )}
                                 {order.invoiceId && (
                                     <button type="button" className="px-4 py-2 rounded-md bg-primary text-white" onClick={() => downloadInvoice(order.invoiceId, `invoice-${order._id.slice(-8)}`).catch(error => toast.error(error.message))}>
                                         Download invoice
